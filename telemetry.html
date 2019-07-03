@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Portal 2.0</title>
+    <style> 
+    .jumbotron{
+        margin: 0;
+        padding: 10px 10px;
+        border: 0;
+        margin-bottom: 0em
+    }
+
+    #vid{
+        margin: auto;
+        border: 0;
+        padding: 100px;
+
+    }
+
+    #vid{
+        margin: 0px;
+        border: 0;
+        padding: 0px;
+
+    }
+    #map {
+        height: 100%;
+    }
+      /* Optional: Makes the sample page fill the window. */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        
+    }
+    
+    </style>
+   
+  </head>
+  <body>
+
+ <nav class="navbar navbar-expand-lg navbar-light bg-info" >
+  <a class="navbar-brand" href="index.html">Portal 2.0</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="planning.html">Mission Planning <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="#">Telemetry</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="stats.html">Stats For Geeks</a>
+      </li>
+    </ul>
+   
+  </div>
+</nav>
+
+<div class="jumbotron text-center">
+        <div class="container">
+            <h1> Monitor <strong> your</strong> robot.</h1>
+        </div>
+    </div>
+    <div id="vid2" class="embed-responsive embed-responsive-16by9 w-25 p-8 float-right align-bottom">
+            <iframe src="https://www.youtube.com/embed/GJYzDA3ur08" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+    <div id="map">
+            
+    </div>
+
+    <script src=telemetry.js>
+      
+      
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvw6RInTxTbh-gGvXHdSrWIEE43Je-E40&callback=initMap"
+    async defer></script>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
