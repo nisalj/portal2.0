@@ -10,6 +10,27 @@
 
     <title>Portal 2.0</title>
     <style> 
+    
+    #robotFrontCamera {
+      position: absolute;
+      right: 20px;
+      bottom: 50px;
+      border-style: solid; 
+      border-width: 2px;
+      height: 150px;
+      z-index: 1;
+    }
+
+    #robotRearCamera {
+      position: absolute;
+      right: 80px;
+      bottom: 200px;
+      border: 2px solid red;
+      border-radius: 10px;
+      height: 150px;
+      z-index: 2;
+    }
+
     .jumbotron{
         margin: 0;
         padding: 10px 10px;
@@ -70,13 +91,29 @@
 
 <div class="jumbotron text-center">
         <div class="container">
-            <h1> Monitor <strong> your</strong> robot.</h1>
+            <h1 id="main-header"> Monitor <strong> your</strong> robot.</h1>
         </div>
     </div>
-    <div id="vid2" class="embed-responsive embed-responsive-16by9 w-25 p-8 float-right align-bottom">
+    <!-- <div id="vid2" class="embed-responsive embed-responsive-16by9 w-25 p-8 float-right align-bottom">
             <iframe src="https://www.youtube.com/embed/GJYzDA3ur08" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
-    <div id="map">
+    -->
+    <div>
+      <img id="robotFrontCamera" 
+           src="http://211.23.31.192:82/GetData.cgi?CH=1" 
+           class="img-responsive img-rounded detailimage" 
+           alt="" 
+           title="Taiwan, Province Of , region T'Ai-Wan, Taipei">
+  </div>      
+  <div>
+      <img id="robotRearCamera" 
+           src="http://115.70.221.82:8888/mjpg/video.mjpg" 
+           class="img-responsive img-rounded detailimage" 
+           alt="" 
+           title="New South Wales, Sydney">
+  </div>
+   
+          <div id="map">
             
     </div>
 
@@ -84,7 +121,7 @@
       
       
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvw6RInTxTbh-gGvXHdSrWIEE43Je-E40&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvw6RInTxTbh-gGvXHdSrWIEE43Je-E40&sensor=true"
     async defer></script>
 
 
