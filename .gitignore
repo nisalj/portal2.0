@@ -1,4 +1,5 @@
-references
+.vscode
+reference
 logger.js
 person.js
 node_modules
