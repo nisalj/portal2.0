@@ -1,0 +1,23 @@
+{
+  "name": "portal2.0",
+  "version": "1.0.0",
+  "description": "Portal",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://nj1ers@bitbucket.org/nj1ers/portal2.0.git"
+  },
+  "author": "nj",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/nj1ers/portal2.0#readme",
+  "dependencies": {
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}

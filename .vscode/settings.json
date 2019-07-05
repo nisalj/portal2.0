@@ -1,0 +1,8 @@
+{
+    "liveServer.settings.https": {
+    "enable": false, //set it true to enable the feature.
+    "cert": "/Users/Nisal/server.crt", //full path of the certificate
+    "key": "/Users/Nisal/server.key", //full path of the private key
+    "passphrase": "Hacker01"
+    }
+    }
