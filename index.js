@@ -1,4 +1,4 @@
-const https = require('https'); 
+const http = require('http'); 
 const path = require('path');
 const fs  = require('fs'); 
 const express = require('express'); 
@@ -19,7 +19,7 @@ const options = {
 
 
 
-const server = https.createServer(options, app);
+const server = http.createServer(app);
 const PORT = process.env.PORT || 5000; 
 
 app.post('/loc',function(req,res){
