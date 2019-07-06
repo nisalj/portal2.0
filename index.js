@@ -12,10 +12,10 @@ app.use(bodyParser.json());
 app.use(express.static('.'))
 
 
-const options = {
-    key: fs.readFileSync('/Users/Nisal/server.key'),
-    cert: fs.readFileSync('/Users/Nisal/server.crt')
-  };
+// const options = {
+//     key: fs.readFileSync('/Users/Nisal/server.key'),
+//     cert: fs.readFileSync('/Users/Nisal/server.crt')
+//   };
 
 
 
