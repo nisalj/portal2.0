@@ -1,14 +1,14 @@
-const http = require('http'); 
+const https = require('https'); 
 const path = require('path');
 const fs  = require('fs'); 
 
-// const options = {
-//     key: fs.readFileSync('/Users/Nisal/server.key'),
-//     cert: fs.readFileSync('/Users/Nisal/server.crt')
-//   };
+const options = {
+    key: fs.readFileSync('/Users/Nisal/server.key'),
+    cert: fs.readFileSync('/Users/Nisal/server.crt')
+  };
 
 
-const server = http.createServer( (req, res) => {
+const server = https.createServer(options, (req, res) => {
 // if(req.url === '/') {
 
 //     fs.readFile(path.join(__dirname, 'index.html'), (err, content) => {

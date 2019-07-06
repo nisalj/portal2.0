@@ -5,6 +5,7 @@ let robotpath;
 let locating = "Locating";
 let tracking =  "Tracking";
 let unable = "Unable to retrieve your location"
+let options; 
 function success(position){
   const lat  = position.coords.latitude;
   const long = position.coords.longitude;
@@ -33,7 +34,7 @@ function getLocation() {
   } else {
     if(status.textContent != tracking && status.textContent != unable)
     status.textContent = locating;
-    navigator.geolocation.getCurrentPosition(success, error);
+    navigator.geolocation.watchPosition(success, error, options);
     status.textContent = tracking;
 
   }
@@ -61,9 +62,14 @@ function initMap() {
       strokeWeight: 2
     });
     
+    options = {
+      enableHighAccuracy: true,
+      timeout: Infinity,
+      maximumAge: 0 
+    }; 
     robotpath.setMap(map);
 
-    setInterval(getLocation, 100)
+ //   setInterval(getLocation, 100)
 
 }
 
@@ -71,6 +77,6 @@ function initMap() {
 window.onload = function() {
   status = document.getElementById('main-header')
   initMap(); 
- // getLocation();
+  getLocation();
 }
 
