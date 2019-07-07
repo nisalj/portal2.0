@@ -9,6 +9,7 @@ let tracking =  "Sharing";
 let viewing = "Viewing";
 let unable = "Unable to retrieve your location";
 let options; 
+let socket; 
 
 
 function plotPath(lat, long) {
@@ -57,6 +58,8 @@ function initMap() {
 
 class Viewer {
 
+ 
+
   constructor() {
   this.status = "view"; 
   this.shareLat;
@@ -65,36 +68,46 @@ class Viewer {
 
   getSharerPos() {
 
-    let xhr;
-    if (window.XMLHttpRequest) {
-        xhr = new XMLHttpRequest();
-    }
-    else if (window.ActiveXObject) {
-        xhr = new ActiveXObject("Msxml2.XMLHTTP");
-    }
-    else {
-        throw new Error("Ajax is not supported by this browser");
-    }
-    xhr.onload = function() {
-      if(xhr.status == 200){
+  
+    socket.on('new location', data => {
+        user.shareLat = data.lat; 
+        user.shareLong = data.long;   
+        user.updateMap();     
+    });
 
-        let latlong = xhr.responseText; 
-        let lat = latlong.split(' ')[0]; 
-        let long = latlong.split(' ')[1]; 
-        console.log(latlong);
-        if (latlong != "Not ready") { 
-          console.log(lat + " h " + long);
-          user.shareLat = lat; 
-          user.shareLong = long; 
-          user.updateMap(); 
+
+
+
+    // let xhr;
+    // if (window.XMLHttpRequest) {
+    //     xhr = new XMLHttpRequest();
+    // }
+    // else if (window.ActiveXObject) {
+    //     xhr = new ActiveXObject("Msxml2.XMLHTTP");
+    // }
+    // else {
+    //     throw new Error("Ajax is not supported by this browser");
+    // }
+    // xhr.onload = function() {
+    //   if(xhr.status == 200){
+
+    //     let latlong = xhr.responseText; 
+    //     let lat = latlong.split(' ')[0]; 
+    //     let long = latlong.split(' ')[1]; 
+    //     console.log(latlong);
+    //     if (latlong != "Not ready") { 
+    //       console.log(lat + " h " + long);
+    //       user.shareLat = lat; 
+    //       user.shareLong = long; 
+    //       user.updateMap(); 
             
-        }
+    //     }
       
-      }
-    }
+    //   }
+    // }
 
-    xhr.open("GET", "/loc", true);
-    xhr.send();
+    // xhr.open("GET", "/loc", true);
+    // xhr.send();
  
   }
 
@@ -214,6 +227,7 @@ element.parentNode.removeChild(element);
 status.textContent = "Viewing location"; 
 
 user = new Viewer(); 
+socket = io.connect(); 
 user.start(); 
 
 }

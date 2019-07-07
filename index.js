@@ -1,4 +1,5 @@
-const http = require('http'); 
+const https = require('https'); 
+let io = require('socket.io');
 const path = require('path');
 const fs  = require('fs'); 
 const express = require('express'); 
@@ -12,21 +13,37 @@ app.use(bodyParser.json());
 app.use(express.static('.'))
 
 
-// const options = {
-//     key: fs.readFileSync('/Users/Nisal/server.key'),
-//     cert: fs.readFileSync('/Users/Nisal/server.crt')
-//   };
+const options = {
+    key: fs.readFileSync('/Users/Nisal/server.key'),
+    cert: fs.readFileSync('/Users/Nisal/server.crt')
+  };
 
 
 
-const server = http.createServer(app);
+const server = https.createServer(options, app);
 const PORT = process.env.PORT || 5000; 
+server.listen(PORT, () => console.log("Server running on port " + PORT)); 
+io = io.listen(server); 
+
+io.sockets.on('connection', socket => {
+    console.log('connected'); 
+    
+    socket.on('disconnect', () => {
+        console.log('disconnected'); 
+    }); 
+    
+    
+}); 
+      
+
 
 app.post('/loc',function(req,res){
     lat  =req.body.lat;
     long =req.body.long;
     console.log("lat = " +lat+ ", long = " +long);
     res.end("yes");
+    io.sockets.emit('new location', {lat: lat, long: long})
+
     req.on("close", function() {
         console.log("post ended close");
         // lat = undefined;
@@ -59,6 +76,5 @@ app.get('/loc', function (req, res) {
         // lat = undefined;
         // long = undefined;     
     });
-})
-  
-server.listen(PORT, () => console.log("Server running on port " + PORT)); 
+});
+
