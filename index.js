@@ -1,6 +1,7 @@
 const https = require('https'); 
 let io = require('socket.io');
 const path = require('path');
+const ui = require('nouislider');
 const fs  = require('fs'); 
 const express = require('express'); 
 var bodyParser = require('body-parser');
@@ -77,4 +78,10 @@ app.get('/loc', function (req, res) {
         // long = undefined;     
     });
 });
+
+
+app.post('/plan', (req, res) => {
+    console.log(req.body);
+    res.end("Plan received")
+}); 
 

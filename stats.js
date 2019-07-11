@@ -2,8 +2,8 @@ window.onload = function () {
 
     var dps = []; // dataPoints
     var chart = new CanvasJS.Chart("chartContainer", {
-        theme: "dark2",
-        backgroundColor: "#060606",
+        // theme: "dark2",
+        // backgroundColor: "#060606",
         title :{
             text: "Acceleration"
         },

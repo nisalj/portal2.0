@@ -6,11 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://bootswatch.com/4/litera/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://bootswatch.com/4/cyborg/bootstrap.min.css">
+    <link rel="stylesheet" href="./node_modules/nouislider/distribute/nouislider.css">
 
     <title>Portal 2.0</title>
     <style> 
+
+
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background-color: white; 
+    border-radius: 25px;
+}
+
+#sidebar.active {
+    margin-left: -250px;
+}
+
     .jumbotron{
         margin: 0;
         padding: 10px 10px;
@@ -24,30 +38,112 @@
         padding: 100px;
 
     }
+    #wrapper { 
+    position: relative; 
+    height: 100%;
+    align-items: stretch;
 
+    }
+    #over-map { 
+    position: absolute; 
+    right: 0px; 
+    z-index: 99; 
+    top: 100px; 
+    
+    }
+  
     #vid{
         margin: 0px;
         border: 0;
         padding: 0px;
 
     }
-    #map {
-        height: 100%;
-    }
+   
       /* Optional: Makes the sample page fill the window. */
-    html, body {
+  
+  .sidebar {
+  margin-right: 20px;
+  padding: 20px;
+  padding-right: 50px; 
+
+  width: 500px;
+  position: relative;
+  right: 0px; 
+  height: 100%;
+  overflow: auto;
+
+}
+
+.sidebar a {
+  display: block;
+  padding: 16px;
+  text-decoration: none;
+}
+ 
+.sidebar a.active {
+
+}
+
+.sidebar a:hover:not(.active) {
+background-color: lightgray; 
+}
+
+div.content {
+  margin-left: 200px;
+  padding: 1px 16px;
+  height: 1000px;
+}
+
+.noUi-connect {
+	background: #007bff;
+}
+
+#save-button{ 
+  position: absolute;
+  bottom: 100px; 
+  left: 200px;
+}
+
+#clear-button{ 
+  position: absolute;
+  bottom: 100px; 
+  left: 50px;
+}
+@media screen and (max-width: 700px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar a {float: right;}
+  div.content {margin-left: 0;}
+}
+
+@media screen and (max-width: 400px) {
+  .sidebar a {
+    text-align: center;
+    float: none;
+  }
+}
+
+html, body {
+        position: relative;
         height: 100%;
         margin: 0;
         padding: 0;
         
-    }
+  }
+  #map {
+        height: 100%;
+  }
+
     
     </style>
-   
+
   </head>
   <body>
 
- <nav class="navbar navbar-expand-lg navbar-dark" >
+ <nav class="navbar navbar-expand-lg navbar-dark bg-primary" >
   <a class="navbar-brand" href="index.html">Portal 2.0</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -69,27 +165,89 @@
   </div>
 </nav>
 
-<div class="text-center">
-        <div class="container">
-            <h1> Plan <strong> your</strong> path.</h1>
-            <p>Drop pins at the source and destination.</p>
+
+    
+  <div id="wrapper"> 
+
+  
+    <div id="map">  </div>
+
+   
+    <div id="over-map">   
+
+    <div class="sidebar form-group text-center" id = "sidebar">
+      <form>
+    <div class="row"> 
+        <div class="col-md-5">
+        <button id="undo" type="button" class="btn btn-danger">Undo</button>
         </div>
     </div>
-    
-    <div id="map">
-            
+    <br>
+
+    <div class="row">
+        <div class="col-md-5">
+            <label for="lat"> Latitude</label>
+        </div>
+        <div class="col-md-7">
+            <input type="text"  style="width:100px" readonly=""" class="form-control pull-left" placeholder="Lat" id="lat"> 
+        </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-5">
+          <label for="long"> Longitude</label>
+      </div>
+      <div class="col-md-7">
+          <input type="text"  style="width:100px" readonly=""" class="form-control" placeholder="Long" id="long"> 
+      </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-5">
+            <label> Cruising speed </label>
+        </div>
+        <div class="col-md-7">
+            <div id="speed-range"> </div> 
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-5">
+              <label> Max speed </label>
+          </div>
+          <div class="col-md-7">
+            <div id="max-speed"> </div>
+            </div>
+        </div>
+        <div class="row" >
+          <div class="col-md-12 text-center"id="test-slider">  </div>
+        </div>
+
+
+      </form>
+
     </div>
 
-    <script src="planning.js"> </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvw6RInTxTbh-gGvXHdSrWIEE43Je-E40&callback=initMap"
+
+  </div>
+
+  <button id="save-button" type="button" class="btn btn-primary btn-lg">Save</button>
+  <button id="clear-button" type="button" class="btn btn-primary btn-lg">Clear</button>
+
+
+
+    <script type="module" src="planning.js"> </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvw6RInTxTbh-gGvXHdSrWIEE43Je-E40"
     async defer></script>
 
-
+    
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="./node_modules/nouislider/distribute/nouislider.js"> </script>
+    <script src="node_modules/wnumb/wNumb.js"></script>
+
   </body>
 </html>
