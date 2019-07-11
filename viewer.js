@@ -23,7 +23,9 @@ export default class Viewer extends User {
     }
     
     start() {
+
         this.makePlan(); 
+        this.getSharerPos(); 
         
     }
   

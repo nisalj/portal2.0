@@ -50,6 +50,8 @@ export default class Sharer extends User {
     
     start() {
       this.getLocation(); 
+       this.makePlan(); 
+
     }
   
     sharePos() {

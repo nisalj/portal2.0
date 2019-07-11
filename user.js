@@ -25,16 +25,12 @@ export default class User {
       
         this.planPlath.makePath(this.path.map); 
            
-        window.setTimeout(this.made.bind(this) , 10);
             
 
    
 
     }
-    made() {
-        console.log('made');  
-        this.test(); 
-    }
+   
 
     test() {
         console.log(this.planPlath.segNo()); 
