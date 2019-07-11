@@ -175,15 +175,20 @@ html, body {
    
     <div id="over-map">   
 
-    <div class="sidebar form-group text-center" id = "sidebar">
+    <div class="sidebar form-group text-center" id="sidebar">
       <form>
     <div class="row"> 
         <div class="col-md-5">
         <button id="undo" type="button" class="btn btn-danger">Undo</button>
         </div>
+        <div class="col-md-7"> 
+        <button type="button" class="close" id="close-side">
+                <span aria-hidden="true"> &times; </span>
+        </button>
+
+        </div>
     </div>
     <br>
-
     <div class="row">
         <div class="col-md-5">
             <label for="lat"> Latitude</label>
@@ -233,6 +238,26 @@ html, body {
   <button id="save-button" type="button" class="btn btn-primary btn-lg">Save</button>
   <button id="clear-button" type="button" class="btn btn-primary btn-lg">Clear</button>
 
+  <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h1 id="modaltext" class="text-center"> GFGH</h1>
+        </div>
+        <div class="modal-footer">
+          <div class="row"></div>
+          <div class="col-md-12 text-center">
+              <button type="button" class="btn btn-secondary align-middle" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
     <script type="module" src="planning.js"> </script>

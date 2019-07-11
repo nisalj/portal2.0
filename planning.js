@@ -16,6 +16,7 @@ let lat;
 let cruiseSlider;
 let maxSlider; 
 let long;
+let save; 
 
 window.onload = function() {
   initMap(); 
@@ -38,7 +39,31 @@ function initMap() {
               'max': 10
           },
           step: 0.1, 
-          tooltips:  wNumb({decimals: 1}),
+          tooltips: false, 
+      });
+
+
+      cruiseSlider.noUiSlider.on('end', function (values, handle) {
+        cruiseSlider.noUiSlider.updateOptions({
+        tooltips:  false,
+      });
+
+      });
+
+      cruiseSlider.noUiSlider.on('start', function (values, handle) {
+        cruiseSlider.noUiSlider.updateOptions({
+        tooltips:  wNumb({decimals: 1}),
+      });
+
+      });
+
+
+      cruiseSlider.noUiSlider.on('change', function (values, handle) {
+        let val = parseFloat(values); 
+        console.log(val); 
+        path.getLast().setSpeed(val);
+
+
       });
 
       noUiSlider.create(maxSlider, {
@@ -50,9 +75,34 @@ function initMap() {
             'max': 10
         },
         step: 0.1, 
-        tooltips:  wNumb({decimals: 1}),
+        tooltips:  false,
+      
+    });
+
+
+    maxSlider.noUiSlider.on('end', function (values, handle) {
+      maxSlider.noUiSlider.updateOptions({
+      tooltips:  false,
+    });
 
     });
+
+    maxSlider.noUiSlider.on('start', function (values, handle) {
+      maxSlider.noUiSlider.updateOptions({
+      tooltips:  wNumb({decimals: 1}),
+    });
+
+    });
+
+
+    maxSlider.noUiSlider.on('change', function (values, handle) {
+      let val = parseFloat(values); 
+      console.log(val); 
+      path.getLast().setMaxSpeed(val);
+
+
+    });
+    
 
 
         undo = document.getElementById("undo").addEventListener("click", () => {
@@ -83,8 +133,9 @@ function initMap() {
             }
         } 
         if (click < 2) {
-          cruiseSlider.disabled = true; 
-          maxSlider.disabled = true; 
+          cruiseSlider.setAttribute('disabled', true);
+          maxSlider.setAttribute('disabled', true);
+  
         }
         });
 
@@ -98,29 +149,43 @@ function initMap() {
             firstMarker.setMap(null); 
           }
           displayCurrent(null); 
+          cruiseSlider.setAttribute('disabled', true);
+          cruiseSlider.noUiSlider.set(2.5);
+          maxSlider.noUiSlider.set(5);
+          maxSlider.setAttribute('disabled', true);
+  
 
         }); 
        
         lat = document.getElementById("lat");
         long = document.getElementById("long");
-        cruiseSlider.disabled = true;
-        maxSlider.disabled = true; 
 
-        cruiseSlider.addEventListener("click", () => {
-          path.getLast().setSpeed(cruiseSlider.value);
+        cruiseSlider.setAttribute('disabled', true);
+        maxSlider.setAttribute('disabled', true);
+        save = document.getElementById("save-button").addEventListener('click', () => {
+          if(path.segNo() == 0){
+            $('#modaltext').text("Please select waypoints") 
+            $('#modal').modal('show'); 
+          } else{
+            path.sendPath(); 
+            $('#modaltext').text("Path saved") 
+            $('#modal').modal('show'); 
+          }
+
         }); 
-        
-        maxSlider.addEventListener("click",() => {
-          path.getLast().setMaxSpeed(cruiseSlider.value);
-
-        } ); 
-
      
        start = true; 
+       $('#sidebar')[0].style.display = "none"
 
+
+      $("#close-side").on('click', () => {
+        $('#sidebar')[0].style.display = "none"
+      } )
        path = new Path(); 
        click = 0; 
        map.addListener('click', addLatLng); 
+
+
 }
 
 function displayCurrent(position) {
@@ -138,6 +203,8 @@ function displayCurrent(position) {
 
 
 function addLatLng(event) {
+  $('#sidebar')[0].style.display = "block"
+
   click++; 
   //header.remove(); 
   
@@ -154,8 +221,8 @@ function addLatLng(event) {
 
   if (click >= 2) {
     console.log(click);
-    cruiseSlider.disabled = false; 
-    maxSlider.disabled = false; 
+    maxSlider.removeAttribute('disabled'); 
+    cruiseSlider.removeAttribute('disabled'); 
   }
 
 
