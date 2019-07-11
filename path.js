@@ -44,6 +44,7 @@ export default class Path {
         for (let i = 0; i < this.segNo(); i++) {
          this.segments[i].renderStart(map); 
          this.segments[i].renderLine(map); 
+        console.log('line');
          if (i == this.segNo() - 1)
          this.segments[i].renderEnd(map); 
         }
@@ -65,12 +66,22 @@ export default class Path {
 
     makePath(map) {
         let array; 
-        this.segments = null; 
+        this.segments = []; 
 
         $.get(location.origin + '/plan', (data) => {
-            array = JSON.parse(data); 
-        }); 
+            
+            if (data != "{}") {
 
+            
+           let string = JSON.stringify(data); 
+           let end = string.length - 4;
+           let start = 1; 
+           let mod = string.slice(start, end); 
+           array = JSON.parse(JSON.parse(mod)); 
+
+       
+
+        
         for (let i = 0; i < array.length; i++) {
             start = new google.maps.Marker ({
                 position: {lat: array[i].startLat, lng: array[i].startLong},
@@ -83,8 +94,21 @@ export default class Path {
                 map: map,
                 title: '#' + i,
             });
+
+            
             this.segments.push(new Segment(start, end, array[i].maxSpeed, array[i].speed)); 
+
         }
+        this.renderPath(map); 
+
+    
+    }
+    
+    });
+
+    //console.log('line', this.segNo()); 
+
+      
     
     }
 
@@ -97,8 +121,12 @@ export default class Path {
         }
 
         let text = JSON.stringify(array);
+        console.log(text); 
+
         
-        $.post(location.origin +'/plan', text); 
+     
+
+        $.post(location.origin +'/plan', text, () => {}, text); 
 
        // console.log(this.segments);
     }

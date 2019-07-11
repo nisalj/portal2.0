@@ -3,6 +3,7 @@ export default class Viewer extends User {
 
  
     constructor(path, socket) {
+
     super(path); 
     this.status = "view"; 
     this.socket = socket;
@@ -16,9 +17,15 @@ export default class Viewer extends User {
           this.long = data.long;   
           this.plotPath();     
       });
+
+      
   
     }
-  
+    
+    start() {
+        this.makePlan(); 
+        
+    }
   
   
   

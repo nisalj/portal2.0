@@ -1,5 +1,5 @@
 import Viewer from './viewer.js';
-import Sharer from './sharer.js'
+import Sharer from './sharer.js';
 
 let status;
 let user; 
@@ -65,8 +65,7 @@ status.textContent = "Viewing location";
 
 socket = io.connect(); 
 user = new Viewer(robotpath, socket);
-user.getSharerPos(); 
-
+user.start();
 }
 
 window.onload = function() {

@@ -50,6 +50,7 @@ export default class Segment{
     }
 
     renderLine(map) {
+
     this.poly.setMap(map);
     let line = this.poly.getPath(); 
     line.push(this.getStart().position);

@@ -6,6 +6,7 @@ const fs  = require('fs');
 const express = require('express'); 
 var bodyParser = require('body-parser');
 const app = express(); 
+let plan; 
 var lat; 
 var long; 
 
@@ -82,6 +83,18 @@ app.get('/loc', function (req, res) {
 
 app.post('/plan', (req, res) => {
     console.log(req.body);
+   // var text = String(req.body);
+    console.log(JSON.stringify(req.body));
+    plan = req.body; 
     res.end("Plan received")
 }); 
+
+app.get('/plan', (req, res) => {
+    if(plan)
+    res.send(plan);
+    else 
+    res.send("{}");
+
+});
+
 

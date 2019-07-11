@@ -1,3 +1,4 @@
+import Path from './path.js';
 
 export default class User {
     constructor(path) {
@@ -5,6 +6,7 @@ export default class User {
       this.lat;
       this.long; 
       this.status;
+      this.planPlath = new Path(); 
     }
   
     plotPath() {
@@ -16,6 +18,30 @@ export default class User {
       console.log("updating",latlng.lat(),latlng.lng() );
       path.push(latlng);
     }
+
+    makePlan() {
+
+        console.log('making');
+      
+        this.planPlath.makePath(this.path.map); 
+           
+        window.setTimeout(this.made.bind(this) , 10);
+            
+
+   
+
+    }
+    made() {
+        console.log('made');  
+        this.test(); 
+    }
+
+    test() {
+        console.log(this.planPlath.segNo()); 
+
+    }
+
+    
   
    
   
