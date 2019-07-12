@@ -50,6 +50,23 @@ export default class Path {
         }
     }
 
+    getFirst() {
+        if (this.segments.length == 0)
+        return; 
+        else 
+        return  this.segments[0]; 
+           
+    }
+
+    addFirst(start, end) {
+        let seg = new Segment(start, end); 
+        this.segments.unshift(seg);
+        seg.renderStart(start.map);
+        seg.renderLine(start.map); 
+    }
+
+    
+
     getLast() {
         if (this.segments.length == 0)
         return; 
