@@ -1,4 +1,4 @@
-const https = require('https'); 
+const http = require('http'); 
 let io = require('socket.io');
 const path = require('path');
 const ui = require('nouislider');
@@ -15,14 +15,14 @@ app.use(bodyParser.json());
 app.use(express.static('.'))
 
 
-const options = {
-    key: fs.readFileSync('/Users/Nisal/server.key'),
-    cert: fs.readFileSync('/Users/Nisal/server.crt')
-  };
+// const options = {
+//     key: fs.readFileSync('/Users/Nisal/server.key'),
+//     cert: fs.readFileSync('/Users/Nisal/server.crt')
+//   };
 
 
 
-const server = https.createServer(options, app);
+const server = http.createServer( app);
 const PORT = process.env.PORT || 5000; 
 server.listen(PORT, () => console.log("Server running on port " + PORT)); 
 io = io.listen(server); 
