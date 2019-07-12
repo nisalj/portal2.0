@@ -13,8 +13,9 @@ export default class Viewer extends User {
   
     getSharerPos() {
       this.socket.on('new location', data => {
-          this.lat = data.lat; 
-          this.long = data.long;   
+          this.lat = parseFloat(data.lat); 
+          this.long = parseFloat(data.long); 
+          console.log(this.firstReading);  
           this.plotPath();     
       });
 
@@ -26,6 +27,7 @@ export default class Viewer extends User {
 
         this.makePlan(); 
         this.getSharerPos(); 
+        
         
     }
   

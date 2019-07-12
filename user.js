@@ -11,8 +11,9 @@ export default class User {
     }
   
     addFirst() {
-
+      console.log("lat", this.lat, "long", this.long); 
       let latlng = {lat: this.lat, lng: this.long};
+      console.log(latlng);
       let start  = new google.maps.Marker({
         position: latlng,
         map: this.path.map,
@@ -22,7 +23,7 @@ export default class User {
 
       let end = this.planPlath.getFirst().getStart(); 
       this.planPlath.addFirst(start, end);
-       
+
     }
 
     plotPath() {
