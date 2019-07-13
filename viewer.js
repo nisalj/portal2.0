@@ -10,6 +10,15 @@ export default class Viewer extends User {
     
     }
   
+
+    getHeading() {
+      this.socket.on('new heading', data => {
+        this.heading = Object.keys(data)[0];
+       // console.log(Object.keys(this.heading)[0])
+        //console.log(this.heading); 
+        this.showHeading(); 
+      })
+    }
   
     getSharerPos() {
       this.socket.on('new location', data => {
@@ -27,6 +36,7 @@ export default class Viewer extends User {
 
         this.makePlan(); 
         this.getSharerPos(); 
+        this.getHeading(); 
         
         
     }

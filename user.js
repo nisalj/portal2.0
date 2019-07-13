@@ -1,6 +1,7 @@
 import Path from './path.js';
 
 export default class User {
+
     constructor(path) {
       this.path = path; 
       this.lat;
@@ -8,7 +9,19 @@ export default class User {
       this.firstReading = true;  
       this.status;
       this.planPlath = new Path(); 
+      this.heading; 
+      //get rid of these 
+      this.sidebar = document.getElementById('sidebar'); 
+      this.headval = document.getElementById('heading-val');  
+
     }
+
+
+
+
+
+
+   
   
     addFirst() {
       console.log("lat", this.lat, "long", this.long); 
@@ -26,12 +39,19 @@ export default class User {
 
     }
 
+
+  showHeading() {
+  sidebar.style.display = "block"; 
+  this.headval.value = this.heading; 
+  }
+  
+
     plotPath() {
-      if(this.firstReading) {
+      if(this.firstReading && this.planPlath.segNo()) {
         this.addFirst();
         this.firstReading = false; 
       }
-
+      window.testfunc(); 
       let map = this.path.map; 
       map.setZoom(17);
       let path = this.path.getPath();
@@ -43,14 +63,8 @@ export default class User {
 
     makePlan() {
 
-        console.log('making');
-      
+        console.log('making'); 
         this.planPlath.makePath(this.path.map); 
-           
-            
-
-   
-
     }
    
 

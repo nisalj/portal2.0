@@ -11,6 +11,19 @@
     <title>Portal 2.0</title>
     <style> 
     
+      .sidebar {
+        position: absolute;
+        z-index: 1; 
+        right: 20px;
+        top: 200px;
+        background-color: white; 
+        margin-right: 20px;
+        padding: 10px;
+        margin-right: 20px;
+        border-radius: 10px;
+        display: none;
+      }
+
     /* #robotFrontCamera {
       position: absolute;
       right: 20px;
@@ -101,6 +114,18 @@
           <h1 class="col-12" id="main-header">  <!-- Monitor <strong> your </strong> robot. --> </h1> 
 
         </div> 
+    </div>
+
+
+    <div class="form-group sidebar text-center" id="sidebar">
+      <div class="row">
+        <div class="col-md-5">
+            <label style="position: relative; top:8px" for="heading-val"> Heading</label>
+        </div>
+        <div class="col-md-7">
+            <input type="text"  style="width:100px" readonly=""" class="form-control pull-left" placeholder="Waiting" id="heading-val"> 
+        </div>
+    </div>
     </div>
     <!-- <div id="vid2" class="embed-responsive embed-responsive-16by9 w-25 p-8 float-right align-bottom">
             <iframe src="https://www.youtube.com/embed/GJYzDA3ur08" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

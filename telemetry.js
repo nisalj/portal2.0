@@ -6,8 +6,13 @@ let user;
 let robotpath;
 let options; 
 let socket; 
+let test1; 
 
-
+ window.testfunc = function () {
+   test1 = "hey2"
+   console.log(test1);
+   
+ }; 
 
 function initMap() {
 
@@ -34,7 +39,6 @@ function initMap() {
  
 
 }
-
 
 
 
