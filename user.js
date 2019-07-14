@@ -45,7 +45,7 @@ export default class User {
       this.distval.innerText = dist.toFixed(0); 
       console.log("distance to target waypoint", dist); 
       //if within 
-      if (dist <= 1) {
+      if (dist <= 5) {
         this.updateTargetWayPoint(); 
       } else {
         return; 
@@ -67,6 +67,7 @@ export default class User {
       } else if(this.currentSeg != this.planPlath.segNo()) {
         this.updateCurrentSeg(); 
         this.targetWayPoint = this.getCurrentSeg().getStart(); 
+        this.atSegStart = true; 
       } else {
         console.log("Mission complete"); 
       }
@@ -74,6 +75,7 @@ export default class User {
     }
 
     updateCurrentSeg() {
+      this.getCurrentSeg().changeColor("blue"); 
       this.currentSeg++; 
       this.targetBearing = this.getCurrentSeg().getBearing(); 
       //console.log(this.targetBearing);

@@ -9,6 +9,7 @@ export default class Sharer extends User {
       this.locating = "Locating";
       this.tracking =  "Sharing";
       this.unable = "Unable to retrieve your location";
+      this.readno = 0;
   
     }
 
@@ -17,6 +18,11 @@ export default class Sharer extends User {
     success(position) {
       //console.log(position.coords.latitude);
       //console.log(this); 
+      this.readno++; 
+
+      if (this.readno < 20)
+      return; 
+
         this.lat  = position.coords.latitude;
         this.long = position.coords.longitude;
        
