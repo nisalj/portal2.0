@@ -77,7 +77,7 @@ element.parentNode.removeChild(element);
 element = document.getElementById("share");
 element.parentNode.removeChild(element);
 status.textContent = "Viewing location"; 
-
+status.style.display = "none";
 socket = io.connect(); 
 user = new Viewer(robotpath, socket);
 user.start();

@@ -44,8 +44,10 @@ export default class Sharer extends User {
         let error = this.error.bind(this); 
         navigator.geolocation.watchPosition(success, error, this.options);
         status.textContent = this.tracking;
+
       }
-    
+      status.style.display = "none"; 
+
     }
     
     start() {
@@ -53,7 +55,7 @@ export default class Sharer extends User {
 
       setTimeout(this.getLocation.bind(this), 200)
       //setTimeout(this.getHeading.bind(this), 200)
-      this.getHeading(); 
+      setTimeout(this.getHeading.bind(this),200); 
      // this.getLocation(); 
 
     }

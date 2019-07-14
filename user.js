@@ -15,8 +15,11 @@ export default class User {
       this.targetWayPoint; 
       this.atSegStart = true; 
       //get rid of these 
-      this.sidebar = document.getElementById('sidebar'); 
+      this.sidebar = document.getElementById('over-map'); 
       this.headval = document.getElementById('heading-val');  
+      this.distval = document.getElementById('dist-val');
+      this.bearval = document.getElementById('bear-val');
+
 
     }
 
@@ -39,6 +42,7 @@ export default class User {
       console.log(this.targetWayPoint);
 
       let dist = google.maps.geometry.spherical.computeDistanceBetween(latlng, this.targetWayPoint.position);
+      this.distval.innerText = dist.toFixed(0); 
       console.log("distance to target waypoint", dist); 
       //if within 
       if (dist <= 1) {
@@ -101,8 +105,7 @@ export default class User {
 
 
   showHeading() {
-  sidebar.style.display = "block"; 
-  this.headval.value = this.heading; 
+  this.headval.innerText = this.heading; 
   let lineSymbol = {
     path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
     //path: google.maps.SymbolPath.CIRCLE,
@@ -118,13 +121,17 @@ export default class User {
       fixedRotation: true
   }],
   })
-        this.changeColor()
+
+  if(!this.firstReading)
+    this.changeColor()
 
  // this.path.icon.rotation = this.heading; 
   }
   
 
     plotPath() {
+      this.sidebar.style.display = "block"; 
+
       if(this.firstReading && this.planPlath.segNo()) {
         this.addFirst();
         this.targetWayPoint = this.getCurrentSeg().getStart(); 
@@ -151,7 +158,8 @@ export default class User {
     changeColor() {
       if(!this.planPlath.segNo())
       return; 
-
+      this.bearval.innerText = (this.targetBearing - this.heading).toFixed(0); 
+      console.log(this.getCurrentSeg()); 
       if(Math.abs(this.targetBearing - this.heading) < 5) {
         this.getCurrentSeg().changeColor("green")
       } else {

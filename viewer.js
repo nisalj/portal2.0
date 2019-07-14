@@ -7,6 +7,7 @@ export default class Viewer extends User {
     super(path); 
     this.status = "view"; 
     this.socket = socket;
+    this.firstloc = true; 
     
     }
   
@@ -16,15 +17,18 @@ export default class Viewer extends User {
         this.heading = Object.keys(data)[0];
        // console.log(Object.keys(this.heading)[0])
         //console.log(this.heading); 
+        if(!this.firstloc)
         this.showHeading(); 
       })
     }
   
     getSharerPos() {
       this.socket.on('new location', data => {
+          this.firstloc = false; 
           this.lat = parseFloat(data.lat); 
           this.long = parseFloat(data.long); 
           console.log(this.firstReading);  
+
           this.plotPath();     
       });
 
@@ -35,8 +39,11 @@ export default class Viewer extends User {
     start() {
 
         this.makePlan(); 
-        this.getSharerPos(); 
-        this.getHeading(); 
+        setTimeout(this.getSharerPos.bind(this), 200); 
+        setTimeout(this.getHeading.bind(this), 200); 
+
+       // this.getSharerPos(); 
+       // this.getHeading(); 
         
         
     }
