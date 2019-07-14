@@ -61,6 +61,8 @@ export default class User {
       if (this.atSegStart) {
         this.targetWayPoint = this.getCurrentSeg().getEnd(); 
         this.atSegStart = false; 
+        console.log(this.planPlath.segNo())
+        
         //not the last segment
       } else if(this.currentSeg != this.planPlath.segNo()) {
         this.updateCurrentSeg(); 
@@ -151,6 +153,7 @@ export default class User {
 
       console.log(path); 
       path.push(latlng);
+      this.updateBearing(latlng); 
       this.checkForNewSeg();
       this.changeColor()
     }
@@ -159,8 +162,7 @@ export default class User {
       if(!this.planPlath.segNo())
       return; 
       this.bearval.innerText = (this.targetBearing - this.heading).toFixed(0); 
-      console.log(this.getCurrentSeg()); 
-      if(Math.abs(this.targetBearing - this.heading) < 5) {
+      if(Math.abs(this.targetBearing - this.heading) < 10) {
         this.getCurrentSeg().changeColor("green")
       } else {
         this.getCurrentSeg().changeColor("red")
@@ -168,6 +170,17 @@ export default class User {
 
     }
 
+
+    updateBearing(latlng) {
+      if(!this.planPlath.segNo())
+      return; 
+
+      let bearing = google.maps.geometry.spherical.computeHeading(latlng, this.targetWayPoint.position);
+        if (bearing < 0)
+        bearing =  360 + bearing;
+
+       this.targetBearing =  bearing;  
+    }
     makePlan() {
 
         console.log('making'); 
