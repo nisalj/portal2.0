@@ -10,6 +10,8 @@ export default class Path {
         this.segments.push(segment);
     }
 
+
+
     deleteLast() {
         this.segments.pop(); 
     }
@@ -81,6 +83,10 @@ export default class Path {
        return this.segments.length == 0 ? true : false; 
     }
 
+    getSegAt(no) {
+        return this.segments[no]; 
+    }
+
     makePath(map) {
         let array; 
         this.segments = []; 
@@ -113,7 +119,7 @@ export default class Path {
             });
 
             
-            this.segments.push(new Segment(start, end, array[i].maxSpeed, array[i].speed)); 
+            this.segments.push(new Segment(start, end, array[i].maxSpeed, array[i].speed, array[i].bearing)); 
 
         }
         this.renderPath(map); 

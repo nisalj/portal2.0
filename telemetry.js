@@ -18,6 +18,8 @@ let lineSymbol;
 function initMap() {
    lineSymbol = {
     path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+    scale: 5,
+
   };
     
 

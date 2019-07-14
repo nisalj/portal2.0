@@ -5,11 +5,25 @@ export default class Segment{
         this.end = end; 
         this.maxSpeed = maxSpeed;
         this.speed = speed; 
+        this.bearing = google.maps.geometry.spherical.computeHeading(this.start.position, this.end.position);
         this.poly =  new google.maps.Polyline({
             strokeColor: "black",
             strokeOpacity: 1.0,
             strokeWeight: 3
           });
+    }
+
+    updateBearing() {
+    this.bearing = google.maps.geometry.spherical.computeHeading(this.start.position, this.end.position);
+
+    }
+
+    getBearing() {
+        let bearing = this.bearing; 
+        if (bearing < 0)
+        return 360 + bearing;
+        else 
+        return bearing;  
     }
 
     getStart() {
@@ -24,11 +38,19 @@ export default class Segment{
             endLong : this.end.position.lng(),
             maxSpeed : this.maxSpeed,
             speed : this.speed, 
+            bearing: this.bearing
         }
         return seg; 
      //   return JSON.stringify(seg, null, 2);        
     }
 
+
+    changeColor(color) {
+        this.poly.setOptions({
+            strokeColor: color
+        })
+    }
+    
     clearStart() {
         this.start.setMap(null);
     }
@@ -80,10 +102,12 @@ export default class Segment{
 
     setStart(start) {
         this.start = start; 
+        this.updateBearing(); 
     }
 
     setEnd(end) {
         this.end = end; 
+        this.updateBearing(); 
     }
 
     setSpeed (speed) {

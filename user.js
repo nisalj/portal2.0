@@ -10,13 +10,73 @@ export default class User {
       this.status;
       this.planPlath = new Path(); 
       this.heading; 
+      this.targetBearing;
+      this.currentSeg = 0; 
+      this.targetWayPoint; 
+      this.atSegStart = true; 
       //get rid of these 
       this.sidebar = document.getElementById('sidebar'); 
       this.headval = document.getElementById('heading-val');  
 
     }
 
+    checkForNewSeg() {
 
+        
+      /* if the user is within a 1m radius of the end point of current segment, update the target waypoint to the 
+      start point of the current segment.
+
+      if the user is within a 1m radius of the start point of the current segement, update the current seg to the next
+      one, unless it is the last segment -> then mission complete. 
+       */
+
+     
+        //check distance between user loc and targetway point 
+      if(!this.planPlath.segNo())
+      return; 
+
+      let latlng = new google.maps.LatLng(this.lat, this.long);
+      console.log(this.targetWayPoint);
+
+      let dist = google.maps.geometry.spherical.computeDistanceBetween(latlng, this.targetWayPoint.position);
+      console.log("distance to target waypoint", dist); 
+      //if within 
+      if (dist <= 1) {
+        this.updateTargetWayPoint(); 
+      } else {
+        return; 
+      }
+
+    }
+
+   
+
+
+    updateTargetWayPoint() {
+      // 
+      if (this.atSegStart) {
+        this.targetWayPoint = this.getCurrentSeg().getEnd(); 
+        this.atSegStart = false; 
+        //not the last segment
+      } else if(this.currentSeg != this.planPlath.segNo()) {
+        this.updateCurrentSeg(); 
+        this.targetWayPoint = this.getCurrentSeg().getStart(); 
+      } else {
+        console.log("Mission complete"); 
+      }
+      console.log(this.targetBearing); 
+    }
+
+    updateCurrentSeg() {
+      this.currentSeg++; 
+      this.targetBearing = this.getCurrentSeg().getBearing(); 
+      //console.log(this.targetBearing);
+      //update color
+    }
+
+    getCurrentSeg() {
+      return this.planPlath.getSegAt(this.currentSeg); 
+    }
 
 
 
@@ -58,6 +118,8 @@ export default class User {
       fixedRotation: true
   }],
   })
+        this.changeColor()
+
  // this.path.icon.rotation = this.heading; 
   }
   
@@ -65,19 +127,37 @@ export default class User {
     plotPath() {
       if(this.firstReading && this.planPlath.segNo()) {
         this.addFirst();
+        this.targetWayPoint = this.getCurrentSeg().getStart(); 
+        this.targetBearing = this.getCurrentSeg().getBearing(); 
+        this.atSegStart = true; 
         this.firstReading = false; 
       }
-      window.testfunc(); 
+      //window.testfunc(); 
       let map = this.path.map; 
       map.setZoom(17);
       let path = this.path.getPath();
       let latlng = new google.maps.LatLng(this.lat, this.long);
       map.panTo(latlng);
       console.log("updating",latlng.lat(),latlng.lng() );
+
      // path.icons[0].icon.scale = 50; 
 
       console.log(path); 
       path.push(latlng);
+      this.checkForNewSeg();
+      this.changeColor()
+    }
+
+    changeColor() {
+      if(!this.planPlath.segNo())
+      return; 
+
+      if(Math.abs(this.targetBearing - this.heading) < 5) {
+        this.getCurrentSeg().changeColor("green")
+      } else {
+        this.getCurrentSeg().changeColor("red")
+      }
+
     }
 
     makePlan() {
