@@ -43,6 +43,22 @@ export default class User {
   showHeading() {
   sidebar.style.display = "block"; 
   this.headval.value = this.heading; 
+  let lineSymbol = {
+    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+    //path: google.maps.SymbolPath.CIRCLE,
+    scale: 5,
+    rotation: this.heading,
+  };
+
+  this.path.setOptions(
+  {
+  icons: [{
+      icon: lineSymbol,
+      offset: '100%',
+      fixedRotation: true
+  }],
+  })
+ // this.path.icon.rotation = this.heading; 
   }
   
 
@@ -58,6 +74,9 @@ export default class User {
       let latlng = new google.maps.LatLng(this.lat, this.long);
       map.panTo(latlng);
       console.log("updating",latlng.lat(),latlng.lng() );
+     // path.icons[0].icon.scale = 50; 
+
+      console.log(path); 
       path.push(latlng);
     }
 

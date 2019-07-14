@@ -7,6 +7,7 @@ let robotpath;
 let options; 
 let socket; 
 let test1; 
+let lineSymbol; 
 
  window.testfunc = function () {
    test1 = "hey2"
@@ -15,11 +16,19 @@ let test1;
  }; 
 
 function initMap() {
-
+   lineSymbol = {
+    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+  };
+    
 
     robotpath = new google.maps.Polyline({
       path: new google.maps.MVCArray([
       ]),
+      icons: [{
+        icon: lineSymbol,
+        offset: '100%',
+        fixedRotation: true
+      }],
       geodesic: true,
       strokeColor: '#FF0000',
       strokeOpacity: 1.0,
