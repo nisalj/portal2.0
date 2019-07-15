@@ -14,7 +14,6 @@ export default class User {
       this.currentSeg = 0; 
       this.targetWayPoint; 
       this.atSegStart = true; 
-      //get rid of these 
       this.sidebar = document.getElementById('over-map'); 
       this.headval = document.getElementById('heading-val');  
       this.distval = document.getElementById('dist-val');
@@ -23,18 +22,9 @@ export default class User {
 
     }
 
+    //checks if the currentSeg and targetWayPoint need to be updated 
     checkForNewSeg() {
 
-        
-      /* if the user is within a 1m radius of the end point of current segment, update the target waypoint to the 
-      start point of the current segment.
-
-      if the user is within a 1m radius of the start point of the current segement, update the current seg to the next
-      one, unless it is the last segment -> then mission complete. 
-       */
-
-     
-        //check distance between user loc and targetway point 
       if(!this.planPlath.segNo())
       return; 
 
@@ -42,9 +32,10 @@ export default class User {
       console.log(this.targetWayPoint);
 
       let dist = google.maps.geometry.spherical.computeDistanceBetween(latlng, this.targetWayPoint.position);
+      //displays distance value on map
       this.distval.innerText = dist.toFixed(0); 
       console.log("distance to target waypoint", dist); 
-      //if within 
+      //if user is within 5m we have reached target
       if (dist <= 5) {
         this.updateTargetWayPoint(); 
       } else {
@@ -55,15 +46,15 @@ export default class User {
 
    
 
-
+    //if we are at the start of segment, next waypoint is the end
+    //of the same segment. Otherwise its the start of the next segment
     updateTargetWayPoint() {
-      // 
+       
       if (this.atSegStart) {
         this.targetWayPoint = this.getCurrentSeg().getEnd(); 
         this.atSegStart = false; 
         console.log(this.planPlath.segNo())
         
-        //not the last segment
       } else if(this.currentSeg != this.planPlath.segNo()) {
         this.updateCurrentSeg(); 
         this.targetWayPoint = this.getCurrentSeg().getStart(); 
@@ -74,6 +65,8 @@ export default class User {
       console.log(this.targetBearing); 
     }
 
+
+    //changes the past segment color to blue 
     updateCurrentSeg() {
       this.getCurrentSeg().changeColor("blue"); 
       this.currentSeg++; 
@@ -90,7 +83,8 @@ export default class User {
 
 
    
-  
+    //adds a new segement to start of the plan from the location of the user 
+    //to the first waypoint of the path 
     addFirst() {
       console.log("lat", this.lat, "long", this.long); 
       let latlng = {lat: this.lat, lng: this.long};
@@ -107,7 +101,7 @@ export default class User {
 
     }
 
-
+  //shows heading, changes arrow rotation according to heading
   showHeading() {
   this.headval.innerText = this.heading; 
   let lineSymbol = {
@@ -131,8 +125,9 @@ export default class User {
 
  // this.path.icon.rotation = this.heading; 
   }
-  
 
+
+//main method, adds segment, plots path, updates bearing, checks for new seg etc
     plotPath() {
       this.sidebar.style.display = "block"; 
 
@@ -160,10 +155,13 @@ export default class User {
       this.changeColor()
     }
 
+    //changes color of the line according to correction value
+    //displays correction value in UI
     changeColor() {
       if(!this.planPlath.segNo())
       return; 
       this.bearval.innerText = (this.targetBearing - this.heading).toFixed(0); 
+      //correction value
       if(Math.abs(this.targetBearing - this.heading) < 10) {
         this.getCurrentSeg().changeColor("green")
       } else {
@@ -183,6 +181,8 @@ export default class User {
 
        this.targetBearing =  bearing;  
     }
+
+    //renders the planned path
     makePlan() {
 
         console.log('making'); 

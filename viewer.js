@@ -12,6 +12,8 @@ export default class Viewer extends User {
     }
   
 
+    //methods for listening to updates on heading and location
+
     getHeading() {
       this.socket.on('new heading', data => {
         this.heading = Object.keys(data)[0];
