@@ -8,7 +8,7 @@ let path;
 let start; 
 let current; 
 let last; 
-let click; 
+let click;
 let undo; 
 let firstMarker; 
 let clear; 
@@ -103,6 +103,12 @@ function initMap() {
 
     });
     
+
+    document.getElementById("insert").addEventListener("click", () => {
+     // console.log("hey");
+     click++; 
+     path.splitSeg(2,map);
+    }); 
 
 
         undo = document.getElementById("undo").addEventListener("click", () => {
@@ -202,7 +208,7 @@ function displayCurrent(position) {
 }; 
 
 
-function markerDrag(event) {
+window.dragListen = function markerDrag(event) {
  
   
     if(!path.segNo()) 
@@ -230,7 +236,7 @@ function addLatLng(event) {
     draggable: true,
   });
 
-  current.addListener('drag', markerDrag); 
+  current.addListener('drag', window.dragListen); 
   
   displayCurrent(current.position); 
 

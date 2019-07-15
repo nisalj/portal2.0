@@ -107,10 +107,16 @@ export default class Segment{
     }
 
     clearSeg() {
-    //    this.clearStart();
+       // this.clearStart();
         this.clearEnd(); 
         this.clearLine(); 
     }
+
+    clearWholeSeg() {
+         this.clearStart();
+         this.clearEnd(); 
+         this.clearLine(); 
+     }
 
 
 

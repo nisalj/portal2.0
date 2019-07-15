@@ -17,11 +17,10 @@ export default class Path {
     }
 
 
- 
     dragSeg(marker) {
         let pos = marker; 
         let title = marker.title;
-
+       // console('dragging'); 
         if(title == 1) {
         let seg = this.getFirst(); 
         seg.setStart(pos);
@@ -40,7 +39,65 @@ export default class Path {
         }
     }
     
+    insertAt(no, seg) {
+        this.segments.splice(no, 0, seg)
+       // this.segments.insertAt(no,seg); 
+    }
+
+    removeAt(no) {
+        this.segments.splice(no, 1);
+    }
+
+    splitSeg(markerNo, map) {
+        window.click = window.click + 2; 
+        let segIndex = markerNo - 1; 
+        let seg  = this.getSegAt(segIndex);
+        let start = seg.getStart(); 
+        let end = seg.getEnd(); 
+        let midpoint = google.maps.geometry.spherical.interpolate(start.position, end.position, 0.5);
+        let marker = new google.maps.Marker ({
+            position: midpoint,
+            map: null,
+            title: '#',
+            draggable: true,
+        });
+
+        marker.addListener('drag', window.dragListen); 
+
+        //add midpoint to end 
+        let seg1 = new Segment(marker, end);
+        this.insertAt(segIndex, seg1);
+        //add start to midpoint
+        let seg2 = new Segment(start, marker);
+        this.insertAt(segIndex, seg2);
+        //remove index + 2
+        seg.clearWholeSeg(); 
+        this.removeAt(segIndex+2); 
+        this.updateIds();
+       // this.renderPath(map);
     
+       // console.log(map);
+      //  seg1.renderStart(map);
+
+        seg1.renderLineEnd(map);
+        seg1.renderStart(map);
+        seg2.renderStart(map);
+       // seg2.renderEnd(map);
+        seg2.renderLine(map);
+       // seg2.renderLineEnd(map); 
+    }
+    
+
+    updateIds() {
+        let no = this.segNo(); 
+        for (let i = 0; i<no; i++) {
+            let start = this.getSegAt(i).getStart();
+            let end = this.getSegAt(i).getEnd();
+            start.title = String(i + 1);
+            end.title = String(i + 2);  
+
+        }
+    }
 
     //renders the line and the end waypoint of the last segment 
     newUpdate(map) {
@@ -70,6 +127,7 @@ export default class Path {
     }
 
     renderPath(map) {
+     
         for (let i = 0; i < this.segNo(); i++) {
          this.segments[i].renderStart(map); 
          this.segments[i].renderLine(map); 
