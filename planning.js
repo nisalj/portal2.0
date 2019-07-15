@@ -202,6 +202,18 @@ function displayCurrent(position) {
 }; 
 
 
+function markerDrag(event) {
+ 
+  
+    if(!path.segNo()) 
+      return; 
+
+  path.dragSeg(this); 
+  
+
+
+}
+
 function addLatLng(event) {
   $('#sidebar')[0].style.display = "block"
 
@@ -214,8 +226,11 @@ function addLatLng(event) {
   current = new google.maps.Marker ({
     position: event.latLng,
     map: null,
-    title: '#' + click,
+    title: String(click),
+    draggable: true,
   });
+
+  current.addListener('drag', markerDrag); 
   
   displayCurrent(current.position); 
 

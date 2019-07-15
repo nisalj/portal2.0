@@ -16,6 +16,33 @@ export default class Path {
         this.segments.pop(); 
     }
 
+
+ 
+    dragSeg(marker) {
+        let pos = marker; 
+        let title = marker.title;
+
+        if(title == 1) {
+        let seg = this.getFirst(); 
+        seg.setStart(pos);
+        seg.changeLineStart();
+        } else if (title == (this.segNo()+1)) {
+        let seg = this.getLast(); 
+        seg.setEnd(pos);
+        seg.changeLineEnd(); 
+        } else {
+        let seg1 = this.getSegAt(title-2);
+        let seg2 = this.getSegAt(title-1); 
+        seg1.setEnd(pos);
+        seg1.changeLineEnd();
+        seg2.setStart(pos);
+        seg2.changeLineStart();
+        }
+    }
+    
+    
+
+    //renders the line and the end waypoint of the last segment 
     newUpdate(map) {
         this.getLast().renderLineEnd(map); 
     }

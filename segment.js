@@ -71,6 +71,25 @@ export default class Segment{
         this.end.setMap(map); 
     }
 
+    changeLineEnd() {
+        let line = this.poly.getPath(); 
+        if (line) {
+            line.pop()
+            line.push(this.getEnd().position)      
+        }
+    }
+
+    changeLineStart() {
+        //this.poly.setMap(null); 
+        let line = this.poly.getPath(); 
+        if (line) {
+            line.removeAt(0);
+            line.insertAt(0, this.getStart().position)      
+        }
+   
+        
+    }
+
     renderLine(map) {
 
     this.poly.setMap(map);

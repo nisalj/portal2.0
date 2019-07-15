@@ -41,7 +41,7 @@ A User has the following properties:
 * `planPath` - a Path object representing the current mission 
 * `targetWayPoint` - the next waypoint the User must go to, points to a start or end of a Segment in the Path
 * `targetBearing` - the bearing that the User must go at to reach the `targetWayPoint`
-* `currentSeg` - the current segment that the User is at. Goes from 0 to the length of the Path.
+* `currentSeg` - the current segment that the User is at. Goes from 0 to the length of the path 
 
 A user has various methods to calculate and update its properties, as well as methods to display them on the UI. 
 
