@@ -1,19 +1,30 @@
 import Segment from "./segment.js";
 
-export default class Path {
+export default class Path extends EventTarget {
     constructor() {
+        super(); 
         this.segments = []; 
+        this.addEventListener('insertSegment', window.insertSeg);
+        this.addEventListener('removeSegment', window.removeSeg);
+
+
     }
 
+  
 
     addSeg(segment) {
-        this.segments.push(segment);
+   //     this.segments.push(segment);
+    let length = this.segNo();
+    this.insertAt(length, segment);
+    
     }
 
 
 
     deleteLast() {
-        this.segments.pop(); 
+        let length = this.segNo()-1;
+        this.removeAt(length); 
+
     }
 
 
@@ -41,11 +52,16 @@ export default class Path {
     
     insertAt(no, seg) {
         this.segments.splice(no, 0, seg)
+        let event = new CustomEvent('insertSegment', { detail: [no,seg] });
+        this.dispatchEvent(event);
        // this.segments.insertAt(no,seg); 
     }
 
     removeAt(no) {
         this.segments.splice(no, 1);
+        let event = new CustomEvent('removeSegment', { detail: no });
+        this.dispatchEvent(event);
+
     }
 
     splitSeg(markerNo, map) {

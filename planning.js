@@ -188,10 +188,25 @@ function initMap() {
         $('#sidebar')[0].style.display = "none"
       } )
        path = new Path(); 
+
+
+     
        click = 0; 
        map.addListener('click', addLatLng); 
 
 
+}
+
+window.insertSeg = function (event) {
+  //console.log(this);
+  console.log(event);
+  console.log('added seg');
+  
+}
+
+window.removeSeg = (event) => {
+  console.log(event);
+  console.log('remove seg');
 }
 
 function displayCurrent(position) {
@@ -241,7 +256,6 @@ function addLatLng(event) {
   displayCurrent(current.position); 
 
   if (click >= 2) {
-    console.log(click);
     maxSlider.removeAttribute('disabled'); 
     cruiseSlider.removeAttribute('disabled'); 
   }
@@ -255,7 +269,6 @@ function addLatLng(event) {
     start = false; 
   } else {
     let seg = new Segment(last, current);
-
     //console.log(seg.convertSeg()); 
     path.addSeg(seg);
     path.newUpdate(map); 
