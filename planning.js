@@ -119,7 +119,12 @@ function initMap() {
 
 
         undo = document.getElementById("undo").addEventListener("click", () => {
+
+
+          
+
           // make sure the path has been initialised, 
+
           click--;
           if (!path || click < 0) {
             click = 0; 
@@ -245,14 +250,23 @@ window.insertSeg = function (event) {
   
   path.setSelected(seg);
   highlightMarker(seg.getEnd()); 
+  path.updateLabels(); 
+  //let start = seg.getStart();
+  //let end = seg.getEnd();
+  //start.setLabel(start.getTitle()); 
+  //end.setLabel(start.getTitle()); 
+
   displayCurrentLatLng(seg.getEnd()); 
 
   
 }
 
 window.removeSeg = (event) => {
-  console.log(event);
-  console.log('remove seg');
+  let seg = path.getLast(); 
+  path.setSelected(seg);
+  highlightMarker(seg.getEnd()); 
+  //console.log(event);
+  //console.log('remove seg');
 }
 
 function displayCurrentLatLng(marker) {
@@ -330,6 +344,7 @@ function addLatLng(event) {
   if (start) {
     firstMarker = current; 
     firstMarker.setIcon('http://maps.google.com/mapfiles/kml/paddle/blu-circle.png');
+    firstMarker.setLabel('1');
     last = current; 
     current.setMap(map); 
     start = false; 

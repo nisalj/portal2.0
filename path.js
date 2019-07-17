@@ -84,6 +84,11 @@ export default class Path extends EventTarget {
     }
 
 
+    removeAtMarker(seg, marker) {
+
+    }
+
+
 
     splitSeg(seg, map) {
        // window.click = window.click + 2; 
@@ -101,7 +106,8 @@ export default class Path extends EventTarget {
         marker.addListener('click', window.markerClick); 
         
         marker.addListener('drag', window.dragListen); 
-
+        seg.clearWholeSeg(); 
+        this.removeAt(segIndex); 
         //add midpoint to end 
         let seg1 = new Segment(marker, end);
         this.insertAt(segIndex, seg1);
@@ -109,8 +115,7 @@ export default class Path extends EventTarget {
         let seg2 = new Segment(start, marker);
         this.insertAt(segIndex, seg2);
         //remove index + 2
-        seg.clearWholeSeg(); 
-        this.removeAt(segIndex+2); 
+      
         this.updateIds();
        // this.renderPath(map);
     
@@ -134,6 +139,16 @@ export default class Path extends EventTarget {
             start.title = String(i + 1);
             end.title = String(i + 2);  
 
+        }
+    }
+
+    updateLabels() {
+        let no = this.segNo(); 
+        for (let i = 0; i<no; i++) {
+            let start = this.getSegAt(i).getStart();
+            let end = this.getSegAt(i).getEnd();
+            start.setLabel(String(i + 1));
+            end.setLabel(String(i + 2));  
         }
     }
 
