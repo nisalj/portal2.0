@@ -85,49 +85,93 @@ export default class Path extends EventTarget {
 
 
     removeAtMarker(seg, marker) {
-
+      
     }
 
 
 
-    splitSeg(seg, map) {
-       // window.click = window.click + 2; 
+    splitSeg(no, seg, map) {
+
         let segIndex = this.segments.indexOf(seg);  
-      //  let seg  = this.getSegAt(segIndex);
+        //  let seg  = this.getSegAt(segIndex);
         let start = seg.getStart(); 
         let end = seg.getEnd(); 
-        let midpoint = google.maps.geometry.spherical.interpolate(start.position, end.position, 0.5);
-        let marker = new google.maps.Marker ({
-            position: midpoint,
-            map: null,
-            title: '#',
-            draggable: true,
-        });
-        marker.addListener('click', window.markerClick); 
-        
-        marker.addListener('drag', window.dragListen); 
-        seg.clearWholeSeg(); 
-        this.removeAt(segIndex); 
-        //add midpoint to end 
-        let seg1 = new Segment(marker, end);
-        this.insertAt(segIndex, seg1);
-        //add start to midpoint
-        let seg2 = new Segment(start, marker);
-        this.insertAt(segIndex, seg2);
-        //remove index + 2
-      
-        this.updateIds();
-       // this.renderPath(map);
-    
-       // console.log(map);
-      //  seg1.renderStart(map);
+       // console.log(start); 
+       // console.log(end); 
+        let prevEnd = start; 
 
-        seg1.renderLineEnd(map);
-        seg1.renderStart(map);
-        seg2.renderStart(map);
-       // seg2.renderEnd(map);
-        seg2.renderLine(map);
-       // seg2.renderLineEnd(map); 
+        seg.clearWholeSeg(); 
+
+        this.removeAt(segIndex); 
+      //  console.log(start.position); 
+       // console.log(end.position); 
+
+        let fraction = 1/no; 
+        let movement = fraction; 
+        for (let i = 0; i < no; i++) {
+          //  console.log(start.position, fraction); 
+            console.log(fraction);
+            let mid = google.maps.geometry.spherical.interpolate(start.position, end.position, movement)
+            let endMarker = new google.maps.Marker ({
+                position: mid,
+                map: map,
+                title: '#',
+                draggable: true,
+            });
+            endMarker.addListener('click', window.markerClick); 
+            endMarker.addListener('drag', window.dragListen); 
+            let seg  = new Segment(prevEnd, endMarker);
+            this.insertAt(segIndex+i, seg);
+            prevEnd = endMarker; 
+            seg.renderStart(map);
+            seg.renderLineEnd(map); 
+         //   start = endMarker; 
+            movement = movement + fraction; 
+        //    this.updateIds(); 
+
+        }
+     //   this.removeAt(segIndex+no); 
+
+
+
+
+    //    // window.click = window.click + 2; 
+    //     let segIndex = this.segments.indexOf(seg);  
+    //   //  let seg  = this.getSegAt(segIndex);
+    //     let start = seg.getStart(); 
+    //     let end = seg.getEnd(); 
+    //     let midpoint = google.maps.geometry.spherical.interpolate(start.position, end.position, 0.5);
+    //     let marker = new google.maps.Marker ({
+    //         position: midpoint,
+    //         map: null,
+    //         title: '#',
+    //         draggable: true,
+    //     });
+    //     marker.addListener('click', window.markerClick); 
+        
+    //     marker.addListener('drag', window.dragListen); 
+    //     seg.clearWholeSeg(); 
+    //     this.removeAt(segIndex); 
+    //     //add midpoint to end 
+    //     let seg1 = new Segment(marker, end);
+    //     this.insertAt(segIndex, seg1);
+    //     //add start to midpoint
+    //     let seg2 = new Segment(start, marker);
+    //     this.insertAt(segIndex, seg2);
+    //     //remove index + 2
+      
+    //     this.updateIds();
+    //    // this.renderPath(map);
+    
+    //    // console.log(map);
+    //   //  seg1.renderStart(map);
+
+    //     seg1.renderLineEnd(map);
+    //     seg1.renderStart(map);
+    //     seg2.renderStart(map);
+    //    // seg2.renderEnd(map);
+    //     seg2.renderLine(map);
+    //    // seg2.renderLineEnd(map); 
     }
     
 

@@ -112,9 +112,14 @@ function initMap() {
       if (!path.segNo())
       return; 
      // console.log("hey");
+     let no = document.getElementById("seg_no").value;
+     if (no == 1)
+     return; 
+
      let seg = path.getSelected(); 
-     click++; 
-     path.splitSeg(seg,map);
+     click += no - 1;  
+    
+     path.splitSeg(no, seg,map);
     }); 
 
 
@@ -244,12 +249,13 @@ window.insertSeg = function (event) {
   let index = event.detail[0];
   let seg = event.detail[1];
   //console.log(this);
-  console.log(seg);
-  console.log('added seg');
+ // console.log(seg);
+ // console.log('added seg');
  // console.log(path);
   
   path.setSelected(seg);
   highlightMarker(seg.getEnd()); 
+  path.updateIds(); 
   path.updateLabels(); 
   //let start = seg.getStart();
   //let end = seg.getEnd();
@@ -262,9 +268,16 @@ window.insertSeg = function (event) {
 }
 
 window.removeSeg = (event) => {
+  path.updateIds(); 
+  path.updateLabels(); 
+
+
   let seg = path.getLast(); 
-  path.setSelected(seg);
-  highlightMarker(seg.getEnd()); 
+  if (seg) {
+    path.setSelected(seg);
+    highlightMarker(seg.getEnd()); 
+  }
+
   //console.log(event);
   //console.log('remove seg');
 }
