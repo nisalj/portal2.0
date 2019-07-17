@@ -6,7 +6,8 @@ let poly;
 let header; 
 let path; 
 let start; 
-let current; 
+let current;
+let clickedMarker;  
 let last; 
 let click;
 let undo; 
@@ -24,7 +25,8 @@ window.onload = function() {
 function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat:-33.814451, lng:151.171332},
-          zoom: 14
+          zoom: 14,
+          clickableIcons: false
         });
         
         cruiseSlider = document.getElementById("speed-range");
@@ -61,7 +63,8 @@ function initMap() {
       cruiseSlider.noUiSlider.on('change', function (values, handle) {
         let val = parseFloat(values); 
         console.log(val); 
-        path.getLast().setSpeed(val);
+        let seg = path.getSelected(); 
+        seg.setSpeed(val);
 
 
       });
@@ -98,16 +101,20 @@ function initMap() {
     maxSlider.noUiSlider.on('change', function (values, handle) {
       let val = parseFloat(values); 
       console.log(val); 
-      path.getLast().setMaxSpeed(val);
+      let seg = path.getSelected(); 
+      seg.setMaxSpeed(val);
 
 
     });
     
 
     document.getElementById("insert").addEventListener("click", () => {
+      if (!path.segNo())
+      return; 
      // console.log("hey");
+     let seg = path.getSelected(); 
      click++; 
-     path.splitSeg(2,map);
+     path.splitSeg(seg,map);
     }); 
 
 
@@ -124,7 +131,7 @@ function initMap() {
               firstMarker.setMap(null);
               firstMarker = null; 
               start = true; 
-              displayCurrent(null); 
+              displayCurrentLatLng(null); 
 
             } else {
               path.undoPath(); 
@@ -133,7 +140,7 @@ function initMap() {
               } else {
                 last = firstMarker; 
               }
-              displayCurrent(last.position); 
+              displayCurrentLatLng(last); 
 
 
             }
@@ -154,7 +161,7 @@ function initMap() {
             start = true; 
             firstMarker.setMap(null); 
           }
-          displayCurrent(null); 
+          displayCurrentLatLng(null); 
           cruiseSlider.setAttribute('disabled', true);
           cruiseSlider.noUiSlider.set(2.5);
           maxSlider.noUiSlider.set(5);
@@ -197,10 +204,49 @@ function initMap() {
 
 }
 
+window.displayCurrentSeg = function () {
+  let seg = path.getSelected(); 
+  maxSlider.noUiSlider.set(seg.getMaxSpeed());
+  cruiseSlider.noUiSlider.set(seg.getSpeed());
+};
+
+
+
+window.markerClick = function () {
+//console.log('clicked'); 
+//console.log(this);
+highlightMarker(this); 
+displayCurrentLatLng(this); 
+let segNo = path.segNo();  
+let title = this.title;
+
+if(segNo == 0) {
+//  window.highlightMarker(firstMarker);
+  return; 
+}
+
+if (title == 1) {
+  path.setSelected(path.getFirst()); 
+} else {
+  path.setSelected(path.getSegAt(title - 2))
+}
+
+
+//highlightMarker(this); 
+}
+
 window.insertSeg = function (event) {
+  let index = event.detail[0];
+  let seg = event.detail[1];
   //console.log(this);
-  console.log(event);
+  console.log(seg);
   console.log('added seg');
+ // console.log(path);
+  
+  path.setSelected(seg);
+  highlightMarker(seg.getEnd()); 
+  displayCurrentLatLng(seg.getEnd()); 
+
   
 }
 
@@ -209,7 +255,10 @@ window.removeSeg = (event) => {
   console.log('remove seg');
 }
 
-function displayCurrent(position) {
+function displayCurrentLatLng(marker) {
+  if (!marker) return; 
+  
+  let position = marker.position; 
   if (!position) {
     lat.value = null; 
     lat.placeholder = "Lat"
@@ -235,6 +284,21 @@ window.dragListen = function markerDrag(event) {
 
 }
 
+function highlightMarker(marker) {
+
+  if(clickedMarker != undefined)
+  clickedMarker.setIcon(null);
+
+  marker.setIcon('http://maps.google.com/mapfiles/kml/paddle/blu-circle.png');
+
+ // marker.setIcon("http://maps.google.com/mapfiles/ms/icons/blue-dot.png");
+  clickedMarker = marker;
+}
+ 
+function test() {
+  console.log(this);
+}
+
 function addLatLng(event) {
   $('#sidebar')[0].style.display = "block"
 
@@ -252,8 +316,9 @@ function addLatLng(event) {
   });
 
   current.addListener('drag', window.dragListen); 
-  
-  displayCurrent(current.position); 
+  current.addListener('click', window.markerClick);
+
+  displayCurrentLatLng(current); 
 
   if (click >= 2) {
     maxSlider.removeAttribute('disabled'); 
@@ -264,10 +329,12 @@ function addLatLng(event) {
   //current.setMap(map);
   if (start) {
     firstMarker = current; 
+    firstMarker.setIcon('http://maps.google.com/mapfiles/kml/paddle/blu-circle.png');
     last = current; 
     current.setMap(map); 
     start = false; 
   } else {
+    firstMarker.setIcon(null);
     let seg = new Segment(last, current);
     //console.log(seg.convertSeg()); 
     path.addSeg(seg);

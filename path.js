@@ -4,10 +4,28 @@ export default class Path extends EventTarget {
     constructor() {
         super(); 
         this.segments = []; 
+        this.selectedSeg; 
         this.addEventListener('insertSegment', window.insertSeg);
         this.addEventListener('removeSegment', window.removeSeg);
 
 
+    }
+
+    setSelected(segment) {
+        if (!this.selectedSeg) {
+        this.selectedSeg = segment;
+        this.selectedSeg.changeColor("blue");
+        return; 
+        }
+
+        this.selectedSeg.changeColor("black");
+        this.selectedSeg = segment;
+        this.selectedSeg.changeColor("blue");
+        window.displayCurrentSeg();    //   window.highlightMarker(segment.getEnd()); 
+    }
+
+    getSelected() {
+        return this.selectedSeg; 
     }
 
   
@@ -51,9 +69,10 @@ export default class Path extends EventTarget {
     }
     
     insertAt(no, seg) {
-        this.segments.splice(no, 0, seg)
+        this.segments.splice(no, 0, seg);
         let event = new CustomEvent('insertSegment', { detail: [no,seg] });
         this.dispatchEvent(event);
+        
        // this.segments.insertAt(no,seg); 
     }
 
@@ -64,10 +83,12 @@ export default class Path extends EventTarget {
 
     }
 
-    splitSeg(markerNo, map) {
-        window.click = window.click + 2; 
-        let segIndex = markerNo - 1; 
-        let seg  = this.getSegAt(segIndex);
+
+
+    splitSeg(seg, map) {
+       // window.click = window.click + 2; 
+        let segIndex = this.segments.indexOf(seg);  
+      //  let seg  = this.getSegAt(segIndex);
         let start = seg.getStart(); 
         let end = seg.getEnd(); 
         let midpoint = google.maps.geometry.spherical.interpolate(start.position, end.position, 0.5);
@@ -77,7 +98,8 @@ export default class Path extends EventTarget {
             title: '#',
             draggable: true,
         });
-
+        marker.addListener('click', window.markerClick); 
+        
         marker.addListener('drag', window.dragListen); 
 
         //add midpoint to end 
