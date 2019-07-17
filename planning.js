@@ -131,6 +131,7 @@ function initMap() {
             
           }
           else if(click == 0) {
+            document.getElementById("undo").setAttribute('disabled',true);
             last = null; 
             firstMarker.setMap(null);
             firstMarker = null; 
@@ -143,7 +144,6 @@ function initMap() {
           
 
           path.removeAtMarker(map);
-
           // make sure the path has been initialised, 
 
         //   click--;
@@ -171,11 +171,12 @@ function initMap() {
 
         //     }
         // } 
-        // if (click < 2) {
-        //   cruiseSlider.setAttribute('disabled', true);
-        //   maxSlider.setAttribute('disabled', true);
-  
-       // }
+        if (click < 2) {
+          cruiseSlider.setAttribute('disabled', true);
+          maxSlider.setAttribute('disabled', true);
+          //document.getElementById("undo").setAttribute('disabled',true)
+          document.getElementById("insert").setAttribute('disabled',true)
+       }
         });
 
         clear = document.getElementById("clear-button").addEventListener("click", () => {
@@ -220,6 +221,8 @@ function initMap() {
       $("#close-side").on('click', () => {
         $('#sidebar')[0].style.display = "none"
       } )
+      document.getElementById("insert").setAttribute('disabled',true)
+
        path = new Path(); 
 
 
@@ -262,6 +265,9 @@ if (title == 1) {
 }
 
 window.insertSeg = function (event) {
+  document.getElementById("undo").disabled = false; 
+  document.getElementById("insert").disabled = false; 
+
   let index = event.detail[0];
   let seg = event.detail[1];
   console.log(index, path.segNo());
@@ -376,6 +382,7 @@ function test() {
 
 function addLatLng(event) {
   $('#sidebar')[0].style.display = "block"
+  document.getElementById("undo").disabled = false; 
 
   click++; 
   //header.remove(); 
