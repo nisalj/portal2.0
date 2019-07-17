@@ -84,45 +84,134 @@ export default class Path extends EventTarget {
     }
 
 
+    removeAtMarker(map) {
+      console.log('initial', this.segNo());
+      let selected = this.getSelected(); 
+      let index = this.segments.indexOf(selected); 
 
-    splitSeg(seg, map) {
-       // window.click = window.click + 2; 
+      if (selected == this.getLast()) {
+          this.undoPath(map); 
+          return; 
+      } 
+
+      let seg1 = selected; 
+      let seg2 = this.getSegAt(index+1); 
+      seg2.changeColor("green"); 
+      let start = seg1.getStart(); 
+      let end = seg2.getEnd(); 
+    //   seg1.clearWholeSeg();
+    //   seg2.clearWholeSeg(); 
+
+       this.removeAt(index); 
+       this.removeAt(index); 
+       seg1.clearWholeSeg();
+       seg2.clearWholeSeg(); 
+      
+        let newSeg = new Segment(start, end); 
+        this.insertAt(index,newSeg);
+     //   console.log(index);
+    //    console.log('final', this.segNo());
+        newSeg.renderStart(map);
+     //   newSeg.renderEnd(map);
+        newSeg.renderLineEnd(map); 
+      
+   //     this.updateIds();
+   //     this.updateLabels();
+        // console.log(this.segments.length);
+        // console.log(this.segments);
+        // seg1.renderLineEnd()
+        // seg1.renderStart();
+        // seg2.renderLineEnd()
+        // seg2.renderStart();
+        // seg2.changeColor("red");
+        // seg1.changeColor("green");
+
+    }
+
+
+
+    splitSeg(no, seg, map) {
+
         let segIndex = this.segments.indexOf(seg);  
-      //  let seg  = this.getSegAt(segIndex);
+        //  let seg  = this.getSegAt(segIndex);
         let start = seg.getStart(); 
         let end = seg.getEnd(); 
-        let midpoint = google.maps.geometry.spherical.interpolate(start.position, end.position, 0.5);
-        let marker = new google.maps.Marker ({
-            position: midpoint,
-            map: null,
-            title: '#',
-            draggable: true,
-        });
-        marker.addListener('click', window.markerClick); 
-        
-        marker.addListener('drag', window.dragListen); 
+       // console.log(start); 
+       // console.log(end); 
+        let prevEnd = start; 
 
-        //add midpoint to end 
-        let seg1 = new Segment(marker, end);
-        this.insertAt(segIndex, seg1);
-        //add start to midpoint
-        let seg2 = new Segment(start, marker);
-        this.insertAt(segIndex, seg2);
-        //remove index + 2
         seg.clearWholeSeg(); 
-        this.removeAt(segIndex+2); 
-        this.updateIds();
-       // this.renderPath(map);
-    
-       // console.log(map);
-      //  seg1.renderStart(map);
 
-        seg1.renderLineEnd(map);
-        seg1.renderStart(map);
-        seg2.renderStart(map);
-       // seg2.renderEnd(map);
-        seg2.renderLine(map);
-       // seg2.renderLineEnd(map); 
+        this.removeAt(segIndex); 
+      //  console.log(start.position); 
+       // console.log(end.position); 
+
+        let fraction = 1/no; 
+        let movement = fraction; 
+        for (let i = 0; i < no; i++) {
+          //  console.log(start.position, fraction); 
+            console.log(fraction);
+            let mid = google.maps.geometry.spherical.interpolate(start.position, end.position, movement)
+            let endMarker = new google.maps.Marker ({
+                position: mid,
+                map: map,
+                title: '#',
+                draggable: true,
+            });
+            endMarker.addListener('click', window.markerClick); 
+            endMarker.addListener('drag', window.dragListen); 
+            let seg  = new Segment(prevEnd, endMarker);
+            this.insertAt(segIndex+i, seg);
+            prevEnd = endMarker; 
+            seg.renderStart(map);
+            seg.renderLineEnd(map); 
+         //   start = endMarker; 
+            movement = movement + fraction; 
+        //    this.updateIds(); 
+
+        }
+       // this.removeAt(segIndex+no); 
+
+
+
+
+    //    // window.click = window.click + 2; 
+    //     let segIndex = this.segments.indexOf(seg);  
+    //   //  let seg  = this.getSegAt(segIndex);
+    //     let start = seg.getStart(); 
+    //     let end = seg.getEnd(); 
+    //     let midpoint = google.maps.geometry.spherical.interpolate(start.position, end.position, 0.5);
+    //     let marker = new google.maps.Marker ({
+    //         position: midpoint,
+    //         map: null,
+    //         title: '#',
+    //         draggable: true,
+    //     });
+    //     marker.addListener('click', window.markerClick); 
+        
+    //     marker.addListener('drag', window.dragListen); 
+    //     seg.clearWholeSeg(); 
+    //     this.removeAt(segIndex); 
+    //     //add midpoint to end 
+    //     let seg1 = new Segment(marker, end);
+    //     this.insertAt(segIndex, seg1);
+    //     //add start to midpoint
+    //     let seg2 = new Segment(start, marker);
+    //     this.insertAt(segIndex, seg2);
+    //     //remove index + 2
+      
+    //     this.updateIds();
+    //    // this.renderPath(map);
+    
+    //    // console.log(map);
+    //   //  seg1.renderStart(map);
+
+    //     seg1.renderLineEnd(map);
+    //     seg1.renderStart(map);
+    //     seg2.renderStart(map);
+    //    // seg2.renderEnd(map);
+    //     seg2.renderLine(map);
+    //    // seg2.renderLineEnd(map); 
     }
     
 
@@ -134,6 +223,16 @@ export default class Path extends EventTarget {
             start.title = String(i + 1);
             end.title = String(i + 2);  
 
+        }
+    }
+
+    updateLabels() {
+        let no = this.segNo(); 
+        for (let i = 0; i<no; i++) {
+            let start = this.getSegAt(i).getStart();
+            let end = this.getSegAt(i).getEnd();
+            start.setLabel(String(i + 1));
+            end.setLabel(String(i + 2));  
         }
     }
 
@@ -232,13 +331,13 @@ export default class Path extends EventTarget {
             start = new google.maps.Marker ({
                 position: {lat: array[i].startLat, lng: array[i].startLong},
                 map: map,
-                title: '#' + i,
+                title: String(i),
             });
 
             end = new google.maps.Marker ({
                 position: {lat: array[i].endLat, lng: array[i].endLong},
                 map: map,
-                title: '#' + i,
+                title: String(i),
             });
 
             
@@ -246,6 +345,7 @@ export default class Path extends EventTarget {
 
         }
         this.renderPath(map); 
+        this.updateLabels(); 
 
     
     }

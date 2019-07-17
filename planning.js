@@ -112,44 +112,71 @@ function initMap() {
       if (!path.segNo())
       return; 
      // console.log("hey");
+     let no = document.getElementById("seg_no").value;
+     if (no == 1)
+     return; 
+
      let seg = path.getSelected(); 
-     click++; 
-     path.splitSeg(seg,map);
+     click += no - 1;  
+    
+     path.splitSeg(no, seg,map);
     }); 
 
 
         undo = document.getElementById("undo").addEventListener("click", () => {
-          // make sure the path has been initialised, 
-          click--;
-          if (!path || click < 0) {
-            click = 0; 
+
+          click--; 
+          if (click < 0) {
+            click = 0;
+            
+          }
+          else if(click == 0) {
+            document.getElementById("undo").setAttribute('disabled',true);
+            last = null; 
+            firstMarker.setMap(null);
+            firstMarker = null; 
+            start = true; 
+            displayCurrentLatLng(null); 
             return;
-          } 
-          else {
-            if(click == 0) {
-              last = null; 
-              firstMarker.setMap(null);
-              firstMarker = null; 
-              start = true; 
-              displayCurrentLatLng(null); 
+          }
 
-            } else {
-              path.undoPath(); 
-              if (path.getLast()) {
-                last = path.getLast().end; 
-              } else {
-                last = firstMarker; 
-              }
-              displayCurrentLatLng(last); 
+          
+          
+
+          path.removeAtMarker(map);
+          // make sure the path has been initialised, 
+
+        //   click--;
+        //   if (!path || click < 0) {
+        //     click = 0; 
+        //     return;
+        //   } 
+        //   else {
+        //     if(click == 0) {
+        //       last = null; 
+        //       firstMarker.setMap(null);
+        //       firstMarker = null; 
+        //       start = true; 
+        //       displayCurrentLatLng(null); 
+
+        //     } else {
+        //       path.undoPath(); 
+        //       if (path.getLast()) {
+        //         last = path.getLast().end; 
+        //       } else {
+        //         last = firstMarker; 
+        //       }
+        //       displayCurrentLatLng(last); 
 
 
-            }
-        } 
+        //     }
+        // } 
         if (click < 2) {
           cruiseSlider.setAttribute('disabled', true);
           maxSlider.setAttribute('disabled', true);
-  
-        }
+          //document.getElementById("undo").setAttribute('disabled',true)
+          document.getElementById("insert").setAttribute('disabled',true)
+       }
         });
 
         clear = document.getElementById("clear-button").addEventListener("click", () => {
@@ -194,6 +221,8 @@ function initMap() {
       $("#close-side").on('click', () => {
         $('#sidebar')[0].style.display = "none"
       } )
+      document.getElementById("insert").setAttribute('disabled',true)
+
        path = new Path(); 
 
 
@@ -236,23 +265,75 @@ if (title == 1) {
 }
 
 window.insertSeg = function (event) {
+  document.getElementById("undo").disabled = false; 
+  document.getElementById("insert").disabled = false; 
+
   let index = event.detail[0];
   let seg = event.detail[1];
+  console.log(index, path.segNo());
+  
+
   //console.log(this);
-  console.log(seg);
-  console.log('added seg');
+ // console.log(seg);
+ // console.log('added seg');
  // console.log(path);
   
   path.setSelected(seg);
   highlightMarker(seg.getEnd()); 
+  path.updateIds(); 
+  path.updateLabels(); 
+  if (index == path.segNo() - 1) {
+    last = seg.getEnd(); 
+  }
+  //console.log('hey')
+  //let start = seg.getStart();
+  //let end = seg.getEnd();
+  //start.setLabel(start.getTitle()); 
+  //end.setLabel(start.getTitle()); 
+
   displayCurrentLatLng(seg.getEnd()); 
 
   
 }
 
+
+
 window.removeSeg = (event) => {
-  console.log(event);
-  console.log('remove seg');
+
+  if (path.segNo() == 0) {
+    highlightMarker(firstMarker);
+  }
+
+  if (event.detail == path.segNo()) {
+
+    //last element has been removed
+
+   if (path.getLast()) {
+        last = path.getLast().end; 
+            } else {
+              last = firstMarker; 
+            }
+      
+  displayCurrentLatLng(last); 
+    
+  }
+
+
+  
+
+  let seg = path.getLast(); 
+
+  if (seg) {
+    path.setSelected(seg);
+    highlightMarker(seg.getEnd()); 
+  }
+
+  path.updateIds(); 
+  path.updateLabels(); 
+
+  //console.log(event);
+  console.log('remove seg', path.segNo());
+
 }
 
 function displayCurrentLatLng(marker) {
@@ -301,6 +382,7 @@ function test() {
 
 function addLatLng(event) {
   $('#sidebar')[0].style.display = "block"
+  document.getElementById("undo").disabled = false; 
 
   click++; 
   //header.remove(); 
@@ -329,7 +411,8 @@ function addLatLng(event) {
   //current.setMap(map);
   if (start) {
     firstMarker = current; 
-    firstMarker.setIcon('http://maps.google.com/mapfiles/kml/paddle/blu-circle.png');
+    firstMarker.setIcon('https://maps.google.com/mapfiles/kml/paddle/blu-circle.png');
+    firstMarker.setLabel('1');
     last = current; 
     current.setMap(map); 
     start = false; 
