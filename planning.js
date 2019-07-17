@@ -125,41 +125,57 @@ function initMap() {
 
         undo = document.getElementById("undo").addEventListener("click", () => {
 
+          click--; 
+          if (click < 0) {
+            click = 0;
+            
+          }
+          else if(click == 0) {
+            last = null; 
+            firstMarker.setMap(null);
+            firstMarker = null; 
+            start = true; 
+            displayCurrentLatLng(null); 
+            return;
+          }
 
           
+          
+
+          path.removeAtMarker(map);
 
           // make sure the path has been initialised, 
 
-          click--;
-          if (!path || click < 0) {
-            click = 0; 
-            return;
-          } 
-          else {
-            if(click == 0) {
-              last = null; 
-              firstMarker.setMap(null);
-              firstMarker = null; 
-              start = true; 
-              displayCurrentLatLng(null); 
+        //   click--;
+        //   if (!path || click < 0) {
+        //     click = 0; 
+        //     return;
+        //   } 
+        //   else {
+        //     if(click == 0) {
+        //       last = null; 
+        //       firstMarker.setMap(null);
+        //       firstMarker = null; 
+        //       start = true; 
+        //       displayCurrentLatLng(null); 
 
-            } else {
-              path.undoPath(); 
-              if (path.getLast()) {
-                last = path.getLast().end; 
-              } else {
-                last = firstMarker; 
-              }
-              displayCurrentLatLng(last); 
+        //     } else {
+        //       path.undoPath(); 
+        //       if (path.getLast()) {
+        //         last = path.getLast().end; 
+        //       } else {
+        //         last = firstMarker; 
+        //       }
+        //       displayCurrentLatLng(last); 
 
 
-            }
-        } 
-        if (click < 2) {
-          cruiseSlider.setAttribute('disabled', true);
-          maxSlider.setAttribute('disabled', true);
+        //     }
+        // } 
+        // if (click < 2) {
+        //   cruiseSlider.setAttribute('disabled', true);
+        //   maxSlider.setAttribute('disabled', true);
   
-        }
+       // }
         });
 
         clear = document.getElementById("clear-button").addEventListener("click", () => {
@@ -248,6 +264,9 @@ if (title == 1) {
 window.insertSeg = function (event) {
   let index = event.detail[0];
   let seg = event.detail[1];
+  console.log(index, path.segNo());
+  
+
   //console.log(this);
  // console.log(seg);
  // console.log('added seg');
@@ -257,6 +276,10 @@ window.insertSeg = function (event) {
   highlightMarker(seg.getEnd()); 
   path.updateIds(); 
   path.updateLabels(); 
+  if (index == path.segNo() - 1) {
+    last = seg.getEnd(); 
+  }
+  //console.log('hey')
   //let start = seg.getStart();
   //let end = seg.getEnd();
   //start.setLabel(start.getTitle()); 
@@ -267,19 +290,44 @@ window.insertSeg = function (event) {
   
 }
 
-window.removeSeg = (event) => {
-  path.updateIds(); 
-  path.updateLabels(); 
 
+
+window.removeSeg = (event) => {
+
+  if (path.segNo() == 0) {
+    highlightMarker(firstMarker);
+  }
+
+  if (event.detail == path.segNo()) {
+
+    //last element has been removed
+
+   if (path.getLast()) {
+        last = path.getLast().end; 
+            } else {
+              last = firstMarker; 
+            }
+      
+  displayCurrentLatLng(last); 
+    
+  }
+
+
+  
 
   let seg = path.getLast(); 
+
   if (seg) {
     path.setSelected(seg);
     highlightMarker(seg.getEnd()); 
   }
 
+  path.updateIds(); 
+  path.updateLabels(); 
+
   //console.log(event);
-  //console.log('remove seg');
+  console.log('remove seg', path.segNo());
+
 }
 
 function displayCurrentLatLng(marker) {

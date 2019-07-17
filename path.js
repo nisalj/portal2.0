@@ -84,8 +84,48 @@ export default class Path extends EventTarget {
     }
 
 
-    removeAtMarker(seg, marker) {
+    removeAtMarker(map) {
+      console.log('initial', this.segNo());
+      let selected = this.getSelected(); 
+      let index = this.segments.indexOf(selected); 
+
+      if (selected == this.getLast()) {
+          this.undoPath(map); 
+          return; 
+      } 
+
+      let seg1 = selected; 
+      let seg2 = this.getSegAt(index+1); 
+      seg2.changeColor("green"); 
+      let start = seg1.getStart(); 
+      let end = seg2.getEnd(); 
+    //   seg1.clearWholeSeg();
+    //   seg2.clearWholeSeg(); 
+
+       this.removeAt(index); 
+       this.removeAt(index); 
+       seg1.clearWholeSeg();
+       seg2.clearWholeSeg(); 
       
+        let newSeg = new Segment(start, end); 
+        this.insertAt(index,newSeg);
+     //   console.log(index);
+    //    console.log('final', this.segNo());
+        newSeg.renderStart(map);
+     //   newSeg.renderEnd(map);
+        newSeg.renderLineEnd(map); 
+      
+   //     this.updateIds();
+   //     this.updateLabels();
+        // console.log(this.segments.length);
+        // console.log(this.segments);
+        // seg1.renderLineEnd()
+        // seg1.renderStart();
+        // seg2.renderLineEnd()
+        // seg2.renderStart();
+        // seg2.changeColor("red");
+        // seg1.changeColor("green");
+
     }
 
 
@@ -130,7 +170,7 @@ export default class Path extends EventTarget {
         //    this.updateIds(); 
 
         }
-     //   this.removeAt(segIndex+no); 
+       // this.removeAt(segIndex+no); 
 
 
 
