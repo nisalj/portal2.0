@@ -9,13 +9,9 @@ let socket;
 let test1; 
 let lineSymbol; 
 
- window.testfunc = function () {
-   test1 = "hey2"
-   console.log(test1);
-   
- }; 
 
 function initMap() {
+
    lineSymbol = {
     path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
     scale: 5,
@@ -38,9 +34,12 @@ function initMap() {
       map: new google.maps.Map(document.getElementById('map'), 
       {
         center: {lat:-33.814451, lng:151.171332},
-        zoom: 14
+        zoom: 14,
+        gestureHandling: 'greedy',
       }),
     });
+
+
     
     options = {
       enableHighAccuracy: true,
@@ -63,7 +62,9 @@ element.parentNode.removeChild(element);
 element = document.getElementById("share");
 element.parentNode.removeChild(element);
 status.textContent = "Sharing location"; 
+
 user = new Sharer(status, options, robotpath); 
+
 user.start(); 
 
 
@@ -84,6 +85,7 @@ user.start();
 }
 
 window.onload = function() {
+
   initMap(); 
   status = document.getElementById('main-header')
   document.getElementById('share').addEventListener('click', shareClick);

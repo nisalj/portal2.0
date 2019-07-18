@@ -29,6 +29,7 @@ function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           //center: {lat:-33.814451, lng:151.171332},
           zoom: 14,
+          gestureHandling: 'greedy',
           clickableIcons: false
         });
         
@@ -149,7 +150,6 @@ function initMap() {
 
 
         undo = document.getElementById("undo").addEventListener("click", () => {
-<<<<<<< HEAD
 
           click--; 
           if (click < 0) {
@@ -177,58 +177,6 @@ function initMap() {
           speedText.setAttribute('disabled', true);
           maxText.setAttribute('disabled', true);
 
-=======
-
-          click--; 
-          if (click < 0) {
-            click = 0;
-            
-          }
-          else if(click == 0) {
-            document.getElementById("undo").setAttribute('disabled',true);
-            last = null; 
-            firstMarker.setMap(null);
-            firstMarker = null; 
-            start = true; 
-            displayCurrentLatLng(null); 
-            return;
-          }
-
-          
-          
-
-          path.removeAtMarker(map);
-          // make sure the path has been initialised, 
-
-        //   click--;
-        //   if (!path || click < 0) {
-        //     click = 0; 
-        //     return;
-        //   } 
-        //   else {
-        //     if(click == 0) {
-        //       last = null; 
-        //       firstMarker.setMap(null);
-        //       firstMarker = null; 
-        //       start = true; 
-        //       displayCurrentLatLng(null); 
-
-        //     } else {
-        //       path.undoPath(); 
-        //       if (path.getLast()) {
-        //         last = path.getLast().end; 
-        //       } else {
-        //         last = firstMarker; 
-        //       }
-        //       displayCurrentLatLng(last); 
-
-
-        //     }
-        // } 
-        if (click < 2) {
-          cruiseSlider.setAttribute('disabled', true);
-          maxSlider.setAttribute('disabled', true);
->>>>>>> c3e9df205c1e789002dedb5070eeebaa7af15680
           //document.getElementById("undo").setAttribute('disabled',true)
           document.getElementById("insert").setAttribute('disabled',true)
        }
@@ -284,7 +232,6 @@ function initMap() {
       } )
       document.getElementById("insert").setAttribute('disabled',true)
 
-<<<<<<< HEAD
       home.addEventListener("click" , () => {
         $('#sidebar')[0].style.display = "none"
 
@@ -304,9 +251,6 @@ function initMap() {
 
      // panMapTo(getUserLoc()); 
       path = new Path(); 
-=======
-       path = new Path(); 
->>>>>>> c3e9df205c1e789002dedb5070eeebaa7af15680
 
 
      
@@ -375,12 +319,8 @@ if (title == 1) {
 window.insertSeg = function (event) {
   document.getElementById("undo").disabled = false; 
   document.getElementById("insert").disabled = false; 
-<<<<<<< HEAD
   maxText.disabled = false;
   speedText.disabled = false;
-=======
-
->>>>>>> c3e9df205c1e789002dedb5070eeebaa7af15680
   let index = event.detail[0];
   let seg = event.detail[1];
   console.log(index, path.segNo());
@@ -483,7 +423,7 @@ function highlightMarker(marker) {
   if(clickedMarker != undefined)
   clickedMarker.setIcon(null);
 
-  marker.setIcon('http://maps.google.com/mapfiles/kml/paddle/blu-circle.png');
+  marker.setIcon('https://maps.google.com/mapfiles/kml/paddle/blu-circle.png');
 
  // marker.setIcon("http://maps.google.com/mapfiles/ms/icons/blue-dot.png");
   clickedMarker = marker;
@@ -524,11 +464,7 @@ function addLatLng(event) {
   //current.setMap(map);
   if (start) {
     firstMarker = current; 
-<<<<<<< HEAD
     firstMarker.setIcon('https://maps.google.com/mapfiles/kml/paddle/blu-circle.png');
-=======
-    firstMarker.setIcon('http://maps.google.com/mapfiles/kml/paddle/blu-circle.png');
->>>>>>> c3e9df205c1e789002dedb5070eeebaa7af15680
     firstMarker.setLabel('1');
     last = current; 
     current.setMap(map); 

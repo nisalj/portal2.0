@@ -102,20 +102,20 @@ div.content {
 
 #home-button {
   position: absolute;
-  top: 100px;
-  left: 50px; 
+  top: 60px;
+  left: 10px; 
 }
 
 #save-button{ 
   position: absolute;
   bottom: 80px; 
-  left: 150px;
+  left: 80px;
 }
 
 #clear-button{ 
   position: absolute;
   bottom: 80px; 
-  left: 50px;
+  left: 10px;
 }
 @media screen and (max-width: 700px) {
   .sidebar {
@@ -186,12 +186,12 @@ html, body {
     <div class="sidebar form-group text-center" id="sidebar">
       <form>
     <div class="row"> 
-        <div class="col-md-6">
+        <div class="col-6">
         <button style="position: relative; left:-5px" id="undo" type="button" class="btn btn-danger">Delete</button>
         </div>
        
       
-        <div class="col-md-6"> 
+        <div class="col-6"> 
           <button type="button" class="close" id="close-side">
                   <span aria-hidden="true"> &times; </span>
           </button>
@@ -200,57 +200,57 @@ html, body {
     </div>
     <br>
     <div class="row">
-      <div class="col-md-5">
+      <div class="col-5">
         <button id="insert" type="button" class="btn btn-warning"> Insert </button>
       </div>
-      <div class="col-md-7">
+      <div class="col-7">
         <input type="text"  style="width:50px" class="form-control pull-left" placeholder="2" value="2" id="seg_no"> 
       </div>
     </div>
     <br>
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-5">
             <label for="lat"> Latitude</label>
         </div>
-        <div class="col-md-7">
+        <div class="col-7">
             <input type="text"  style="width:100px" readonly=""" class="form-control pull-left" placeholder="Lat" id="lat"> 
         </div>
     </div>
     <br>
     <div class="row">
-      <div class="col-md-5">
+      <div class="col-5">
           <label for="long"> Longitude</label>
       </div>
-      <div class="col-md-7">
+      <div class="col-7">
           <input type="text"  style="width:100px" readonly=""" class="form-control" placeholder="Long" id="long"> 
       </div>
     </div>
     <br>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-4">
             <label> Cruising speed </label>
         </div>
-        <div class="col-md-5">
+        <div class="col-5">
             <div id="speed-range"> </div> 
           </div>
-          <div class="col-md-3">
+          <div class="col-3">
             <input type="text"  style="width:50px" class="form-control pull-left" placeholder="2" value="2" id="speed-text"> 
           </div>
 
       </div>
       <div class="row">
-          <div class="col-md-4">
+          <div class="col-4">
               <label> Max speed </label>
           </div>
-          <div class="col-md-5">
+          <div class="col-5">
             <div id="max-speed"> </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-3">
               <input type="text"  style="width:50px" class="form-control pull-left" placeholder="5" value="5" id="max-text"> 
             </div>
         </div>
         <div class="row" >
-          <div class="col-md-12 text-center"id="test-slider">  </div>
+          <div class="col-12 text-center"id="test-slider">  </div>
         </div>
 
 
@@ -300,6 +300,9 @@ html, body {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="./node_modules/nouislider/distribute/nouislider.js"> </script>
     <script src="node_modules/wnumb/wNumb.js"></script>
+    <script src="https://unpkg.com/event-target@latest/min.js"></script>
+    <script src="https://unpkg.com/resize-observer-polyfill@1.5.0/dist/ResizeObserver.global.js"></script>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
 
   </body>
 </html>

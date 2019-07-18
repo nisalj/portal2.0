@@ -1,4 +1,4 @@
-const http = require('http'); 
+const https = require('https'); 
 let io = require('socket.io');
 const path = require('path');
 const ui = require('nouislider');
@@ -15,14 +15,14 @@ app.use(bodyParser.json());
 app.use(express.static('.'))
 
 
-// const options = {
-//     key: fs.readFileSync('/Users/Nisal/server.key'),
-//     cert: fs.readFileSync('/Users/Nisal/server.crt')
-//   };
+const options = {
+    key: fs.readFileSync('/Users/Nisal/server.key'),
+    cert: fs.readFileSync('/Users/Nisal/server.crt')
+  };
 
 
 
-const server = http.createServer( app);
+const server = https.createServer( options, app);
 const PORT = process.env.PORT || 5000; 
 server.listen(PORT, () => console.log("Server running on port " + PORT)); 
 io = io.listen(server); 
@@ -37,12 +37,14 @@ io.sockets.on('connection', socket => {
     
 }); 
       
-
+app.post('/test', function(req,res) {
+console.log(req.body);
+} ); 
 
 app.post('/loc',function(req,res){
     lat  =req.body.lat;
     long =req.body.long;
-    //console.log("lat = " +lat+ ", long = " +long);
+    console.log("lat = " +lat+ ", long = " +long);
     res.end("yes");
     io.sockets.emit('new location', {lat: lat, long: long})
 

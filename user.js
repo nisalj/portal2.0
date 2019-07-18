@@ -140,10 +140,10 @@ export default class User {
       }
       //window.testfunc(); 
       let map = this.path.map; 
-      map.setZoom(17);
+      //map.setZoom(17);
       let path = this.path.getPath();
       let latlng = new google.maps.LatLng(this.lat, this.long);
-      map.panTo(latlng);
+     // map.panTo(latlng);
       console.log("updating",latlng.lat(),latlng.lng() );
 
      // path.icons[0].icon.scale = 50; 
