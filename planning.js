@@ -18,23 +18,30 @@ let cruiseSlider;
 let maxSlider; 
 let long;
 let save; 
+let home;
+let speedText;
+let maxText;  
 
 window.onload = function() {
   initMap(); 
 }
 function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat:-33.814451, lng:151.171332},
+          //center: {lat:-33.814451, lng:151.171332},
           zoom: 14,
           clickableIcons: false
         });
         
+        panToLoc();
+
         cruiseSlider = document.getElementById("speed-range");
         maxSlider = document.getElementById("max-speed"); 
-
+        home = document.getElementById("home-button"); 
+        speedText = document.getElementById("speed-text");
+        maxText = document.getElementById("max-text"); 
         noUiSlider.create(cruiseSlider, {
 
-          start: 2.5,
+          start: 2,
           connect: [true, false],
           range: {
               'min': 0,
@@ -45,19 +52,15 @@ function initMap() {
       });
 
 
-      cruiseSlider.noUiSlider.on('end', function (values, handle) {
-        cruiseSlider.noUiSlider.updateOptions({
-        tooltips:  false,
-      });
-
-      });
-
-      cruiseSlider.noUiSlider.on('start', function (values, handle) {
-        cruiseSlider.noUiSlider.updateOptions({
-        tooltips:  wNumb({decimals: 1}),
-      });
-
-      });
+  speedText.addEventListener("blur", () => {
+      let val = speedText.value;
+      if (val >= 0 && val <= 10) {
+        cruiseSlider.noUiSlider.set(val);
+        let seg = path.getSelected(); 
+        seg.setSpeed(val);
+      }
+        
+    } );
 
 
       cruiseSlider.noUiSlider.on('change', function (values, handle) {
@@ -65,6 +68,15 @@ function initMap() {
         console.log(val); 
         let seg = path.getSelected(); 
         seg.setSpeed(val);
+      });
+   
+
+      cruiseSlider.noUiSlider.on('update', function (values, handle) {
+        let val = parseFloat(values); 
+        speedText.value = val;
+        //console.log(val); 
+        //let seg = path.getSelected(); 
+       // seg.setSpeed(val);
 
 
       });
@@ -83,28 +95,41 @@ function initMap() {
     });
 
 
-    maxSlider.noUiSlider.on('end', function (values, handle) {
-      maxSlider.noUiSlider.updateOptions({
-      tooltips:  false,
-    });
+    // maxSlider.noUiSlider.on('end', function (values, handle) {
+    //   maxSlider.noUiSlider.updateOptions({
+    //   tooltips:  false,
+    // });
+
+    // });
+
+    // maxSlider.noUiSlider.on('start', function (values, handle) {
+    //   maxSlider.noUiSlider.updateOptions({
+    //   tooltips:  wNumb({decimals: 1}),
+    // });
+
+    // });
+
+    maxText.addEventListener("blur", () => {
+      let val = maxText.value;
+      if (val >= 0 && val <= 10) {
+        maxSlider.noUiSlider.set(val);
+        let seg = path.getSelected(); 
+        seg.setMaxSpeed(val);
+      }
+        
+    } );
+
+    maxSlider.noUiSlider.on('update', function (values, handle) {
+      let val = parseFloat(values); 
+      maxText.value = val;
 
     });
-
-    maxSlider.noUiSlider.on('start', function (values, handle) {
-      maxSlider.noUiSlider.updateOptions({
-      tooltips:  wNumb({decimals: 1}),
-    });
-
-    });
-
 
     maxSlider.noUiSlider.on('change', function (values, handle) {
       let val = parseFloat(values); 
       console.log(val); 
       let seg = path.getSelected(); 
       seg.setMaxSpeed(val);
-
-
     });
     
 
@@ -144,36 +169,13 @@ function initMap() {
           
 
           path.removeAtMarker(map);
-          // make sure the path has been initialised, 
-
-        //   click--;
-        //   if (!path || click < 0) {
-        //     click = 0; 
-        //     return;
-        //   } 
-        //   else {
-        //     if(click == 0) {
-        //       last = null; 
-        //       firstMarker.setMap(null);
-        //       firstMarker = null; 
-        //       start = true; 
-        //       displayCurrentLatLng(null); 
-
-        //     } else {
-        //       path.undoPath(); 
-        //       if (path.getLast()) {
-        //         last = path.getLast().end; 
-        //       } else {
-        //         last = firstMarker; 
-        //       }
-        //       displayCurrentLatLng(last); 
-
-
-        //     }
-        // } 
+        
         if (click < 2) {
           cruiseSlider.setAttribute('disabled', true);
           maxSlider.setAttribute('disabled', true);
+          speedText.setAttribute('disabled', true);
+          maxText.setAttribute('disabled', true);
+
           //document.getElementById("undo").setAttribute('disabled',true)
           document.getElementById("insert").setAttribute('disabled',true)
        }
@@ -187,19 +189,25 @@ function initMap() {
             path.clear(map); 
             start = true; 
             firstMarker.setMap(null); 
+            firstMarker = null; 
           }
           displayCurrentLatLng(null); 
           cruiseSlider.setAttribute('disabled', true);
-          cruiseSlider.noUiSlider.set(2.5);
+          cruiseSlider.noUiSlider.set(2);
           maxSlider.noUiSlider.set(5);
           maxSlider.setAttribute('disabled', true);
-  
+          maxText.setAttribute('disabled', true);
+          speedText.setAttribute('disabled', true);
+          document.getElementById("insert").setAttribute('disabled',true)
+          document.getElementById("undo").setAttribute('disabled',true)
+
 
         }); 
        
         lat = document.getElementById("lat");
         long = document.getElementById("long");
-
+        maxText.setAttribute('disabled', true);
+        speedText.setAttribute('disabled', true);
         cruiseSlider.setAttribute('disabled', true);
         maxSlider.setAttribute('disabled', true);
         save = document.getElementById("save-button").addEventListener('click', () => {
@@ -223,7 +231,25 @@ function initMap() {
       } )
       document.getElementById("insert").setAttribute('disabled',true)
 
-       path = new Path(); 
+      home.addEventListener("click" , () => {
+        $('#sidebar')[0].style.display = "none"
+
+        if(!firstMarker) {
+          console.log("panning to loc");
+          panToLoc();
+         // let loc = setTimeout(get)
+         // panMapTo(getUserLoc()); 
+        } else {
+          panMapTo(firstMarker.position); 
+        }
+
+
+      }); 
+     // console.log(getUserLoc());
+   //  panToLoc();
+
+     // panMapTo(getUserLoc()); 
+      path = new Path(); 
 
 
      
@@ -233,10 +259,33 @@ function initMap() {
 
 }
 
+function panToLoc() {
+  if (!navigator.geolocation) {
+    return; 
+  } else {
+    navigator.geolocation.getCurrentPosition((pos) => { 
+      console.log('success');
+     let loc =  new google.maps.LatLng({lat: pos.coords.latitude, lng: pos.coords.longitude})
+    panMapTo(loc); 
+  });
+  }
+  
+}
+
+function panMapTo(position) {
+  if (!position)
+  return null; 
+   
+  map.panTo(position); 
+}
+
+
+
 window.displayCurrentSeg = function () {
   let seg = path.getSelected(); 
   maxSlider.noUiSlider.set(seg.getMaxSpeed());
   cruiseSlider.noUiSlider.set(seg.getSpeed());
+  //when the sliders get set the text values also get set 
 };
 
 
@@ -244,6 +293,8 @@ window.displayCurrentSeg = function () {
 window.markerClick = function () {
 //console.log('clicked'); 
 //console.log(this);
+$('#sidebar')[0].style.display = "block"
+
 highlightMarker(this); 
 displayCurrentLatLng(this); 
 let segNo = path.segNo();  
@@ -267,7 +318,8 @@ if (title == 1) {
 window.insertSeg = function (event) {
   document.getElementById("undo").disabled = false; 
   document.getElementById("insert").disabled = false; 
-
+  maxText.disabled = false;
+  speedText.disabled = false;
   let index = event.detail[0];
   let seg = event.detail[1];
   console.log(index, path.segNo());
@@ -337,16 +389,16 @@ window.removeSeg = (event) => {
 }
 
 function displayCurrentLatLng(marker) {
-  if (!marker) return; 
+  if (!marker)  {
+    lat.value = null;
+    lat.placeholder = "Lat"
+    long.placeholder = "Long"
+    long.value = null; 
+    return;
+  }
+  //return; 
   
   let position = marker.position; 
-  if (!position) {
-    lat.value = null; 
-    lat.placeholder = "Lat"
-    long.value = null; 
-    lat.placeholder = "Lat"
-    return; 
-  }
 
   lat.value = Number(position.lat()).toFixed(3); 
   long.value = Number(position.lng()).toFixed(3); 

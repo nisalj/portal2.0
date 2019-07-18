@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://bootswatch.com/4/litera/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="./node_modules/nouislider/distribute/nouislider.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <title>Portal 2.0</title>
     <style> 
@@ -17,6 +18,7 @@
 #sidebar {
     min-width: 250px;
     max-width: 250px;
+    /* width: 300px; */
     background-color: white; 
     border-radius: 25px;
 }
@@ -63,8 +65,8 @@
   
   .sidebar {
   margin-right: 20px;
-  padding: 20px;
-  padding-right: 50px; 
+  padding: 10px;
+  padding-right: 40px; 
   display: none;
   width: 500px;
   position: relative;
@@ -98,15 +100,21 @@ div.content {
 	background: #007bff;
 }
 
+#home-button {
+  position: absolute;
+  top: 100px;
+  left: 50px; 
+}
+
 #save-button{ 
   position: absolute;
-  bottom: 100px; 
-  left: 200px;
+  bottom: 80px; 
+  left: 150px;
 }
 
 #clear-button{ 
   position: absolute;
-  bottom: 100px; 
+  bottom: 80px; 
   left: 50px;
 }
 @media screen and (max-width: 700px) {
@@ -179,7 +187,7 @@ html, body {
       <form>
     <div class="row"> 
         <div class="col-md-6">
-        <button id="undo" type="button" class="btn btn-danger">Delete</button>
+        <button style="position: relative; left:-5px" id="undo" type="button" class="btn btn-danger">Delete</button>
         </div>
        
       
@@ -219,19 +227,26 @@ html, body {
     </div>
     <br>
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-4">
             <label> Cruising speed </label>
         </div>
-        <div class="col-md-7">
+        <div class="col-md-5">
             <div id="speed-range"> </div> 
           </div>
+          <div class="col-md-3">
+            <input type="text"  style="width:50px" class="form-control pull-left" placeholder="2" value="2" id="speed-text"> 
+          </div>
+
       </div>
       <div class="row">
-          <div class="col-md-5">
+          <div class="col-md-4">
               <label> Max speed </label>
           </div>
-          <div class="col-md-7">
+          <div class="col-md-5">
             <div id="max-speed"> </div>
+            </div>
+            <div class="col-md-3">
+              <input type="text"  style="width:50px" class="form-control pull-left" placeholder="5" value="5" id="max-text"> 
             </div>
         </div>
         <div class="row" >
@@ -246,8 +261,9 @@ html, body {
 
   </div>
 
-  <button id="save-button" type="button" class="btn btn-primary btn-lg">Save</button>
-  <button id="clear-button" type="button" class="btn btn-primary btn-lg">Clear</button>
+  <button id="save-button"  class="btn btn-primary"><i class="fa fa-save"></i></button>
+  <button id="clear-button" class="btn btn-primary"><i class="fa fa-trash"></i></button>
+  <button id="home-button" class="btn btn-primary "><i class="fa fa-home"></i></button>
 
   <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
