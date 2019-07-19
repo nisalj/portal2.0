@@ -172,11 +172,12 @@ function initMap() {
           path.removeAtMarker(map);
         
         if (click < 2) {
+     
           cruiseSlider.setAttribute('disabled', true);
           maxSlider.setAttribute('disabled', true);
           speedText.setAttribute('disabled', true);
           maxText.setAttribute('disabled', true);
-
+          
           //document.getElementById("undo").setAttribute('disabled',true)
           document.getElementById("insert").setAttribute('disabled',true)
        }
@@ -355,6 +356,8 @@ window.removeSeg = (event) => {
 
   if (path.segNo() == 0) {
     highlightMarker(firstMarker);
+    maxSlider.noUiSlider.set(5);
+    cruiseSlider.noUiSlider.set(2);
   }
 
   if (event.detail == path.segNo()) {

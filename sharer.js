@@ -27,6 +27,8 @@ export default class Sharer extends User {
        
         this.sharePos();
         this.plotPath();
+        this.postDetails(); 
+
   
     };
   
@@ -59,7 +61,7 @@ export default class Sharer extends User {
       $.post('/test', 'hello');
 
       this.makePlan(); 
-     setTimeout(this.getLocation.bind(this), 200)
+      setTimeout(this.getLocation.bind(this), 200)
       setTimeout(this.getHeading.bind(this), 200)
      // setTimeout(this.getHeading.bind(this),200); 
      // this.getLocation(); 
@@ -120,6 +122,37 @@ export default class Sharer extends User {
 
      // $.post(location.origin+'/heading', dir); 
     }
+
+
+    postDetails() {
+      let detail;
+      if (this.planPlath.segNo() == 0) {
+        detail = {
+          latitude: this.lat,
+          longitude: this.long,
+          heading: this.heading,
+        }
+      } else {
+        detail = {
+          currentSeg: this.currentSeg,
+          targetWayPointLat: this.targetWayPoint.position.lat(),
+          targetWayPointLong: this.targetWayPoint.position.lng(),
+          latitude: this.lat,
+          longitude: this.long,
+          heading: this.heading,
+          targetBearing: this.targetBearing,
+          correction: this.correction,
+          distance: this.distance,
+        }
+      }
+      
+    //  console.log(detail);
+       $.post('/details', detail);
+
+    
+    }
+
+
   
     sharePos() {
       let params = "lat="+this.lat+"&long="+this.long; 

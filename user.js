@@ -10,6 +10,8 @@ export default class User {
       this.status;
       this.planPlath = new Path(); 
       this.heading; 
+      this.distance;
+      this.correction;
       this.targetBearing;
       this.currentSeg = 0; 
       this.targetWayPoint; 
@@ -18,9 +20,9 @@ export default class User {
       this.headval = document.getElementById('heading-val');  
       this.distval = document.getElementById('dist-val');
       this.bearval = document.getElementById('bear-val');
-
-
     }
+
+
 
     //checks if the currentSeg and targetWayPoint need to be updated 
     checkForNewSeg() {
@@ -31,10 +33,12 @@ export default class User {
       let latlng = new google.maps.LatLng(this.lat, this.long);
       console.log(this.targetWayPoint);
 
-      let dist = google.maps.geometry.spherical.computeDistanceBetween(latlng, this.targetWayPoint.position);
+      this.distance = google.maps.geometry.spherical.computeDistanceBetween(latlng, this.targetWayPoint.position);
+      let dist = this.distance; 
       //displays distance value on map
       this.distval.innerText = dist.toFixed(0); 
       console.log("distance to target waypoint", dist); 
+
       //if user is within 5m we have reached target
       if (dist <= 5) {
         this.updateTargetWayPoint(); 
@@ -121,8 +125,9 @@ export default class User {
   })
 
   if(!this.firstReading)
-    this.changeColor()
-
+    this.changeColor();
+  
+  //this.postDetails();
  // this.path.icon.rotation = this.heading; 
   }
 
@@ -153,6 +158,7 @@ export default class User {
       this.updateBearing(latlng); 
       this.checkForNewSeg();
       this.changeColor()
+   //   this.postDetails(); 
     }
 
     //changes color of the line according to correction value
@@ -160,7 +166,9 @@ export default class User {
     changeColor() {
       if(!this.planPlath.segNo())
       return; 
-      this.bearval.innerText = (this.targetBearing - this.heading).toFixed(0); 
+      this.correction = (this.targetBearing - this.heading).toFixed(0);
+     // this.bearval.innerText = (this.targetBearing - this.heading).toFixed(0); 
+      this.bearval.innerText = this.correction; 
       //correction value
       if(Math.abs(this.targetBearing - this.heading) < 10) {
         this.getCurrentSeg().changeColor("green")
