@@ -58,7 +58,7 @@ export default class Sharer extends User {
     }
     
     start() {
-      $.post('/test', 'hello');
+      $.post('/start', 'mission start');
 
       this.makePlan(); 
       setTimeout(this.getLocation.bind(this), 200)
