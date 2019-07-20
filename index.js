@@ -10,7 +10,8 @@ const app = express();
 let plan; 
 var lat; 
 var long; 
-let missionNo = 1; 
+let missionNo = 0;
+let planNo = 0;  
 let firstLatLong = true; 
 let firstDetail = true; 
 
@@ -18,9 +19,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static('.'));
 
-fs.mkdir(`./mission${missionNo}`, { recursive: true }, (err) => {
-    if (err) throw err;
-});
+
+// fs.readdir('./missions', (err,files) => {
+//     console.log(files);
+// })
+
+missionNo = fs.readdirSync('./missions').length; 
+planNo = fs.readdirSync('./plans').length; 
+console.log(missionNo, planNo);
 
 
 
@@ -53,6 +59,12 @@ io.sockets.on('connection', socket => {
       
 app.post('/start', function(req,res) {
 console.log(req.body);
+missionNo = fs.readdirSync('./missions').length; 
+fs.mkdir(`./missions/mission${missionNo}`, { recursive: true }, (err) => {
+    if (err) throw err;
+});
+console.log("started. mission No ", missionNo);
+
 //console.log("first connection!")
 firstLatLong = true; 
 firstDetail = true; 
@@ -89,19 +101,20 @@ function latLongWrite(data) {
 //     console.log('done');
 // });
 if (firstLatLong) {
-    fs.appendFile(`./mission${missionNo}/latlong.csv`, helper(Object.keys(data)), (err) => {
+   
+    fs.appendFileSync(`./missions/mission${missionNo}/latlong.csv`, helper(Object.keys(data)), (err) => {
         if(err)
-        console.log('error');
-        console.log('done');
+        console.log(err);
+      //  console.log('done');
     });
     firstLatLong = false; 
 }
 
 
-fs.appendFile(`./mission${missionNo}/latlong.csv`, helper(Object.values(data)), (err) => {
+fs.appendFile(`./missions/mission${missionNo}/latlong.csv`, helper(Object.values(data)), (err) => {
     if(err)
-    console.log('error');
-    console.log('done');
+    console.log(err);
+  //  console.log('done');
 });
 
 
@@ -116,11 +129,13 @@ fs.appendFile(`./mission${missionNo}/latlong.csv`, helper(Object.values(data)), 
 }
 
 
+
+
 function detailWrite(data) {
 
 
 if(firstDetail) {
-fs.appendFile(`./mission${missionNo}/details.csv`, helper(Object.keys(data)), (err) => {
+fs.appendFileSync(`./missions/mission${missionNo}/details.csv`, helper(Object.keys(data)), (err) => {
         if(err)
         console.log('error');
         console.log('done');
@@ -129,7 +144,7 @@ firstDetail = false;
 
 }    
 
-fs.appendFile(`./mission${missionNo}/details.csv`, helper(Object.values(data)), (err) => {
+fs.appendFile(`./missions/mission${missionNo}/details.csv`, helper(Object.values(data)), (err) => {
         if(err)
         console.log('error');
         console.log('done');
@@ -146,7 +161,7 @@ fs.appendFile(`./mission${missionNo}/details.csv`, helper(Object.values(data)), 
 
 function planWrite(object) {
 
-const ws = fs.createWriteStream(`./mission${missionNo}/plan.csv`,{'flags': 'a'});
+const ws = fs.createWriteStream(`./plans/plan${planNo}.csv`,{'flags': 'a'});
 fastcsv
 .write(object, { headers: true, includeEndRowDelimiter: true })
 .pipe(ws) ;
@@ -212,15 +227,17 @@ app.post('/plan', (req, res) => {
    // var text = String(req.body);
     //console.log(JSON.stringify(req.body));
     plan = req.body; 
-
     let string = JSON.stringify(plan); 
     let end = string.length - 4;
     let start = 1; 
     let mod = string.slice(start, end); 
     array = JSON.parse(JSON.parse(mod)); 
     console.log(array);
-    planWrite(array);
     res.end("Plan received")
+    planNo = fs.readdirSync('./plans').length; 
+
+    planWrite(array);
+
 }); 
 
 app.get('/plan', (req, res) => {
