@@ -56,13 +56,51 @@ export default class Sharer extends User {
       status.style.display = "none"; 
 
     }
+
+  getMotion() {
+    if(window.DeviceMotionEvent) {
+      window.addEventListener('devicemotion', function(event) {
+                this.accX = event.accelerationIncludingGravity.x;
+                this.accY = event.accelerationIncludingGravity.y;
+                this.accZ = event.accelerationIncludingGravity.z;
+                var r = event.rotationRate;
+                if (r) {
+                  this.rotAlpha = r.alpha;
+                  this.rotBeta = r.beta;
+                  this.rotGamma = r.gamma; 
+                }
+
+              let obj = {
+                accX: this.accX,
+                accY: this.accY,
+                accZ: this.accZ,
+                rotA: this.rotAlpha,
+                rotB: this.rotBeta,
+                rotG: this.rotGamma,
+              }
+
+                $.post('/acc', obj);
+           
+
+                // var html = 'Acceleration:<br />';
+                // html += 'x: ' + x +'<br />y: ' + y + '<br/>z: ' + z+ '<br />';
+                // html += 'Rotation rate:<br />';
+                // if(r!=null) html += 'alpha: ' + r.alpha +'<br />beta: ' + r.beta + '<br/>gamma: ' + r.gamma + '<br />';
+                // dataContainerMotion.innerHTML = html;                  
+              });
+      }
+  }   
+  
+    
     
     start() {
       $.post('/start', 'mission start');
 
       this.makePlan(); 
-      setTimeout(this.getLocation.bind(this), 200)
-      setTimeout(this.getHeading.bind(this), 200)
+      setTimeout(this.getLocation.bind(this), 200);
+      setTimeout(this.getHeading.bind(this), 300);
+      setTimeout(this.getMotion.bind(this),400);
+
      // setTimeout(this.getHeading.bind(this),200); 
      // this.getLocation(); 
 

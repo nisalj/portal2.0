@@ -6,6 +6,12 @@ export default class User {
       this.path = path; 
       this.lat;
       this.long; 
+      this.accX;
+      this.accY;
+      this.accZ;
+      this.rotAlpha;
+      this.rotBeta;
+      this.rotGamma;
       this.firstReading = true;  
       this.status;
       this.planPlath = new Path(); 

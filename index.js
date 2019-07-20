@@ -14,6 +14,7 @@ let missionNo = 0;
 let planNo = 0;  
 let firstLatLong = true; 
 let firstDetail = true; 
+let firstMotion = true; 
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -64,10 +65,11 @@ fs.mkdir(`./missions/mission${missionNo}`, { recursive: true }, (err) => {
     if (err) throw err;
 });
 console.log("started. mission No ", missionNo);
-
 //console.log("first connection!")
 firstLatLong = true; 
 firstDetail = true; 
+firstMotion = true; 
+res.send("ack");
 
 } ); 
 
@@ -90,6 +92,30 @@ let helper = function(arr, first) {
     }  
     return string;  
  
+}
+
+
+function latMotionWrite(data) {
+
+    if (firstMotion) {
+   
+        fs.appendFileSync(`./missions/mission${missionNo}/motion.csv`, helper(Object.keys(data)), (err) => {
+            if(err)
+            console.log(err);
+          //  console.log('done');
+        });
+        firstMotion = false; 
+    }
+    
+    
+    fs.appendFile(`./missions/mission${missionNo}/motion.csv`, helper(Object.values(data)), (err) => {
+        if(err)
+        console.log(err);
+      //  console.log('done');
+    });   
+
+
+
 }
 
 
@@ -235,7 +261,7 @@ app.post('/plan', (req, res) => {
     console.log(array);
     res.end("Plan received")
     planNo = fs.readdirSync('./plans').length; 
-
+    console.log(plan);
     planWrite(array);
 
 }); 
@@ -248,9 +274,15 @@ app.get('/plan', (req, res) => {
 
 });
 
+app.post('/acc', (req,res) => {
+    //console.log(req.body);
+    latMotionWrite(req.body);
+    res.send("recieved motion");
+});
+
 
 app.post('/heading', (req,res) => {
-    console.log(req.body); 
+  //  console.log(req.body); 
 
     io.sockets.emit('new heading', req.body);
     res.send('recieved heading'); 
