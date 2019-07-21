@@ -1,6 +1,12 @@
 let g1; 
 let g2; 
+let socket;
+let acc  = [];
+let rot = [];
 window.onload = function () {
+
+    socket = io.connect();
+
   
 
     g1 = new Dygraph(
@@ -21,22 +27,25 @@ window.onload = function () {
         }          // options
       );
 
+    setInterval(updateCharts, 500); 
 
- window.intervalId = setInterval(function() {
-    //  updateCharts();
-    $.get('/acc.csv', (data) => {
-        g1.updateOptions( { 'file': data } );
-        });
+//  window.intervalId = setInterval(function() {
+//     //  updateCharts();
+//     $.get('/acc.csv', (data) => {
+
+
+//         g1.updateOptions( { 'file': data } );
+//         });
      
- }, 1000);
+//  }, 1000);
 
 
- function updateCharts() {
-    $.get('/acc.csv', (data) => {
-        console.log(data);
-    g1.updateOptions( { 'file': data } );
-    });
- }
+//  function updateCharts() {
+//     $.get('/acc.csv', (data) => {
+//         console.log(data);
+//     g1.updateOptions( { 'file': data } );
+//     });
+//  }
 
 
 
@@ -62,6 +71,27 @@ window.onload = function () {
     //   g.updateOptions( { 'file': data } );
     // }, 1000);
   };
+
+  function updateCharts() {
+    
+    socket.once('new acc', (data) => {
+      acc.push([new Date(data.time), Number(data.accX), Number(data.accY), Number(data.accZ)]);
+     // console.log(row);
+      g1.updateOptions({'file': acc }); 
+      //console.log("new acc");
+
+    }); 
+
+    socket.once('new rot', (data) => {
+      rot.push([new Date(data.time), Number(data.rotA), Number(data.rotB), Number(data.rotG)]);
+      // console.log(row);
+       g2.updateOptions({'file': rot }); 
+     // console.log("new rot");
+
+    }); 
+  
+
+  }
 
 
 // window.onload = function () {

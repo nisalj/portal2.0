@@ -60,7 +60,12 @@ console.log('clicked share');
 let element = document.getElementById("view");
 element.parentNode.removeChild(element);
 element = document.getElementById("share");
-element.parentNode.removeChild(element);
+element.style.display = "none";
+//element.parentNode.removeChild(element);
+element = document.getElementById("planselect");
+//element.style.display = "none";
+
+//element.parentElement.removeChild(element);
 status.textContent = "Sharing location"; 
 
 user = new Sharer(status, options, robotpath); 
@@ -77,6 +82,10 @@ let element = document.getElementById("view");
 element.parentNode.removeChild(element);
 element = document.getElementById("share");
 element.parentNode.removeChild(element);
+
+ element = document.getElementById("planselect");
+// element.style.display = "none";
+// element.parentElement.removeChild(element);
 status.textContent = "Viewing location"; 
 status.style.display = "none";
 socket = io.connect(); 

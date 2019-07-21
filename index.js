@@ -26,10 +26,9 @@ app.use(express.static('.'));
 //     console.log(files);
 // })
 
-missionNo = fs.readdirSync('./missions').length; 
-planNo = fs.readdirSync('./plans').length; 
+missionNo = fs.readdirSync('./missions').length - 1; 
+planNo = fs.readdirSync('./plans').length - 1; 
 console.log(missionNo, planNo);
-
 
 
 const options = {
@@ -211,7 +210,11 @@ fs.appendFile(`./missions/mission${missionNo}/details.csv`, helper(Object.values
 //ws.end();
 }
 
+
+
+
 function getPlan(reqNo, res) {
+    console.log("reqNo", reqNo);
     const csvFilePath= `./plans/plan${reqNo}.csv`
     const csv = require('csvtojson')
     csv()
@@ -352,10 +355,12 @@ app.get("/latlong.csv", (req,res) => {
 
 app.get("/acc.csv", (req,res) => {  
     fs.readFile(`./missions/mission${missionNo}/acc.csv`, function read(err, data) {
+
       if (err) {
           res.send('{}');
           throw err;
       }
+
       console.log(missionNo);
       res.setHeader('Content-disposition', 'attachment; filename=acc.csv');
       res.set('Content-Type', 'text/csv');
@@ -422,6 +427,9 @@ app.post('/acc', (req,res) => {
     }
     accWrite(acc);
     rotWrite(rot); 
+    io.sockets.emit('new acc', acc);
+    io.sockets.emit('new rot', rot);
+
     //latMotionWrite(req.body);
 
     res.send("recieved motion");
