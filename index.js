@@ -10,6 +10,8 @@ const app = express();
 let plan; 
 var lat; 
 var long; 
+var uncert; 
+var speed; 
 let missionNo = 0;
 let planNo = 0;  
 let firstLatLong = true; 
@@ -247,17 +249,19 @@ fastcsv
 app.post('/loc',function(req,res){
     lat  =req.body.lat;
     long =req.body.long;
+    uncert = req.body.uncert;
+    speed = req.body.speed; 
     console.log("lat = " +lat+ ", long = " +long);
     res.end("yes");
-    let posObject = {lat: lat, long: long}; 
-    let arrObj = { time: new Date(), lat: lat, long: long};
+    let posObject = {lat: lat, long: long, uncert: uncert, speed: speed}; 
+    let arrObj = { time: new Date(), lat: lat, long: long, uncert: uncert, speed: speed };
     
     latLongWrite(arrObj); 
    
 
      //ws.end();
 
-    io.sockets.emit('new location', {lat: lat, long: long})
+    io.sockets.emit('new location', {lat: lat, long: long, uncert: uncert, speed: speed })
     req.on("close", function() {
         console.log("post ended close");
         // lat = undefined;

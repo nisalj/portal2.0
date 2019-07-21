@@ -17,6 +17,7 @@ window.onload = function () {
             showRoller: true,
         }          // options
       );
+      
 
     g2 = new Dygraph(
         document.getElementById("graph_2"),

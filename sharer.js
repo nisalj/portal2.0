@@ -24,7 +24,8 @@ export default class Sharer extends User {
 
         this.lat  = position.coords.latitude;
         this.long = position.coords.longitude;
-       
+        this.uncertRadius = position.coords.accuracy; 
+        this.speed = position.coords.speed; 
         this.sharePos();
         this.plotPath();
         this.postDetails(); 
@@ -194,7 +195,7 @@ export default class Sharer extends User {
 
   
     sharePos() {
-      let params = "lat="+this.lat+"&long="+this.long; 
+      let params = "lat="+this.lat+"&long="+this.long+"&uncert="+this.uncertRadius+"&speed="+this.speed; 
   
       let xhr;
       if (window.XMLHttpRequest) {

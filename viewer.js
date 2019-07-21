@@ -29,6 +29,8 @@ export default class Viewer extends User {
           this.firstloc = false; 
           this.lat = parseFloat(data.lat); 
           this.long = parseFloat(data.long); 
+          this.uncertRadius = parseFloat(data.uncert);
+          this.speed = parseFloat(data.speed);
           console.log(this.firstReading);  
 
           this.plotPath();     

@@ -12,6 +12,10 @@ export default class User {
       this.rotAlpha;
       this.rotBeta;
       this.rotGamma;
+      this.uncertRadius; 
+      this.circle; 
+      this.blinckCircle; 
+      this.speed; 
       this.firstReading = true;  
       this.status;
       this.planPlath = new Path(); 
@@ -54,6 +58,76 @@ export default class User {
         return; 
       }
 
+    }
+
+    blink() {
+      let latlng = {lat: this.lat, lng: this.long};
+
+      if (!this.blinckCircle) {
+        this.blinckCircle = new google.maps.Circle({
+          strokeColor: 'blue',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: 'blue',
+          fillOpacity: 0.35,
+          map: this.path.map,
+          center: latlng,
+          radius: 0,
+        });
+      }
+      this.blinckCircle.setCenter(latlng);
+
+      this.interval = setInterval(this.timer.bind(this), 25)
+      // let rad = 5;
+
+      // for (let i = 0; i < 1000; i++) {
+
+      //   if (i % 10 == 0) {
+      //     this.blinckCircle.setRadius(rad)
+      //     rad += 5; 
+
+      //   }
+      // }
+
+
+
+    //  this.blinckCircle.setRadius(20);
+
+      
+
+
+    }
+
+    timer() {
+      let radius = this.blinckCircle.getRadius(); 
+       
+      if (radius >= this.uncertRadius*1.5) {
+        this.blinckCircle.setRadius(0);
+        clearInterval(this.interval);
+      } else {
+        this.blinckCircle.setRadius(radius + 1);
+      }
+
+    }
+
+    renderCircle() {
+      let radius = this.uncertRadius; 
+      let latlng = {lat: this.lat, lng: this.long};
+      if(!this.circle && radius && latlng) {
+         this.circle = new google.maps.Circle({
+          strokeColor: '#FF0000',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: '#FF0000',
+          fillOpacity: 0.35,
+          map: this.path.map,
+          center: latlng,
+          radius: radius,
+        });
+      } else {
+        this.circle.setRadius(radius);
+        this.circle.setCenter(latlng);
+      }
     }
 
    
@@ -204,9 +278,12 @@ export default class User {
 
       console.log(path); 
       path.push(latlng);
+      this.renderCircle();
       this.updateBearing(latlng); 
       this.checkForNewSeg();
-      this.changeColor()
+      this.changeColor();
+      this.blink();
+
    //   this.postDetails(); 
     }
 
