@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://bootswatch.com/4/litera/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="./node_modules/canvas-gauges/gauge.min.js"> </script>
     <title>Portal 2.0</title>
     <style> 
@@ -79,6 +79,8 @@
       top: 80px;
       left: 10px;
       display: block;
+      height: 180px;
+      width: 180px;
     }
 
     #vid{
@@ -95,6 +97,7 @@
         height: 100%;
         margin: 0;
         padding: 0;
+        overflow: hidden;
         
     }
     
@@ -129,10 +132,10 @@
 <div class="text-center">
         <div class="row"> 
             <div class="col-6"> 
-            <button id = "share" style="margin-top:8px" class="btn btn-outline-primary"> Share</button>
+            <button id = "share" style="margin-top:8px" class="btn btn-primary"> Share</button>
             </div>
             <div class="col-6"> 
-            <button id = "view" style="margin-top:8px" class="btn btn-outline-primary"> View</button>
+            <button id = "view" style="margin-top:8px" class="btn btn-primary"> View</button>
           </div> 
           <h1 class="col-12" id="main-header">  <!-- Monitor <strong> your </strong> robot. --> </h1> 
 
@@ -208,11 +211,13 @@
 
               </div>
 
+              
+
              <div id="compass-div">
               <canvas 
               id="compass" 
-              height="150px";
-              width="150px";
+              height="180";
+              width="180";
 
               data-type="radial-gauge"
               data-min-value="0"
@@ -223,18 +228,18 @@
               data-start-angle="180"
               data-stroke-ticks="false"
               data-highlights="true"
-              data-color-plate="#a33"
+              data-color-plate="#007bff"
               data-color-major-ticks="#f5f5f5"
               data-color-minor-ticks="#ddd"
               data-color-numbers="#ccc"
-              data-color-needle="rgba(240, 128, 128, 1)"
-              data-color-needle-end="rgba(255, 160, 122, .9)"
+              data-color-needle="black"
+              data-color-needle-end="black"
               data-value-box="false"
               data-value-text-shadow="false"
               data-color-circle-inner="#fff"
-              data-color-needle-circle-outer="#ccc"
+              data-color-needle-circle-outer="#fff"
               data-needle-circle-size="15"
-              data-needle-circle-outer="false"
+              data-needle-circle-outer="true"
               data-animation-rule="linear"
               data-needle-type="line"
               data-needle-start="75"
@@ -244,10 +249,10 @@
               data-border-inner-width="0"
               data-border-middle-width="0"
               data-border-outer-width="5"
-              data-color-border-outer="#007bff"
-              data-color-border-outer-end="#007bff"
-              data-color-needle-shadow-down="#222"
-              data-border-shadow-width="0"
+              data-color-border-outer="black"
+              data-color-border-outer-end="black"
+              data-color-needle-shadow-down="blue"
+              data-border-shadow-width="10"
               data-animation-target="plate"
               data-animation="false"
               data-animate-on-init="true"

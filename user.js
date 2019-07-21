@@ -56,25 +56,33 @@ export default class User {
     }
 
    
-    updateCompass(heading, target) {
-      this.compass.value = heading;
+    updateCompass(heading, target, noplan) {
+      if(noplan) {
+        this.compass.value = heading;
+        return;
+      }
+
+      
       let head = heading;
       let targ = target; 
       if (heading > 180)
       head = 360 - heading; 
       if(target > 180)
       targ = 360 - target; 
+      let color = "red"; 
+      if (Math.abs(this.correction) <= 10)
+      color = "lime";
 
       if (head < targ) {
         this.compass.update({
           highlights: [
-            {from: target, to: heading, color: 'blue'}
+            {from: target, to: heading, color: color}
           ]
         });
       } else {
         this.compass.update({
           highlights: [
-            {from: heading, to: target, color: 'blue'}
+            {from: heading, to: target, color: color}
           ]
         });
       }
@@ -146,6 +154,8 @@ export default class User {
   //shows heading, changes arrow rotation according to heading
   showHeading() {
   this.headval.innerText = this.heading; 
+  this.updateCompass(this.heading, this.targetBearing, true); 
+
   let lineSymbol = {
     path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
     //path: google.maps.SymbolPath.CIRCLE,
@@ -202,15 +212,17 @@ export default class User {
     //changes color of the line according to correction value
     //displays correction value in UI
     changeColor() {
-      if(!this.planPlath.segNo())
-      return; 
+      if(!this.planPlath.segNo()){
+        return; 
+
+      }
       this.correction = (this.targetBearing - this.heading).toFixed(0);
       this.updateCompass(this.heading, this.targetBearing); 
      // this.bearval.innerText = (this.targetBearing - this.heading).toFixed(0); 
       this.bearval.innerText = this.correction; 
       //correction value
       if(Math.abs(this.targetBearing - this.heading) < 10) {
-        this.getCurrentSeg().changeColor("green")
+        this.getCurrentSeg().changeColor("lime")
       } else {
         this.getCurrentSeg().changeColor("red")
       }

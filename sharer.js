@@ -71,6 +71,7 @@ export default class Sharer extends User {
                 }
 
               let obj = {
+                time: new Date(),
                 accX: this.accX,
                 accY: this.accY,
                 accZ: this.accZ,

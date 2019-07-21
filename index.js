@@ -199,7 +199,7 @@ app.post('/loc',function(req,res){
     console.log("lat = " +lat+ ", long = " +long);
     res.end("yes");
     let posObject = {lat: lat, long: long}; 
-    let arrObj = { time: +new Date(), lat: lat, long: long};
+    let arrObj = { time: new Date(), lat: lat, long: long};
     
     latLongWrite(arrObj); 
    
@@ -271,6 +271,64 @@ app.get('/plan', (req, res) => {
     else 
     res.send("{}");
 
+});
+
+app.get("/latlong.csv", (req,res) => {  
+    fs.readFile(`./missions/mission${missionNo}/latlong.csv`, function read(err, data) {
+      if (err) {
+          res.send('{}');
+          throw err;
+      }
+     
+      res.setHeader('Content-disposition', 'attachment; filename=motion.csv');
+      res.set('Content-Type', 'text/csv');
+      res.status(200).send(data);
+  });
+   
+ 
+  });
+
+
+app.get("/motion.csv", (req,res) => {  
+    fs.readFile(`./missions/mission${missionNo-1}/motion.csv`, function read(err, data) {
+      if (err) {
+          res.send('{}');
+          throw err;
+      }
+     
+      res.setHeader('Content-disposition', 'attachment; filename=motion.csv');
+      res.set('Content-Type', 'text/csv');
+      res.status(200).send(data);
+  });
+   
+ 
+  });
+
+
+
+
+app.get("/details.csv", (req,res) => {
+  //  console.log(res.attachment(`./missions/mission${missionNo-2}/details.csv`)); 
+
+  fs.readFile(`./missions/mission${missionNo}/details.csv`, function read(err, data) {
+    if (err) {
+        res.send('{}');
+        throw err;
+    }
+   
+    res.setHeader('Content-disposition', 'attachment; filename=details.csv');
+    res.set('Content-Type', 'text/csv');
+    res.status(200).send(data);
+
+    // Invoke the next step here however you like
+       // Put all of the code here (not the best solution)
+
+
+  //  processFile();          // Or put the next step in a function and invoke it
+});
+ 
+  //  console.log(missionNo);
+   // res.send("hello");
 });
 
 app.post('/acc', (req,res) => {
