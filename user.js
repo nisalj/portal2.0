@@ -58,13 +58,33 @@ export default class User {
    
     updateCompass(heading, target) {
       this.compass.value = heading;
+      let head = heading;
+      let targ = target; 
+      if (heading > 180)
+      head = 360 - heading; 
+      if(target > 180)
+      targ = 360 - target; 
+
+      if (head < targ) {
+        this.compass.update({
+          highlights: [
+            {from: target, to: heading, color: 'blue'}
+          ]
+        });
+      } else {
+        this.compass.update({
+          highlights: [
+            {from: heading, to: target, color: 'blue'}
+          ]
+        });
+      }
       //let target = this.targetBearing; 
     
-      this.compass.update({
-        highlights: [
-          {from: heading, to: target, color: 'blue'}
-        ]
-      });
+      // this.compass.update({
+      //   highlights: [
+      //     {from: heading, to: target, color: 'blue'}
+      //   ]
+      // });
       console.log(heading , target);
     }
 
