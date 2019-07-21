@@ -366,9 +366,10 @@ export default class Path extends EventTarget {
             array.push(this.segments[i].convertSeg());
         }
 
-        let text = JSON.stringify(array);
-        console.log(text); 
 
+       let text = JSON.stringify(array);
+       console.log(text); 
+      
         
      
 

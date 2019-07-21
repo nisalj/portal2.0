@@ -202,9 +202,8 @@ app.post('/loc',function(req,res){
     let arrObj = { time: +new Date(), lat: lat, long: long};
     
     latLongWrite(arrObj); 
-
    
-    
+
      //ws.end();
 
     io.sockets.emit('new location', {lat: lat, long: long})

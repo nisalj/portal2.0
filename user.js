@@ -26,6 +26,7 @@ export default class User {
       this.headval = document.getElementById('heading-val');  
       this.distval = document.getElementById('dist-val');
       this.bearval = document.getElementById('bear-val');
+      this.compass = document.gauges.get('compass'); 
     }
 
 
@@ -55,6 +56,17 @@ export default class User {
     }
 
    
+    updateCompass(heading, target) {
+      this.compass.value = heading;
+      //let target = this.targetBearing; 
+    
+      this.compass.update({
+        highlights: [
+          {from: heading, to: target, color: 'blue'}
+        ]
+      });
+      console.log(heading , target);
+    }
 
     //if we are at the start of segment, next waypoint is the end
     //of the same segment. Otherwise its the start of the next segment
@@ -173,6 +185,7 @@ export default class User {
       if(!this.planPlath.segNo())
       return; 
       this.correction = (this.targetBearing - this.heading).toFixed(0);
+      this.updateCompass(this.heading, this.targetBearing); 
      // this.bearval.innerText = (this.targetBearing - this.heading).toFixed(0); 
       this.bearval.innerText = this.correction; 
       //correction value

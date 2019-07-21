@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://bootswatch.com/4/litera/bootstrap.min.css">
+    <script src="./node_modules/canvas-gauges/gauge.min.js"> </script>
     <title>Portal 2.0</title>
     <style> 
 
@@ -22,7 +23,7 @@
     right: 50px; 
     z-index: 99; 
     top: 0px; 
-    display: none;
+    display: block;
     }
     
       .sidebar {
@@ -70,6 +71,14 @@
         border: 0;
         padding: 100px;
 
+    }
+
+    #compass-div {
+      position: absolute;
+      z-index: 100;
+      top: 80px;
+      left: 10px;
+      display: block;
     }
 
     #vid{
@@ -193,7 +202,61 @@
                       </div>
                   </div>
                   
-                </div>
+             
+
+
+
+              </div>
+
+             <div id="compass-div">
+              <canvas 
+              id="compass" 
+              height="150px";
+              width="150px";
+
+              data-type="radial-gauge"
+              data-min-value="0"
+              data-max-value="360"
+              data-major-ticks="N,NE,E,SE,S,SW,W,NW,N"
+              data-minor-ticks="22"
+              data-ticks-angle="360"
+              data-start-angle="180"
+              data-stroke-ticks="false"
+              data-highlights="true"
+              data-color-plate="#a33"
+              data-color-major-ticks="#f5f5f5"
+              data-color-minor-ticks="#ddd"
+              data-color-numbers="#ccc"
+              data-color-needle="rgba(240, 128, 128, 1)"
+              data-color-needle-end="rgba(255, 160, 122, .9)"
+              data-value-box="false"
+              data-value-text-shadow="false"
+              data-color-circle-inner="#fff"
+              data-color-needle-circle-outer="#ccc"
+              data-needle-circle-size="15"
+              data-needle-circle-outer="false"
+              data-animation-rule="linear"
+              data-needle-type="line"
+              data-needle-start="75"
+              data-needle-end="100"
+              data-needle-width="3"
+              data-borders="true"
+              data-border-inner-width="0"
+              data-border-middle-width="0"
+              data-border-outer-width="5"
+              data-color-border-outer="#007bff"
+              data-color-border-outer-end="#007bff"
+              data-color-needle-shadow-down="#222"
+              data-border-shadow-width="0"
+              data-animation-target="plate"
+              data-animation="false"
+              data-animate-on-init="true"
+          ></canvas>
+
+             </div> 
+            
+
+
               
         </div>
   
@@ -216,6 +279,5 @@
     <script src="https://unpkg.com/event-target@latest/min.js"></script>
     <script src="https://unpkg.com/resize-observer-polyfill@1.5.0/dist/ResizeObserver.global.js"></script>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
-
   </body>
 </html>
