@@ -26,7 +26,8 @@ export default class User {
       this.headval = document.getElementById('heading-val');  
       this.distval = document.getElementById('dist-val');
       this.bearval = document.getElementById('bear-val');
-      this.compass = document.gauges.get('compass'); 
+      this.compass = document.gauges.get('compass');
+      this.planNo = document.getElementById('planNobox');  
     }
 
 
@@ -245,7 +246,7 @@ export default class User {
     makePlan() {
 
         console.log('making'); 
-        this.planPlath.makePath(this.path.map); 
+        this.planPlath.makePath(this.path.map, this.planNo.value); 
     }
    
 

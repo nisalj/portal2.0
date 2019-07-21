@@ -8,7 +8,6 @@ export default class Path extends EventTarget {
         this.addEventListener('insertSegment', window.insertSeg);
         this.addEventListener('removeSegment', window.removeSeg);
 
-
     }
 
     setSelected(segment) {
@@ -309,48 +308,100 @@ export default class Path extends EventTarget {
         return this.segments[no]; 
     }
 
-    makePath(map) {
+    makePath(map, planNo) {
+
         let array; 
         this.segments = []; 
+        let that = this; 
+        console.log(planNo);
+        var request = $.ajax({
+            url: '/plan',
+            type: 'GET',
+            data: { planNo: planNo} ,
+            contentType: 'text; charset=utf-8'
+        });
 
-        $.get(location.origin + '/plan', (data) => {
-            
-            if (data != "{}") {
 
-            
-           let string = JSON.stringify(data); 
-           let end = string.length - 4;
-           let start = 1; 
-           let mod = string.slice(start, end); 
-           array = JSON.parse(JSON.parse(mod)); 
+        request.done(function (data) {
+           
+
+         if (data != "{}") {
+            console.log(data);
+            array = JSON.parse(data);
+        //    let string = JSON.stringify(data); 
+        //    let end = string.length - 4;
+        //    let start = 1; 
+        //    let mod = string.slice(start, end); 
+        //    array = JSON.parse(JSON.parse(mod)); 
 
        
-
+            let start; 
+            let end; 
         
         for (let i = 0; i < array.length; i++) {
             start = new google.maps.Marker ({
-                position: {lat: array[i].startLat, lng: array[i].startLong},
+                position: {lat: Number(array[i].startLat), lng: Number(array[i].startLong)},
                 map: map,
                 title: String(i),
             });
 
             end = new google.maps.Marker ({
-                position: {lat: array[i].endLat, lng: array[i].endLong},
+                position: {lat: Number(array[i].endLat), lng: Number(array[i].endLong)},
                 map: map,
                 title: String(i),
             });
 
+            console.log(that.segments);
             
-            this.segments.push(new Segment(start, end, array[i].maxSpeed, array[i].speed, array[i].bearing)); 
+            that.segments.push(new Segment(start, end, Number(array[i].maxSpeed), Number(array[i].speed), Number(array[i].bearing))); 
 
         }
-        this.renderPath(map); 
-        this.updateLabels(); 
+        that.renderPath(map); 
+        that.updateLabels(); 
 
     
     }
-    
+
+
     });
+    //     $.get(location.origin + '/plan', (data) => {
+            
+    //         if (data != "{}") {
+
+            
+    //        let string = JSON.stringify(data); 
+    //        let end = string.length - 4;
+    //        let start = 1; 
+    //        let mod = string.slice(start, end); 
+    //        array = JSON.parse(JSON.parse(mod)); 
+
+       
+
+        
+    //     for (let i = 0; i < array.length; i++) {
+    //         start = new google.maps.Marker ({
+    //             position: {lat: array[i].startLat, lng: array[i].startLong},
+    //             map: map,
+    //             title: String(i),
+    //         });
+
+    //         end = new google.maps.Marker ({
+    //             position: {lat: array[i].endLat, lng: array[i].endLong},
+    //             map: map,
+    //             title: String(i),
+    //         });
+
+            
+    //         this.segments.push(new Segment(start, end, array[i].maxSpeed, array[i].speed, array[i].bearing)); 
+
+    //     }
+    //     this.renderPath(map); 
+    //     this.updateLabels(); 
+
+    
+    // }
+    
+    // });
 
     //console.log('line', this.segNo()); 
 
@@ -368,12 +419,15 @@ export default class Path extends EventTarget {
 
 
        let text = JSON.stringify(array);
-       console.log(text); 
+      // console.log(text); 
       
-        
      
 
-        $.post(location.origin +'/plan', text, () => {}, text); 
+        $.post('/plan', text, function (data) {
+            window.showModal(data);
+            console.log(this.planNo);
+        }, "text"); 
+
 
        // console.log(this.segments);
     }

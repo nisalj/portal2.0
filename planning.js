@@ -21,6 +21,7 @@ let save;
 let home;
 let speedText;
 let maxText;  
+let planNo; 
 
 window.onload = function() {
   initMap(); 
@@ -218,8 +219,8 @@ function initMap() {
             $('#modal').modal('show'); 
           } else{
             path.sendPath(); 
-            $('#modaltext').text("Path saved") 
-            $('#modal').modal('show'); 
+         //   setTimeout(showModal, 500); 
+          //  console.log(path.planNo);
           }
 
         }); 
@@ -259,6 +260,15 @@ function initMap() {
        map.addListener('click', addLatLng); 
 
 
+}
+
+window.showModal = function (num) {
+ 
+  planNo = num; 
+  $('#modaltext').text("Path saved") 
+  $('#planno').text(`Plan number is: ${planNo}`);
+  $('#planno').css("display", "block");
+  $('#modal').modal('show'); 
 }
 
 function panToLoc() {

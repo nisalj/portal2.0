@@ -1,12 +1,42 @@
+let g1; 
+let g2; 
 window.onload = function () {
   
 
-    g2 = new Dygraph(
-        document.getElementById("div_g"),
-        "/motion.csv", // path to CSV file
-        {}          // options
+    g1 = new Dygraph(
+        document.getElementById("graph_1"),
+        "/acc.csv", // path to CSV file
+        {
+            drawPoints: true,
+            showRoller: true,
+        }          // options
       );
 
+    g2 = new Dygraph(
+        document.getElementById("graph_2"),
+        "/rot.csv", // path to CSV file
+        {
+            drawPoints: true,
+            showRoller: true,
+        }          // options
+      );
+
+
+ window.intervalId = setInterval(function() {
+    //  updateCharts();
+    $.get('/acc.csv', (data) => {
+        g1.updateOptions( { 'file': data } );
+        });
+     
+ }, 1000);
+
+
+ function updateCharts() {
+    $.get('/acc.csv', (data) => {
+        console.log(data);
+    g1.updateOptions( { 'file': data } );
+    });
+ }
 
 
 

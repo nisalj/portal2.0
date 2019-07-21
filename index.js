@@ -14,7 +14,8 @@ let missionNo = 0;
 let planNo = 0;  
 let firstLatLong = true; 
 let firstDetail = true; 
-let firstMotion = true; 
+let firstAcc = true; 
+let firstRot = true; 
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -68,7 +69,8 @@ console.log("started. mission No ", missionNo);
 //console.log("first connection!")
 firstLatLong = true; 
 firstDetail = true; 
-firstMotion = true; 
+firstAcc = true; 
+firstRot = true; 
 res.send("ack");
 
 } ); 
@@ -80,7 +82,7 @@ app.post('/details', function(req, res) {
     detailWrite(obj); 
 })
 
-let helper = function(arr, first) {
+let helper = function(arr) {
     
 
     let string = ''; 
@@ -95,20 +97,44 @@ let helper = function(arr, first) {
 }
 
 
-function latMotionWrite(data) {
+function rotWrite(data) {
 
-    if (firstMotion) {
+    if (firstRot) {
    
-        fs.appendFileSync(`./missions/mission${missionNo}/motion.csv`, helper(Object.keys(data)), (err) => {
+        fs.appendFileSync(`./missions/mission${missionNo}/rot.csv`, helper(Object.keys(data)), (err) => {
             if(err)
             console.log(err);
           //  console.log('done');
         });
-        firstMotion = false; 
+        firstRot = false; 
     }
     
     
-    fs.appendFile(`./missions/mission${missionNo}/motion.csv`, helper(Object.values(data)), (err) => {
+    fs.appendFile(`./missions/mission${missionNo}/rot.csv`, helper(Object.values(data)), (err) => {
+        if(err)
+        console.log(err);
+      //  console.log('done');
+    });   
+
+
+
+}
+
+
+function accWrite(data) {
+
+    if (firstAcc) {
+   
+        fs.appendFileSync(`./missions/mission${missionNo}/acc.csv`, helper(Object.keys(data)), (err) => {
+            if(err)
+            console.log(err);
+          //  console.log('done');
+        });
+        firstAcc = false; 
+    }
+    
+    
+    fs.appendFile(`./missions/mission${missionNo}/acc.csv`, helper(Object.values(data)), (err) => {
         if(err)
         console.log(err);
       //  console.log('done');
@@ -185,6 +211,28 @@ fs.appendFile(`./missions/mission${missionNo}/details.csv`, helper(Object.values
 //ws.end();
 }
 
+function getPlan(reqNo, res) {
+    const csvFilePath= `./plans/plan${reqNo}.csv`
+    const csv = require('csvtojson')
+    csv()
+    .fromFile(csvFilePath)
+    .then((jsonObj)=>{
+        console.log("hello from getplan");
+        console.log(jsonObj);
+        res.send(JSON.stringify(jsonObj));
+        /**
+         * [
+         * 	{a:"1", b:"2", c:"3"},
+         * 	{a:"4", b:"5". c:"6"}
+         * ]
+         */ 
+    })
+
+
+}
+
+
+
 function planWrite(object) {
 
 const ws = fs.createWriteStream(`./plans/plan${planNo}.csv`,{'flags': 'a'});
@@ -252,22 +300,34 @@ app.post('/plan', (req, res) => {
    // var text = String(req.body);
     //console.log(JSON.stringify(req.body));
     plan = req.body; 
+    console.log(plan); 
     let string = JSON.stringify(plan); 
     let end = string.length - 4;
     let start = 1; 
     let mod = string.slice(start, end); 
     array = JSON.parse(JSON.parse(mod)); 
     console.log(array);
-    res.end("Plan received")
     planNo = fs.readdirSync('./plans').length; 
     console.log(plan);
+    res.send(String(planNo));
     planWrite(array);
 
 }); 
 
 app.get('/plan', (req, res) => {
-    if(plan)
-    res.send(plan);
+    let reqNo = req.query.planNo; 
+    //console.log("requested plan", req.query.planNo)
+
+    if(planNo => 1) {
+    
+        if (reqNo == "undefined" || reqNo == planNo || reqNo == "")
+        getPlan(planNo, res);
+        else if ( reqNo >= 1 && reqNo <= planNo) {
+        getPlan(reqNo, res);
+        } else {
+        getPlan(planNo, res);
+        }
+    }
     else 
     res.send("{}");
 
@@ -289,20 +349,36 @@ app.get("/latlong.csv", (req,res) => {
   });
 
 
-app.get("/motion.csv", (req,res) => {  
-    fs.readFile(`./missions/mission${missionNo-1}/motion.csv`, function read(err, data) {
+
+app.get("/acc.csv", (req,res) => {  
+    fs.readFile(`./missions/mission${missionNo}/acc.csv`, function read(err, data) {
       if (err) {
           res.send('{}');
           throw err;
       }
-     
-      res.setHeader('Content-disposition', 'attachment; filename=motion.csv');
+      console.log(missionNo);
+      res.setHeader('Content-disposition', 'attachment; filename=acc.csv');
       res.set('Content-Type', 'text/csv');
       res.status(200).send(data);
   });
    
- 
   });
+
+  app.get("/rot.csv", (req,res) => {  
+    fs.readFile(`./missions/mission${missionNo}/rot.csv`, function read(err, data) {
+      if (err) {
+          res.send('{}');
+          throw err;
+      }
+      console.log(missionNo);
+      res.setHeader('Content-disposition', 'attachment; filename=rot.csv');
+      res.set('Content-Type', 'text/csv');
+      res.status(200).send(data);
+  });
+   
+  });
+
+ 
 
 
 
@@ -332,8 +408,22 @@ app.get("/details.csv", (req,res) => {
 });
 
 app.post('/acc', (req,res) => {
-    //console.log(req.body);
-    latMotionWrite(req.body);
+    let acc = {
+        time: req.body.time, 
+        accX: req.body.accX, 
+        accY: req.body.accY,
+        accZ: req.body.accZ,
+    }
+    let rot = {
+        time: req.body.time, 
+        rotA: req.body.rotA, 
+        rotB: req.body.rotB,
+        rotG: req.body.rotG,
+    }
+    accWrite(acc);
+    rotWrite(rot); 
+    //latMotionWrite(req.body);
+
     res.send("recieved motion");
 });
 
