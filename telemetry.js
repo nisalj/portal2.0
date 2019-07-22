@@ -84,7 +84,7 @@ element = document.getElementById("share");
 element.parentNode.removeChild(element);
 
  element = document.getElementById("planselect");
-// element.style.display = "none";
+ element.style.display = "none";
 // element.parentElement.removeChild(element);
 status.textContent = "Viewing location"; 
 status.style.display = "none";

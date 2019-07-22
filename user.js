@@ -119,7 +119,8 @@ export default class User {
       let radius = this.blinckCircle.getRadius(); 
 
       if (radius >= this.uncertRadius*1.5) {
-  
+        this.blinckCircle.setMap(null);
+
         clearInterval(this.intfunc);
   
 
@@ -166,27 +167,43 @@ export default class User {
         return;
       }
 
+      let correction = (target - heading + 180 + 360)%360 - 180; 
       
-      let head = heading;
-      let targ = target; 
-      if (heading > 180)
-      head = 360 - heading; 
-      if(target > 180)
-      targ = 360 - target; 
       let color = "red"; 
       if (Math.abs(this.correction) <= 10)
       color = "lime";
+      // let head = heading;
+      // let target = target; 
 
-      if (head < targ) {
+      // if (head > 180) {
+      //   head = head % 180
+      // }
+
+      // if (head < targ) {
+      //   this.compass.update({
+      //     highlights: [
+      //       {from: target, to: heading, color: color}
+      //     ]
+      //   });
+      // } else {
+      //   this.compass.update({
+      //     highlights: [
+      //       {from: heading, to: target, color: color}
+      //     ]
+      //   });
+      // }
+
+
+      if (correction > 0) {
         this.compass.update({
           highlights: [
-            {from: target, to: heading, color: color}
+            {from: heading, to: target, color: color}
           ]
         });
       } else {
         this.compass.update({
           highlights: [
-            {from: heading, to: target, color: color}
+            {from: target, to: heading, color: color}
           ]
         });
       }
@@ -197,7 +214,9 @@ export default class User {
       //     {from: heading, to: target, color: 'blue'}
       //   ]
       // });
-      console.log(heading , target);
+     // console.log(head , targ);
+     console.log("no",(target - heading + 180 + 360)%360 - 180 ); 
+
     }
 
     //if we are at the start of segment, next waypoint is the end
@@ -291,7 +310,7 @@ export default class User {
       let map = this.path.map; 
 
       if(this.firstReading && this.planPlath.segNo()) {
-        setInterval(this.blink.bind(this), 3000);
+        setInterval(this.blink.bind(this), 4000);
         this.addFirst();
         this.targetWayPoint = this.getCurrentSeg().getStart(); 
         this.targetBearing = this.getCurrentSeg().getBearing(); 
@@ -328,7 +347,9 @@ export default class User {
         return; 
 
       }
-      this.correction = (this.targetBearing - this.heading).toFixed(0);
+      this.correction = ((this.targetBearing - this.heading + 180 + 360)%360 - 180).toFixed(0); 
+
+     // this.correction = (this.targetBearing - this.heading).toFixed(0);
       this.updateCompass(this.heading, this.targetBearing); 
      // this.bearval.innerText = (this.targetBearing - this.heading).toFixed(0); 
       this.bearval.innerText = this.correction; 
@@ -358,6 +379,9 @@ export default class User {
 
         console.log('making'); 
         this.planPlath.makePath(this.path.map, this.planNo.value); 
+        let element = document.getElementById("planselect");
+        element.parentElement.removeChild(element);
+
     }
    
 
