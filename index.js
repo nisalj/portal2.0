@@ -448,3 +448,8 @@ app.post('/heading', (req,res) => {
 });
 
 
+app.get('/connection', (req, res) => {
+    res.send("connected");
+}); 
+
+

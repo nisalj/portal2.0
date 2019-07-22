@@ -17,6 +17,7 @@ export default class User {
       this.blinckCircle; 
       this.speed; 
       this.firstReading = true;  
+      this.intfunc;
       this.status;
       this.planPlath = new Path(); 
       this.heading; 
@@ -24,6 +25,7 @@ export default class User {
       this.correction;
       this.targetBearing;
       this.currentSeg = 0; 
+      this.blinkColor = 0.8;
       this.targetWayPoint; 
       this.atSegStart = true; 
       this.sidebar = document.getElementById('over-map'); 
@@ -77,7 +79,22 @@ export default class User {
       }
       this.blinckCircle.setCenter(latlng);
 
-      this.interval = setInterval(this.timer.bind(this), 25)
+     
+        $.get('/connection', (data) => {
+     
+          this.blinckCircle.setMap(this.path.map);
+          this.blinckCircle.setRadius(0);
+          this.blinckCircle.setOptions({fillOpacity: 0}); 
+          this.blinckCircle.setOptions({strokeOpacity: 0}); 
+          this.blinkColor = 0.8;
+          this.intfunc = setInterval(this.timer.bind(this), 25);
+          this.finishedPoll = true; 
+
+
+        } );
+    
+      
+    // this.intfunc = setInterval(this.timer.bind(this), 25)
       // let rad = 5;
 
       // for (let i = 0; i < 1000; i++) {
@@ -100,16 +117,28 @@ export default class User {
 
     timer() {
       let radius = this.blinckCircle.getRadius(); 
-       
+
       if (radius >= this.uncertRadius*1.5) {
-        this.blinckCircle.setRadius(0);
-        clearInterval(this.interval);
+  
+        clearInterval(this.intfunc);
+  
+
+        return; 
       } else {
+
+        this.blinkColor -= 0.01; 
+        if (this.blinkColor <= 0) {
+          this.blinkColor = 0; 
+        }
+        this.blinckCircle.setOptions({fillOpacity: this.blinkColor}); 
+        this.blinckCircle.setOptions({strokeOpacity: this.blinkColor}); 
         this.blinckCircle.setRadius(radius + 1);
+
       }
 
     }
 
+   
     renderCircle() {
       let radius = this.uncertRadius; 
       let latlng = {lat: this.lat, lng: this.long};
@@ -258,19 +287,24 @@ export default class User {
 //main method, adds segment, plots path, updates bearing, checks for new seg etc
     plotPath() {
       this.sidebar.style.display = "block"; 
+      let latlng = new google.maps.LatLng(this.lat, this.long);
+      let map = this.path.map; 
 
       if(this.firstReading && this.planPlath.segNo()) {
+        setInterval(this.blink.bind(this), 3000);
         this.addFirst();
         this.targetWayPoint = this.getCurrentSeg().getStart(); 
         this.targetBearing = this.getCurrentSeg().getBearing(); 
         this.atSegStart = true; 
         this.firstReading = false; 
+        map.panTo(latlng);
+
       }
       //window.testfunc(); 
-      let map = this.path.map; 
+   //   let map = this.path.map; 
       //map.setZoom(17);
       let path = this.path.getPath();
-      let latlng = new google.maps.LatLng(this.lat, this.long);
+    //  let latlng = new google.maps.LatLng(this.lat, this.long);
      // map.panTo(latlng);
       console.log("updating",latlng.lat(),latlng.lng() );
 
@@ -282,7 +316,7 @@ export default class User {
       this.updateBearing(latlng); 
       this.checkForNewSeg();
       this.changeColor();
-      this.blink();
+    //  this.blink();
 
    //   this.postDetails(); 
     }
