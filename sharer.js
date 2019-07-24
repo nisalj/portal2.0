@@ -26,9 +26,9 @@ export default class Sharer extends User {
         this.long = position.coords.longitude;
         this.uncertRadius = position.coords.accuracy; 
         this.speed = position.coords.speed; 
-        this.sharePos();
+        this.shareLocation();
         this.plotPath();
-        this.postDetails(); 
+        this.shareDetails(); 
 
   
     };
@@ -58,31 +58,41 @@ export default class Sharer extends User {
 
     }
 
+
+    shareMotion() {
+      let obj = {
+        time: new Date(),
+        accX: this.accX,
+        accY: this.accY,
+        accZ: this.accZ,
+        rotA: this.rotAlpha,
+        rotB: this.rotBeta,
+        rotG: this.rotGamma,
+      }
+  
+        $.post('/acc', obj);
+   
+    }
+    
+
   getMotion() {
+    let that = this; 
+
     if(window.DeviceMotionEvent) {
       window.addEventListener('devicemotion', function(event) {
-                this.accX = event.accelerationIncludingGravity.x;
-                this.accY = event.accelerationIncludingGravity.y;
-                this.accZ = event.accelerationIncludingGravity.z;
+                that.accX = event.accelerationIncludingGravity.x;
+                that.accY = event.accelerationIncludingGravity.y;
+                that.accZ = event.accelerationIncludingGravity.z;
                 var r = event.rotationRate;
                 if (r) {
-                  this.rotAlpha = r.alpha;
-                  this.rotBeta = r.beta;
-                  this.rotGamma = r.gamma; 
+                  that.rotAlpha = r.alpha;
+                  that.rotBeta = r.beta;
+                  that.rotGamma = r.gamma; 
                 }
-
-              let obj = {
-                time: new Date(),
-                accX: this.accX,
-                accY: this.accY,
-                accZ: this.accZ,
-                rotA: this.rotAlpha,
-                rotB: this.rotBeta,
-                rotG: this.rotGamma,
-              }
-
-                $.post('/acc', obj);
-           
+              console.log(that);
+              
+              that.shareMotion();
+          
 
                 // var html = 'Acceleration:<br />';
                 // html += 'x: ' + x +'<br />y: ' + y + '<br/>z: ' + z+ '<br />';
@@ -92,6 +102,7 @@ export default class Sharer extends User {
               });
       }
   }   
+
   
     
     
@@ -164,7 +175,7 @@ export default class Sharer extends User {
     }
 
 
-    postDetails() {
+    shareDetails() {
       let detail;
       if (this.planPlath.segNo() == 0) {
         detail = {
@@ -194,7 +205,7 @@ export default class Sharer extends User {
 
 
   
-    sharePos() {
+    shareLocation() {
       let params = "lat="+this.lat+"&long="+this.long+"&uncert="+this.uncertRadius+"&speed="+this.speed; 
   
       let xhr;

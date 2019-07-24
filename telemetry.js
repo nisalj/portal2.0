@@ -1,14 +1,17 @@
 import Viewer from './viewer.js';
 import Sharer from './sharer.js';
+import Operator from './operator.js'
 
 let status;
-let user; 
+window.user; 
 let robotpath;
 let options; 
 let socket; 
 let test1; 
 let lineSymbol; 
-
+let ros; 
+window.operator; 
+window.operatorClass = Operator; 
 
 function initMap() {
 
@@ -17,6 +20,22 @@ function initMap() {
     scale: 5,
 
   };
+
+  ros = new ROSLIB.Ros({
+    url : 'ws://localhost:9090'
+  });
+
+  ros.on('connection', function() {
+    console.log('Connected to websocket server.');
+  });
+
+  ros.on('error', function(error) {
+    console.log('Error connecting to websocket server: ', error);
+  });
+
+  ros.on('close', function() {
+    console.log('Connection to websocket server closed.');
+  });
     
 
     robotpath = new google.maps.Polyline({
@@ -68,9 +87,10 @@ element = document.getElementById("planselect");
 //element.parentElement.removeChild(element);
 status.textContent = "Sharing location"; 
 
-user = new Sharer(status, options, robotpath); 
-
-user.start(); 
+window.user = new Sharer(status, options, robotpath); 
+window.operator = new Operator(ros, status, options, robotpath);
+window.user.start(); 
+window.operator.start();
 
 
 }

@@ -34,8 +34,8 @@ console.log(missionNo, planNo);
 
 
 const options = {
-    key: fs.readFileSync('/Users/Nisal/server.key'),
-    cert: fs.readFileSync('/Users/Nisal/server.crt')
+    key: fs.readFileSync('/home/nisal/server.key'),
+    cert: fs.readFileSync('/home/nisal/server.crt')
   };
 
 
@@ -66,6 +66,7 @@ missionNo = fs.readdirSync('./missions').length;
 fs.mkdir(`./missions/mission${missionNo}`, { recursive: true }, (err) => {
     if (err) throw err;
 });
+
 console.log("started. mission No ", missionNo);
 //console.log("first connection!")
 firstLatLong = true; 

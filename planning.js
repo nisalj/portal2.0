@@ -289,6 +289,7 @@ function panMapTo(position) {
   return null; 
    
   map.panTo(position); 
+  map.setZoom(14);
 }
 
 
