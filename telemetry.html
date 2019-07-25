@@ -42,17 +42,24 @@
         display: none;
       }
 
-    /* #robotFrontCamera {
+     #robotFrontCamera {
       position: absolute;
       right: 20px;
       bottom: 50px;
       border-style: solid; 
       border-width: 2px;
       height: 150px;
-      z-index: 1;
+      width: 200px;
+      z-index: 3;
+      display: none;
     }
 
-    #robotRearCamera {
+    #button-div {
+      position: absolute;
+      right: 50px;
+      top: 150px;
+    }
+    /* #robotRearCamera {
       position: absolute;
       right: 80px;
       bottom: 200px;
@@ -60,7 +67,7 @@
       border-radius: 10px;
       height: 150px;
       z-index: 2;
-    } */
+    }  */
 
     .jumbotron{
         margin: 0;
@@ -283,6 +290,17 @@
              <div id="joystick">
 
              </div>
+
+         <div>
+      <img id="robotFrontCamera" 
+           src="" 
+           alt="" 
+          >
+         </div>  
+         
+         <div id="button-div">
+           <button class="btn-lg btn-danger align-items"  id="stopbutton">STOP</button>
+         </div>
             
 
 

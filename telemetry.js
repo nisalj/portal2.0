@@ -10,6 +10,7 @@ let socket;
 let test1; 
 let lineSymbol; 
 let ros; 
+let user; 
 window.operator; 
 window.operatorClass = Operator; 
 
@@ -22,7 +23,7 @@ function initMap() {
   };
 
   ros = new ROSLIB.Ros({
-    url : 'ws://localhost:9090'
+    url : 'wss://localhost:9090',
   });
 
   ros.on('connection', function() {
@@ -31,6 +32,8 @@ function initMap() {
 
   ros.on('error', function(error) {
     console.log('Error connecting to websocket server: ', error);
+   // alert('error');
+    alert(error);
   });
 
   ros.on('close', function() {
@@ -87,10 +90,9 @@ element = document.getElementById("planselect");
 //element.parentElement.removeChild(element);
 status.textContent = "Sharing location"; 
 
-window.user = new Sharer(status, options, robotpath); 
-window.operator = new Operator(ros, status, options, robotpath);
-window.user.start(); 
-window.operator.start();
+user = new Sharer(status, options, robotpath); 
+user.start(); 
+//window.operator.start();
 
 
 }
@@ -109,8 +111,10 @@ element.parentNode.removeChild(element);
 status.textContent = "Viewing location"; 
 status.style.display = "none";
 socket = io.connect(); 
-user = new Viewer(robotpath, socket);
-user.start();
+//window.user = new Viewer(robotpath, socket);
+window.operator = new Operator(robotpath, socket, ros);
+window.operator.start();
+//window.user.start();
 }
 
 window.onload = function() {

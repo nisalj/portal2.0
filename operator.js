@@ -1,12 +1,12 @@
-import Sharer from './sharer.js'
+import Viewer from './viewer.js';
 
-export default class Operator extends Sharer {
-    constructor(ros, title, options, path){
-    super(title, options, path);
+export default class Operator extends Viewer {
+    constructor(path, socket, ros){
+    super(path, socket);
     this.ros = ros; 
     this.cmdVel = new ROSLIB.Topic({
         ros : this.ros,
-        name : 'turtle1/cmd_vel',
+        name : '/mobile_base_controller/cmd_vel',
         messageType : 'geometry_msgs/Twist'
       });
     
@@ -23,8 +23,12 @@ export default class Operator extends Sharer {
       }
   });
       this.movefunc;
-      this.publish = true; 
-
+      this.publish = true;
+      this.video = document.getElementById("robotFrontCamera"); 
+      this.robot_IP = "127.0.0.1";
+      this.turnSpotFunc;
+      this.pidFunc; 
+      this.stopbutton = document.getElementById("stopbutton")
 
     }
 
@@ -34,8 +38,24 @@ export default class Operator extends Sharer {
   
     this.joystick();
     this.cmdVel.advertise();
+    this.video.style.display = "block";
+    //$.post('/start', 'mission start');
+ 
+    this.stopbutton.addEventListener("click", () => {
+      this.twist.linear.x = 0;
+      this.twist.angular.z = 0;
+      this.moveAction();
+    
+    }); 
 
+    this.makePlan(); 
+    setTimeout(this.getLocation.bind(this), 200);
+    setTimeout(this.getHeading.bind(this), 300);
+    
+    //setTimeout(this.getMotion.bind(this),400);
 
+   // this.video.src = "http://" + this.robot_IP + ":8080/stream/video.mjpeg";
+   // this.video.src = "http://127.0.0.1:8080/stream_viewer?topic=/webcam/image_raw&type=mjpeg&quality=80"
     //setInterval(this.sendCommand.bind(this, twist), 100); 
         
     }
@@ -65,7 +85,7 @@ export default class Operator extends Sharer {
             // convert angles to radians and scale linear and angular speed
             // adjust if youwant robot to drvie faster or slower
             var lin = Math.cos(direction / 57.29) * nipple.distance * 0.005;
-            var ang = Math.sin(direction / 57.29) * nipple.distance * 0.05;
+            var ang = Math.sin(direction / 57.29) * nipple.distance * 0.02;
             // nipplejs is triggering events when joystic moves each pixel
             // we need delay between consecutive messege publications to
             // prevent system from being flooded by messages
@@ -105,6 +125,82 @@ export default class Operator extends Sharer {
 
 
 
+  updateTargetWayPoint() {
+       console.log('op')
+    if (this.atSegStart) {
+      this.targetWayPoint = this.getCurrentSeg().getEnd(); 
+      this.atSegStart = false; 
+      //console.log('update');
+      console.log(this.planPlath.segNo())
+      this.turnSpotFunc = setInterval(this.turnToWaypoint.bind(this), 50);
+      //this.turnToWaypoint();
+     // setTimeout(this.turnToWaypoint.bind(this), 1000);
+      
+    } else if(this.currentSeg != this.planPlath.segNo()) {
+      this.updateCurrentSeg(); 
+      this.targetWayPoint = this.getCurrentSeg().getStart(); 
+      this.atSegStart = true; 
+      this.turnSpotFunc= setInterval(this.turnToWaypoint.bind(this), 50);
+
+      
+   //   this.turnToWaypoint();
+  //    setTimeout(this.turnToWaypoint.bind(this), 1000);
+
+    } else {
+      console.log("Mission complete"); 
+    }
+    console.log(this.targetBearing); 
+  }
+
+
+  turnToWaypoint() {
+    let correction_cw = -0.5;
+    let correction_ccw = 0.5; 
+    if(this.pidFunc)
+    clearInterval(this.pidFunc)
+  
+    this.twist.linear.x = 0; 
+    if (Math.abs(this.correction) < 10) {
+      this.twist.linear.x = 0; 
+      this.twist.angular.z = 0;
+      this.moveAction();
+      clearInterval(this.turnSpotFunc);
+     // this.pidFunc = setInterval(this.magnetoPID.bind(this), 50); 
+    } else if (this.correction < 0) {
+      this.twist.angular.z = correction_cw;
+      this.moveAction();
+    } else {
+      this.twist.angular.z = correction_ccw;
+      this.moveAction();
+    }
+
+
+  }
+
+
+  magnetoPID() {
+    let correction_cw = -0.1;
+    let correction_ccw = 0.1
+    let move_forward = 0.3; 
+    this.twist.linear.x = move_forward; 
+      if (Math.abs(this.correction) < 10) {
+        this.twist.linear.x = move_forward; 
+        this.twist.angular.z = 0;
+        this.moveAction();
+       // clearInterval(this.turnSpotFunc);
+      } else if (this.correction < 0) {
+        this.twist.linear.x = move_forward; 
+        this.twist.angular.z = correction_cw;
+        this.moveAction();
+      } else {
+        this.twist.linear.x = move_forward; 
+        this.twist.angular.z = correction_ccw;
+        this.moveAction();
+      }
+  
+    
+
+  }
     
 
 
@@ -113,16 +209,16 @@ export default class Operator extends Sharer {
 
 
     // //get location from robot gps, 
-    getLocation() {
+    // getLocation() {
 
-    }
-
-
-    //get imu/heading data from robot 
-    getMotion() {
+    // }
 
 
-    }
+    // //get imu/heading data from robot 
+    // getMotion() {
+
+
+    // }
 
 
     moveAction() {
@@ -142,13 +238,13 @@ export default class Operator extends Sharer {
   
 
     }
+  
+  }
 
+ 
 
     
 
-    
 
 
 
-
-}

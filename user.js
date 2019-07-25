@@ -215,7 +215,6 @@ export default class User {
       //   ]
       // });
      // console.log(head , targ);
-     console.log("no",(target - heading + 180 + 360)%360 - 180 ); 
 
     }
 
@@ -278,6 +277,7 @@ export default class User {
   showHeading() {
   this.headval.innerText = this.heading; 
   this.updateCompass(this.heading, this.targetBearing, true); 
+  //this.correction = ((this.targetBearing - this.heading + 180 + 360)%360 - 180).toFixed(0); 
 
   let lineSymbol = {
     path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
@@ -316,6 +316,8 @@ export default class User {
         this.targetBearing = this.getCurrentSeg().getBearing(); 
         this.atSegStart = true; 
         this.firstReading = false; 
+        this.correction = ((this.targetBearing - this.heading + 180 + 360)%360 - 180).toFixed(0); 
+        this.updateTargetWayPoint();
         map.panTo(latlng);
 
       }

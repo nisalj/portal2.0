@@ -24,7 +24,7 @@ export default class Viewer extends User {
       })
     }
   
-    getSharerPos() {
+    getLocation() {
       this.socket.on('new location', data => {
           this.firstloc = false; 
           this.lat = parseFloat(data.lat); 
@@ -39,11 +39,23 @@ export default class Viewer extends User {
       
   
     }
+
+
+    getMotion() {
+      this.socket.on("new motion", data => {
+        this.accX = parseFloat(data.accX); 
+        this.accY = parseFloat(data.accY); 
+        this.accZ = parseFloat(data.accZ);
+        this.rotAlpha = parseFloat(data.rotA); 
+        this.rotBeta = parseFloat(data.rotB); 
+        this.rotGamma = parseFloat(data.rotG); 
+      });
+    }
     
     start() {
 
         this.makePlan(); 
-        setTimeout(this.getSharerPos.bind(this), 200); 
+        setTimeout(this.getLocation.bind(this), 200); 
         setTimeout(this.getHeading.bind(this), 200); 
 
        // this.getSharerPos(); 
