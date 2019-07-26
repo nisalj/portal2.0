@@ -29,6 +29,7 @@ export default class Operator extends Viewer {
       this.turnSpotFunc;
       this.pidFunc; 
       this.stopbutton = document.getElementById("stopbutton")
+      this.initialTurn = 0;
 
     }
 
@@ -42,10 +43,16 @@ export default class Operator extends Viewer {
     //$.post('/start', 'mission start');
  
     this.stopbutton.addEventListener("click", () => {
+      if(this.turnSpotFunc)
+      clearInterval(this.turnSpotFunc);
+      if(this.pidFunc)
+      clearInterval(this.pidFunc);
+      if(this.movefunc)
+      clearInterval(this.movefunc);
       this.twist.linear.x = 0;
       this.twist.angular.z = 0;
       this.moveAction();
-    
+   
     }); 
 
     this.makePlan(); 
@@ -147,6 +154,7 @@ export default class Operator extends Viewer {
   //    setTimeout(this.turnToWaypoint.bind(this), 1000);
 
     } else {
+      clearInterval(this.pidFunc);
       console.log("Mission complete"); 
     }
     console.log(this.targetBearing); 
@@ -154,18 +162,36 @@ export default class Operator extends Viewer {
 
 
   turnToWaypoint() {
-    let correction_cw = -0.5;
-    let correction_ccw = 0.5; 
+  
+    let correction_cw = 0.3;
+    let correction_ccw = -0.3; 
+    if(this.initialTurn <= 35) 
+    {
+
+        correction_cw = 1.3;
+        correction_ccw = -1.3;
+      
+     
+      this.initialTurn++; 
+    } else{
+      correction_cw = 0.3;
+      correction_ccw = -0.3;
+    }
+
+   
     if(this.pidFunc)
     clearInterval(this.pidFunc)
   
     this.twist.linear.x = 0; 
-    if (Math.abs(this.correction) < 10) {
+    if (Math.abs(this.correction) < 15) {
       this.twist.linear.x = 0; 
       this.twist.angular.z = 0;
       this.moveAction();
       clearInterval(this.turnSpotFunc);
-     // this.pidFunc = setInterval(this.magnetoPID.bind(this), 50); 
+      this.initialTurn = 0;
+      this.pidFunc = setInterval(this.magnetoPID.bind(this), 50); 
+      console.log('here');
+      return;
     } else if (this.correction < 0) {
       this.twist.angular.z = correction_cw;
       this.moveAction();
@@ -179,14 +205,15 @@ export default class Operator extends Viewer {
 
 
   magnetoPID() {
-    let correction_cw = -0.1;
-    let correction_ccw = 0.1
-    let move_forward = 0.3; 
+    let correction_cw = 0.1;
+    let correction_ccw = -0.1
+    let move_forward = -0.3; 
     this.twist.linear.x = move_forward; 
       if (Math.abs(this.correction) < 10) {
         this.twist.linear.x = move_forward; 
         this.twist.angular.z = 0;
         this.moveAction();
+        //return;
        // clearInterval(this.turnSpotFunc);
       } else if (this.correction < 0) {
         this.twist.linear.x = move_forward; 
