@@ -136,8 +136,7 @@ export default class Operator extends Viewer {
        console.log('op');
        if(this.pidFunc)
        clearInterval(this.pidFunc);   
->>>>>>> f9328c8d3c571566988478433bd2664eb4b8e11a
-    if (this.atSegStart) {
+      if (this.atSegStart) {
       this.targetWayPoint = this.getCurrentSeg().getEnd(); 
       this.atSegStart = false; 
       //console.log('update');
