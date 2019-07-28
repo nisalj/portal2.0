@@ -60,17 +60,29 @@ export default class Sharer extends User {
 
 
     shareMotion() {
-      let obj = {
-        time: new Date(),
-        accX: this.accX,
-        accY: this.accY,
-        accZ: this.accZ,
-        rotA: this.rotAlpha,
-        rotB: this.rotBeta,
-        rotG: this.rotGamma,
-      }
-  
-        $.post('/acc', obj);
+      // let obj = {
+      //   time: new Date(),
+      //   accX: this.accX,
+      //   accY: this.accY,
+      //   accZ: this.accZ,
+      //   rotA: this.rotAlpha,
+      //   rotB: this.rotBeta,
+      //   rotG: this.rotGamma,
+      // }
+      // let bytesToSend = [Math.abs(this.accX), Math.abs(this.accY), Math.abs(this.accZ), 
+      //   Math.abs(this.rotAlpha)/10, Math.abs(this.rotBeta)/10, Math.abs(this.rotGamma)/10 ];
+       let bytesToSend = [this.accX*100, this.accY*100,this.accZ*100, 
+         this.rotAlpha, this.rotBeta,this.rotGamma];
+      let bytesArray = new Int16Array(bytesToSend);
+
+      $.ajax({
+        url: '/acc',
+        type: 'POST',
+        contentType: 'application/octet-stream',  
+        data: bytesArray,
+        processData: false
+     });
+       // $.post('/acc', obj);
    
     }
     

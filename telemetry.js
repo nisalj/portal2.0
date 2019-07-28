@@ -110,7 +110,8 @@ element.parentNode.removeChild(element);
 // element.parentElement.removeChild(element);
 status.textContent = "Viewing location"; 
 status.style.display = "none";
-socket = io.connect(); 
+socket = io.connect("https://localhost:5000", {secure:true, rejectUnauthorized: false}); 
+
 //window.user = new Viewer(robotpath, socket);
 window.operator = new Operator(robotpath, socket, ros);
 window.operator.start();

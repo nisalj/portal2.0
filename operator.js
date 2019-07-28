@@ -133,12 +133,14 @@ export default class Operator extends Viewer {
 
 
   updateTargetWayPoint() {
-       console.log('op')
+       console.log('op');
+       if(this.pidFunc)
+       clearInterval(this.pidFunc);   
     if (this.atSegStart) {
       this.targetWayPoint = this.getCurrentSeg().getEnd(); 
       this.atSegStart = false; 
       //console.log('update');
-      console.log(this.planPlath.segNo())
+      console.log(this.planPlath.segNo());
       this.turnSpotFunc = setInterval(this.turnToWaypoint.bind(this), 50);
       //this.turnToWaypoint();
      // setTimeout(this.turnToWaypoint.bind(this), 1000);
@@ -180,7 +182,7 @@ export default class Operator extends Viewer {
 
    
     if(this.pidFunc)
-    clearInterval(this.pidFunc)
+    clearInterval(this.pidFunc);
   
     this.twist.linear.x = 0; 
     if (Math.abs(this.correction) < 15) {
