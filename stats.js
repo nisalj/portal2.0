@@ -5,7 +5,9 @@ let acc  = [];
 let rot = [];
 window.onload = function () {
 
-    socket = io.connect();
+
+
+
 
   
 
@@ -17,18 +19,35 @@ window.onload = function () {
             showRoller: true,
         }          // options
       );
-      
+    
+    socket = io.connect();
 
-    g2 = new Dygraph(
-        document.getElementById("graph_2"),
-        "/rot.csv", // path to CSV file
-        {
-            drawPoints: true,
-            showRoller: true,
-        }          // options
-      );
 
-    setInterval(updateCharts, 500); 
+    socket.on('new acc', (data) => {
+
+      let arr = new Int16Array(data);
+       // arr[0] = arr[0]/100;
+       // arr[1] = arr[1]/100;
+       // arr[2] = arr[2]/100;
+      //console.log(arr);
+     
+      acc.push([new Date(), arr[0]/100, arr[1]/100, arr[2]/100]);
+     // console.log(row);
+      g1.updateOptions({'file': acc }); 
+      //console.log("new acc");
+
+    }); 
+
+    // g2 = new Dygraph(
+    //     document.getElementById("graph_2"),
+    //     "/rot.csv", // path to CSV file
+    //     {
+    //         drawPoints: true,
+    //         showRoller: true,
+    //     }          // options
+    //   );
+
+    // setInterval(updateCharts, 5); 
 
 //  window.intervalId = setInterval(function() {
 //     //  updateCharts();

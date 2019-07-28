@@ -21,8 +21,10 @@ let firstRot = true;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(bodyParser.raw({type: 'application/octet-stream', limit : '2mb'}));
 app.use(express.static('.'));
 
+//io.set("transports", ["xhr-polling","websocket","polling", "htmlfile"]);
 
 // fs.readdir('./missions', (err,files) => {
 //     console.log(files);
@@ -34,8 +36,8 @@ console.log(missionNo, planNo);
 
 
 const options = {
-    key: fs.readFileSync('/home/nisal/server.key'),
-    cert: fs.readFileSync('/home/nisal/server.crt')
+    key: fs.readFileSync('/home/nj/server.key'),
+    cert: fs.readFileSync('/home/nj/server.crt')
   };
 
 
@@ -46,9 +48,12 @@ const options = {
 const server = https.createServer( options, app);
 const PORT = process.env.PORT || 5000; 
 
+io = io.listen(server, {pingTimeout: 7000, pingInterval: 10000} ); 
+io.set("transports", ["xhr-polling","websocket","polling", "htmlfile"]);
+
 server.listen(PORT, () => console.log("Server running on port " + PORT)); 
 
-io = io.listen(server); 
+
 
 io.sockets.on('connection', socket => {
     console.log('connected'); 
@@ -417,23 +422,33 @@ app.get("/details.csv", (req,res) => {
    // res.send("hello");
 });
 
+//app.use(bodyParser.raw({type: 'application/octet-stream', limit : '2mb'}));
+
+
 app.post('/acc', (req,res) => {
-    let acc = {
-        time: req.body.time, 
-        accX: req.body.accX, 
-        accY: req.body.accY,
-        accZ: req.body.accZ,
-    }
-    let rot = {
-        time: req.body.time, 
-        rotA: req.body.rotA, 
-        rotB: req.body.rotB,
-        rotG: req.body.rotG,
-    }
-    accWrite(acc);
-    rotWrite(rot); 
-    io.sockets.emit('new acc', acc);
-    io.sockets.emit('new rot', rot);
+//    var buffer = Buffer.from( new Uint8Array(req.body) );
+    let buf = req.body; 
+    io.binary(true).emit('new acc', buf);
+
+    // console.log(buf.readInt16LE(0)/100, buf.readInt16LE(2)/100, buf.readInt16LE(4)/100, 
+    // buf.readInt16LE(6), buf.readInt16LE(8), buf.readInt16LE(10));
+    //console.log(req.body[0]);
+    // let acc = {
+    //     time: req.body.time, 
+    //     accX: req.body.accX, 
+    //     accY: req.body.accY,
+    //     accZ: req.body.accZ,
+    // }
+    // let rot = {
+    //     time: req.body.time, 
+    //     rotA: req.body.rotA, 
+    //     rotB: req.body.rotB,
+    //     rotG: req.body.rotG,
+    // }
+    // accWrite(acc);
+    // rotWrite(rot); 
+    // io.sockets.emit('new acc', acc);
+    // io.sockets.emit('new rot', rot);
 
     //latMotionWrite(req.body);
 
