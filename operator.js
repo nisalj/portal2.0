@@ -133,7 +133,9 @@ export default class Operator extends Viewer {
 
 
   updateTargetWayPoint() {
-       console.log('op')
+       console.log('op');
+       if(this.pidFunc)
+       clearInterval(this.pidFunc);
     if (this.atSegStart) {
       this.targetWayPoint = this.getCurrentSeg().getEnd(); 
       this.atSegStart = false; 
@@ -168,8 +170,8 @@ export default class Operator extends Viewer {
     if(this.initialTurn <= 35) 
     {
 
-        correction_cw = 1.3;
-        correction_ccw = -1.3;
+        correction_cw = 0.5;
+        correction_ccw = -0.5;
       
      
       this.initialTurn++; 
@@ -183,13 +185,14 @@ export default class Operator extends Viewer {
     clearInterval(this.pidFunc)
   
     this.twist.linear.x = 0; 
-    if (Math.abs(this.correction) < 15) {
+    if (Math.abs(this.correction) < 10) {
       this.twist.linear.x = 0; 
       this.twist.angular.z = 0;
       this.moveAction();
       clearInterval(this.turnSpotFunc);
       this.initialTurn = 0;
       this.pidFunc = setInterval(this.magnetoPID.bind(this), 50); 
+     // setImmediate(this.magnetoPID);
       console.log('here');
       return;
     } else if (this.correction < 0) {
@@ -205,10 +208,12 @@ export default class Operator extends Viewer {
 
 
   magnetoPID() {
+
     let correction_cw = 0.1;
     let correction_ccw = -0.1
-    let move_forward = -0.3; 
+    let move_forward = 0.3; 
     this.twist.linear.x = move_forward; 
+    console.log('here pid');
       if (Math.abs(this.correction) < 10) {
         this.twist.linear.x = move_forward; 
         this.twist.angular.z = 0;
