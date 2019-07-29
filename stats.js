@@ -4,8 +4,16 @@ let socket;
 let acc  = [];
 let rot = [];
 let updated = false; 
+let graphOn = false; 
+let started = false;
+let firstReading = true; 
+//let toggle = document.getElementById("toggle-graph");
+
 window.onload = function () {
 
+
+  let toggle = document.getElementById("toggle-graph");
+  let clear = document.getElementById("clear-graph");
 
 
   let socket = io({
@@ -60,27 +68,86 @@ window.onload = function () {
     });
           
 
-    socket.on('new-acc', (data) => {
-
-      let arr = new Int16Array(data);
-      console.log('new data');
-       // arr[0] = arr[0]/100;
-       // arr[1] = arr[1]/100;
-       // arr[2] = arr[2]/100;
-      //console.log(arr);
-     if(!updated) {
-      console.log('update');
-
-      updated = true; 
-      acc.push([new Date(), arr[0]/100, arr[1]/100, arr[2]/100, arr[3], arr[4], arr[5]]);
-     // console.log(row);
+    clear.addEventListener("click" , () => {
+      //console.log("clear");
+      toggle.innerText = "Start";
+      started = false; 
+      acc = []; 
+      acc.push([new Date(), 0, 0, 0, 0,0,0]); 
       g1.updateOptions({'file': acc }); 
-      updated = false; 
-     }
+      socket.off('new-acc');
 
-      //console.log("new acc");
 
     }); 
+
+
+ toggle.addEventListener( "click", () => {
+    if (!started) {
+      toggle.innerText = "Pause";
+
+      socket.on('new-acc', (data) => {
+
+        let arr = new Int16Array(data);
+        console.log('new data');
+         // arr[0] = arr[0]/100;
+         // arr[1] = arr[1]/100;
+         // arr[2] = arr[2]/100;
+        //console.log(arr);
+       if(!updated) {
+        console.log('update');
+  
+        updated = true; 
+        if(firstReading) {
+       // acc.push([new Date(), arr[0]/100, arr[1]/100, arr[2]/100, arr[3], arr[4], arr[5]]);
+
+
+        g1 = new Dygraph(
+      document.getElementById("graph_1"),
+      `${new Date()},0,0,0,0,0,0\n`, // path to CSV file
+      {
+          drawPoints: false,
+          showRoller: false,
+          rollPeriod: 0,
+          axes: {
+            x : {
+              drawGrid: false
+            },
+            y : {
+              drawGrid: false
+            },
+          },
+          legend: 'always',
+          labels: ['Time', 'AccX (m/s)','AccY (m/s)', 'AccZ (m/s)', 'rotA (deg/s)', 'rotB (deg/s)', 'rotG (deg/s)'],
+          labelsSeparateLines: true,
+          visibility: [false, false, false, false, false, false]
+      }          // options
+      );
+          //acc = [];
+         // g1.updateOptions({'file': acc }); 
+         // g1.updateOptions({'file': acc }); 
+          firstReading = false; 
+        }
+
+        acc.push([new Date(), arr[0]/100, arr[1]/100, arr[2]/100, arr[3], arr[4], arr[5]]);
+       // console.log(row);
+        g1.updateOptions({'file': acc }); 
+        updated = false; 
+       }
+       
+  
+        //console.log("new acc");
+  
+      }); 
+      started = true; 
+    } else {
+      toggle.innerText = "Start";
+      started = false; 
+      socket.off('new-acc');
+    }
+
+  });
+
+
 
     // g2 = new Dygraph(
     //     document.getElementById("graph_2"),
@@ -137,31 +204,10 @@ window.onload = function () {
   };
 
 
- 
-  function updateCharts() {
-    
-    socket.once('new acc', (data) => {
-      acc.push([new Date(data.time), Number(data.accX), Number(data.accY), Number(data.accZ)]);
-     // console.log(row);
-      g1.updateOptions({'file': acc }); 
-      //console.log("new acc");
-
-    }); 
-
-    socket.once('new rot', (data) => {
-      rot.push([new Date(data.time), Number(data.rotA), Number(data.rotB), Number(data.rotG)]);
-      // console.log(row);
-       g2.updateOptions({'file': rot }); 
-     // console.log("new rot");
-
-    }); 
-  
-
-  }
 
 
   function toggleAccX () {
-  
+
     var checkBox = document.getElementById("accX");
     if (checkBox.checked == true){
       g1.setVisibility(0, true);
