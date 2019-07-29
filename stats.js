@@ -6,7 +6,6 @@ let rot = [];
 let updated = false; 
 let graphOn = false; 
 let started = false;
-let firstReading = true; 
 //let toggle = document.getElementById("toggle-graph");
 
 window.onload = function () {
@@ -36,18 +35,22 @@ window.onload = function () {
             rollPeriod: 0,
             axes: {
               x : {
+                drawAxis: true, 
                 drawGrid: false
               },
               y : {
-                drawGrid: false
+                drawGrid: false,
+              
               },
             },
-            legend: 'always',
+            //legend: 'always',
             labels: ['Time', 'AccX (m/s)','AccY (m/s)', 'AccZ (m/s)', 'rotA (deg/s)', 'rotB (deg/s)', 'rotG (deg/s)'],
             labelsSeparateLines: true,
-            visibility: [false, false, false, false, false, false]
+            visibility: [false, false, false, false, false, false],
+            dateWindow: [Date.now(), Date.now() + 30000]
         }          // options
       );
+
 
     
     // socket = io.connect("https://localhost:5000", {reconnection: false, 
@@ -86,51 +89,29 @@ window.onload = function () {
       toggle.innerText = "Pause";
 
       socket.on('new-acc', (data) => {
-
+        g1.updateOptions({dateWindow: [Date.now() - 6000, Date.now()]}); 
         let arr = new Int16Array(data);
-        console.log('new data');
+        //console.log('new data');
          // arr[0] = arr[0]/100;
          // arr[1] = arr[1]/100;
          // arr[2] = arr[2]/100;
         //console.log(arr);
        if(!updated) {
-        console.log('update');
-  
+        //console.log('update');
         updated = true; 
-        if(firstReading) {
-       // acc.push([new Date(), arr[0]/100, arr[1]/100, arr[2]/100, arr[3], arr[4], arr[5]]);
+        if(acc.length == 300) {
+          acc.splice(0,150);
+          //acc = []; 
+          //g1.updateOptions({dateWindow: [Date.now(), Date.now() + 6000]}); 
 
-
-        g1 = new Dygraph(
-      document.getElementById("graph_1"),
-      `${new Date()},0,0,0,0,0,0\n`, // path to CSV file
-      {
-          drawPoints: false,
-          showRoller: false,
-          rollPeriod: 0,
-          axes: {
-            x : {
-              drawGrid: false
-            },
-            y : {
-              drawGrid: false
-            },
-          },
-          legend: 'always',
-          labels: ['Time', 'AccX (m/s)','AccY (m/s)', 'AccZ (m/s)', 'rotA (deg/s)', 'rotB (deg/s)', 'rotG (deg/s)'],
-          labelsSeparateLines: true,
-          visibility: [false, false, false, false, false, false]
-      }          // options
-      );
-          //acc = [];
-         // g1.updateOptions({'file': acc }); 
-         // g1.updateOptions({'file': acc }); 
-          firstReading = false; 
         }
+        let d = new Date(); 
 
-        acc.push([new Date(), arr[0]/100, arr[1]/100, arr[2]/100, arr[3], arr[4], arr[5]]);
+        acc.push([d, arr[0]/100, arr[1]/100, arr[2]/100, arr[3], arr[4], arr[5]]);
        // console.log(row);
-        g1.updateOptions({'file': acc }); 
+        g1.updateOptions({'file': acc }  
+        //{dateWindow: [0, Date.now()]} 
+        ); 
         updated = false; 
        }
        
