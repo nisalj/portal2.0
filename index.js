@@ -36,8 +36,8 @@ console.log(missionNo, planNo);
 
 
 const options = {
-    key: fs.readFileSync('/home/nj/server.key'),
-    cert: fs.readFileSync('/home/nj/server.crt')
+    key: fs.readFileSync('/home/nisal/server.key'),
+    cert: fs.readFileSync('/home/nisal/server.crt')
   };
 
 
@@ -48,10 +48,11 @@ const options = {
 const server = https.createServer( options, app);
 const PORT = process.env.PORT || 5000; 
 
-io = io.listen(server, {pingTimeout: 7000, pingInterval: 10000} ); 
-io.set("transports", ["xhr-polling","websocket","polling", "htmlfile"]);
-
 server.listen(PORT, () => console.log("Server running on port " + PORT)); 
+
+io = io.listen(server, {pingTimeout: 70000, pingInterval: 10000, rejectUnauthorized: false, upgradeTimeout:30000,   'force new connection': true
+} ); 
+io.set( {rememberTransport : false, transports: ["xhr-polling","WebSocket","polling", "Flash Socket", "htmlfile"]});
 
 
 
@@ -64,6 +65,11 @@ io.sockets.on('connection', socket => {
     
     
 }); 
+
+
+io.sockets.on('error', err => {
+  console.log('error', err);
+});
       
 app.post('/start', function(req,res) {
 console.log(req.body);
@@ -364,6 +370,7 @@ app.get("/latlong.csv", (req,res) => {
 
 
 app.get("/acc.csv", (req,res) => {  
+  
     fs.readFile(`./missions/mission${missionNo}/acc.csv`, function read(err, data) {
 
       if (err) {
@@ -423,13 +430,16 @@ app.get("/details.csv", (req,res) => {
 });
 
 //app.use(bodyParser.raw({type: 'application/octet-stream', limit : '2mb'}));
-
+let i = 0;
 
 app.post('/acc', (req,res) => {
 //    var buffer = Buffer.from( new Uint8Array(req.body) );
     let buf = req.body; 
-    io.binary(true).emit('new acc', buf);
-
+    i++;
+    const copiedBuf = Uint8Array.prototype.slice.call(req.body, 0, 2);
+    //console.log(copiedBuf);
+    io.binary(true).emit('new-acc', buf);
+    console.log('emitting', i);
     // console.log(buf.readInt16LE(0)/100, buf.readInt16LE(2)/100, buf.readInt16LE(4)/100, 
     // buf.readInt16LE(6), buf.readInt16LE(8), buf.readInt16LE(10));
     //console.log(req.body[0]);
