@@ -27,7 +27,6 @@ window.onload = function () {
 
     g1 = new Dygraph(
         document.getElementById("graph_1"),
-        "Time,AccX,AccY,AccZ,RotA,RotB,RotG\n"+
         `${new Date()}, 0,0,0,0,0,0\n`, // path to CSV file
         {
             drawPoints: false,
@@ -40,11 +39,12 @@ window.onload = function () {
               },
               y : {
                 drawGrid: false,
+                valueRange: [-20,20]
               
               },
             },
-            //legend: 'always',
-            labels: ['Time', 'AccX (m/s)','AccY (m/s)', 'AccZ (m/s)', 'rotA (deg/s)', 'rotB (deg/s)', 'rotG (deg/s)'],
+            legend: 'always',
+            labels: ['Time', 'AccX (m/s)','AccY (m/s)', 'AccZ (m/s)', 'rotA (rad/s)', 'rotB (rad/s)', 'rotG (rad/s)'],
             labelsSeparateLines: true,
             visibility: [false, false, false, false, false, false],
             dateWindow: [Date.now(), Date.now() + 30000]
@@ -99,7 +99,7 @@ window.onload = function () {
        if(!updated) {
         //console.log('update');
         updated = true; 
-        if(acc.length == 300) {
+        if(acc.length == 400) {
           acc.splice(0,150);
           //acc = []; 
           //g1.updateOptions({dateWindow: [Date.now(), Date.now() + 6000]}); 
@@ -107,7 +107,7 @@ window.onload = function () {
         }
         let d = new Date(); 
 
-        acc.push([d, arr[0]/100, arr[1]/100, arr[2]/100, arr[3], arr[4], arr[5]]);
+        acc.push([d, arr[0]/100, arr[1]/100, arr[2]/100, arr[3]*Math.PI/180, arr[4]*Math.PI/180, arr[5]*Math.PI/180]);
        // console.log(row);
         g1.updateOptions({'file': acc }  
         //{dateWindow: [0, Date.now()]} 
