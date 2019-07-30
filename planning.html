@@ -1,308 +1,330 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://bootswatch.com/4/litera/bootstrap.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="./node_modules/nouislider/distribute/nouislider.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Portal 2.0</title>
-    <style> 
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://bootswatch.com/4/litera/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="./node_modules/nouislider/distribute/nouislider.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-
-#sidebar {
-    min-width: 250px;
-    max-width: 250px;
-    /* width: 300px; */
-    background-color: white; 
-    border-radius: 25px;
-}
-
-#sidebar.active {
-    margin-left: -250px;
-}
-
-    .jumbotron{
-        margin: 0;
-        padding: 10px 10px;
-        border: 0;
-        margin-bottom: 0em
+  <title>Portal 2.0</title>
+  <style>
+    #sidebar {
+      min-width: 250px;
+      max-width: 250px;
+      /* width: 300px; */
+      background-color: white;
+      border-radius: 25px;
     }
 
-    #vid{
-        margin: auto;
-        border: 0;
-        padding: 100px;
+    #sidebar.active {
+      margin-left: -250px;
+    }
+
+    .jumbotron {
+      margin: 0;
+      padding: 10px 10px;
+      border: 0;
+      margin-bottom: 0em
+    }
+
+    #vid {
+      margin: auto;
+      border: 0;
+      padding: 100px;
 
     }
-    #wrapper { 
-    position: relative; 
-    height: 100%;
-    align-items: stretch;
+
+    #wrapper {
+      position: relative;
+      height: 100%;
+      align-items: stretch;
 
     }
-    #over-map { 
-    position: absolute; 
-    right: 0px; 
-    z-index: 99; 
-    top: 100px; 
-    
-    }
-  
-    #vid{
-        margin: 0px;
-        border: 0;
-        padding: 0px;
+
+    #over-map {
+      position: absolute;
+      right: 0px;
+      z-index: 99;
+      top: 100px;
 
     }
-   
-      /* Optional: Makes the sample page fill the window. */
-  
-  .sidebar {
-  margin-right: 20px;
-  padding: 10px;
-  padding-right: 40px; 
-  display: none;
-  width: 500px;
-  position: relative;
-  right: 0px; 
-  height: 100%;
-  overflow: auto;
 
-}
+    #vid {
+      margin: 0px;
+      border: 0;
+      padding: 0px;
 
-.sidebar a {
-  display: block;
-  padding: 16px;
-  text-decoration: none;
-}
- 
+    }
 
-.sidebar a:hover:not(.active) {
-background-color: lightgray; 
-}
+    /* Optional: Makes the sample page fill the window. */
 
-div.content {
-  margin-left: 200px;
-  padding: 1px 16px;
-  height: 1000px;
-}
+    .sidebar {
+      margin-right: 20px;
+      padding: 10px;
+      padding-right: 40px;
+      display: none;
+      width: 500px;
+      position: relative;
+      right: 0px;
+      height: 100%;
+      overflow: auto;
 
-.noUi-connect {
-	background: #007bff;
-}
+    }
 
-#home-button {
-  position: absolute;
-  top: 60px;
-  left: 10px; 
-}
+    .sidebar a {
+      display: block;
+      padding: 16px;
+      text-decoration: none;
+    }
 
-#save-button{ 
-  position: absolute;
-  bottom: 80px; 
-  left: 80px;
-}
 
-#clear-button{ 
-  position: absolute;
-  bottom: 80px; 
-  left: 10px;
-}
-@media screen and (max-width: 700px) {
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-  }
-  .sidebar a {float: right;}
-  div.content {margin-left: 0;}
-}
+    .sidebar a:hover:not(.active) {
+      background-color: lightgray;
+    }
 
-@media screen and (max-width: 400px) {
-  .sidebar a {
-    text-align: center;
-    float: none;
-  }
-}
+    div.content {
+      margin-left: 200px;
+      padding: 1px 16px;
+      height: 1000px;
+    }
 
-html, body {
+    .noUi-connect {
+      background: #007bff;
+    }
+
+    #home-button {
+      position: absolute;
+      top: 300px;
+      left: 10px;
+    }
+
+    #save-button {
+      position: absolute;
+      bottom: 80px;
+      left: 80px;
+    }
+
+    #clear-button {
+      position: absolute;
+      bottom: 80px;
+      left: 10px;
+    }
+
+    @media screen and (max-width: 700px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
         position: relative;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
+      }
 
-        
-  }
-  #map {
-        height: 100%;
-  }
+      .sidebar a {
+        float: right;
+      }
 
-    
-    </style>
+      div.content {
+        margin-left: 0;
+      }
+    }
 
-  </head>
-  <body>
+    @media screen and (max-width: 400px) {
+      .sidebar a {
+        text-align: center;
+        float: none;
+      }
+    }
 
- <nav class="navbar navbar-expand-lg navbar-dark bg-primary" >
-  <a class="navbar-brand" href="index.html">Portal 2.0</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item ">
-        <a class="nav-link" href="planning.html">Mission Planning <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="telemetry.html">Telemetry</a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="#">Stats For Geeks</a>
-      </li>
-    </ul>
-   
-  </div>
-</nav>
+    html,
+    body {
+      position: relative;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
 
 
-    
-  <div id="wrapper"> 
+    }
 
-  
-    <div id="map">  </div>
+    #map {
+      height: 100%;
+    }
+  </style>
 
-   
-    <div id="over-map">   
+</head>
 
-    <div class="sidebar form-group text-center" id="sidebar">
-      <form>
-    <div class="row"> 
-        <div class="col-6">
-        <button style="position: relative; left:-5px" id="undo" type="button" class="btn btn-danger">Delete</button>
-        </div>
-       
-      
-        <div class="col-6"> 
-          <button type="button" class="close" id="close-side">
-                  <span aria-hidden="true"> &times; </span>
-          </button>
-  
-          </div>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="index.html">Portal 2.0</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item ">
+          <a class="nav-link" href="planning.html">Mission Planning <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="telemetry.html">Telemetry</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="#">Stats For Geeks</a>
+        </li>
+      </ul>
+
     </div>
-    <br>
-    <div class="row">
-      <div class="col-5">
-        <button id="insert" type="button" class="btn btn-warning"> Insert </button>
-      </div>
-      <div class="col-7">
-        <input type="text"  style="width:50px" class="form-control pull-left" placeholder="2" value="2" id="seg_no"> 
-      </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-5">
-            <label for="lat"> Latitude</label>
-        </div>
-        <div class="col-7">
-            <input type="text"  style="width:100px" readonly=""" class="form-control pull-left" placeholder="Lat" id="lat"> 
-        </div>
-    </div>
-    <br>
-    <div class="row">
-      <div class="col-5">
-          <label for="long"> Longitude</label>
-      </div>
-      <div class="col-7">
-          <input type="text"  style="width:100px" readonly=""" class="form-control" placeholder="Long" id="long"> 
-      </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-4">
-            <label> Cruising speed </label>
-        </div>
-        <div class="col-5">
-            <div id="speed-range"> </div> 
-          </div>
-          <div class="col-3">
-            <input type="text"  style="width:55px" class="form-control pull-left" placeholder="2" value="2" id="speed-text"> 
-          </div>
+  </nav>
 
-      </div>
-      <div class="row">
-          <div class="col-4">
-              <label> Max speed </label>
+
+
+  <div id="wrapper">
+
+
+    <div id="map"> </div>
+
+
+    <div id="over-map">
+
+      <div class="sidebar form-group text-center" id="sidebar">
+        <form>
+          <div class="row">
+            <div class="col-6">
+              <button style="position: relative; left:-5px" id="undo" type="button"
+                class="btn btn-danger">Delete</button>
+            </div>
+
+
+            <div class="col-6">
+              <button type="button" class="close" id="close-side">
+                <span aria-hidden="true"> &times; </span>
+              </button>
+
+            </div>
           </div>
-          <div class="col-5">
-            <div id="max-speed"> </div>
+          <br>
+          <div class="row">
+            <div class="col-5">
+              <button id="insert" type="button" class="btn btn-warning"> Insert </button>
+            </div>
+            <div class="col-7">
+              <input type="text" style="width:50px" class="form-control pull-left" placeholder="2" value="2"
+                id="seg_no">
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-5">
+              <label for="lat"> Latitude</label>
+            </div>
+            <div class="col-7">
+              <input type="text" style="width:100px" readonly=""" class=" form-control pull-left" placeholder="Lat"
+                id="lat">
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-5">
+              <label for="long"> Longitude</label>
+            </div>
+            <div class="col-7">
+              <input type="text" style="width:100px" readonly=""" class=" form-control" placeholder="Long" id="long">
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-4">
+              <label> Cruising speed </label>
+            </div>
+            <div class="col-5">
+              <div id="speed-range"> </div>
             </div>
             <div class="col-3">
-              <input type="text"  style="width:55px" class="form-control pull-left" placeholder="5" value="5" id="max-text"> 
+              <input type="text" style="width:55px" class="form-control pull-left" placeholder="2" value="2"
+                id="speed-text">
             </div>
-        </div>
-        <div class="row" >
-          <div class="col-12 text-center"id="test-slider">  </div>
-        </div>
+
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <label> Max speed </label>
+            </div>
+            <div class="col-5">
+              <div id="max-speed"> </div>
+            </div>
+            <div class="col-3">
+              <input type="text" style="width:55px" class="form-control pull-left" placeholder="5" value="5"
+                id="max-text">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 text-center" id="test-slider"> </div>
+          </div>
 
 
-      </form>
+        </form>
+
+      </div>
+
 
     </div>
 
+    <button id="save-button" class="btn btn-primary"><i class="fa fa-save"></i></button>
+    <button id="clear-button" class="btn btn-primary"><i class="fa fa-trash"></i></button>
+    <button id="home-button" class="btn btn-primary "><i class="fa fa-home"></i></button>
 
-  </div>
-
-  <button id="save-button"  class="btn btn-primary"><i class="fa fa-save"></i></button>
-  <button id="clear-button" class="btn btn-primary"><i class="fa fa-trash"></i></button>
-  <button id="home-button" class="btn btn-primary "><i class="fa fa-home"></i></button>
-
-  <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <h1 id="modaltext" class="text-center"> GFGH</h1>
-          <h3 id="planno" style="display: none" class="text-center"> Hello </h3>
-        </div>
-        <div class="modal-footer">
-          <div class="row"></div>
-          <div class="col-md-12 text-center">
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h1 id="modaltext" class="text-center"> GFGH</h1>
+            <h3 id="planno" style="display: none" class="text-center"> Hello </h3>
+          </div>
+          <div class="modal-footer">
+            <div class="row"></div>
+            <div class="col-md-12 text-center">
               <button type="button" class="btn btn-secondary align-middle" data-dismiss="modal">Close</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
 
     <script type="module" src="planning.js"> </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvw6RInTxTbh-gGvXHdSrWIEE43Je-E40&libraries=geometry"
-    async defer></script>
+      async defer></script>
 
-    
+
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"></script>
     <script src="./node_modules/nouislider/distribute/nouislider.js"> </script>
     <script src="node_modules/wnumb/wNumb.js"></script>
     <script src="https://unpkg.com/event-target@latest/min.js"></script>
     <script src="https://unpkg.com/resize-observer-polyfill@1.5.0/dist/ResizeObserver.global.js"></script>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
 
-  </body>
+</body>
+
 </html>

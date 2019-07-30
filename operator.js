@@ -28,7 +28,7 @@ export default class Operator extends Viewer {
       this.robot_IP = "127.0.0.1";
       this.turnSpotFunc;
       this.pidFunc; 
-      this.stopbutton = document.getElementById("stopbutton")
+      this.pausebutton = document.getElementById("view")
       this.initialTurn = 0;
 
     }
@@ -42,7 +42,7 @@ export default class Operator extends Viewer {
     this.video.style.display = "block";
     //$.post('/start', 'mission start');
  
-    this.stopbutton.addEventListener("click", () => {
+    this.pausebutton.addEventListener("click", () => {
       if(this.turnSpotFunc)
       clearInterval(this.turnSpotFunc);
       if(this.pidFunc)

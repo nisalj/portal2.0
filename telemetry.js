@@ -2,7 +2,6 @@ import Viewer from './viewer.js';
 import Sharer from './sharer.js';
 import Operator from './operator.js'
 
-let status;
 window.user; 
 let robotpath;
 let options; 
@@ -33,7 +32,6 @@ function initMap() {
   ros.on('error', function(error) {
     console.log('Error connecting to websocket server: ', error);
    // alert('error');
-    alert(error);
   });
 
   ros.on('close', function() {
@@ -84,13 +82,13 @@ element.parentNode.removeChild(element);
 element = document.getElementById("share");
 element.style.display = "none";
 //element.parentNode.removeChild(element);
-element = document.getElementById("planselect");
+//element = document.getElementById("planselect");
 //element.style.display = "none";
 
 //element.parentElement.removeChild(element);
-status.textContent = "Sharing location"; 
 
-user = new Sharer(status, options, robotpath); 
+user = new Sharer(options, robotpath);
+console.log(user); 
 user.start(); 
 //window.operator.start();
 
@@ -108,8 +106,7 @@ element.parentNode.removeChild(element);
  element = document.getElementById("planselect");
  element.style.display = "none";
 // element.parentElement.removeChild(element);
-status.textContent = "Viewing location"; 
-status.style.display = "none";
+
 socket = io.connect("https://localhost:5000", {secure:true, rejectUnauthorized: false}); 
 
 //window.user = new Viewer(robotpath, socket);
@@ -121,7 +118,6 @@ window.operator.start();
 window.onload = function() {
 
   initMap(); 
-  status = document.getElementById('main-header')
   document.getElementById('share').addEventListener('click', shareClick);
   document.getElementById('view').addEventListener('click', viewClick);
 

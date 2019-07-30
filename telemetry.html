@@ -1,52 +1,60 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://bootswatch.com/4/litera/bootstrap.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="./node_modules/canvas-gauges/gauge.min.js"> </script>
-    <script src="./node_modules/nipplejs/dist/nipplejs.js" ></script>
-    <script type="text/javascript" src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
-    <script type="text/javascript" src="https://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
-    <title>Portal 2.0</title>
-    <style> 
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-#wrapper { 
-    position: relative; 
-    height: 100%;
-    align-items: stretch;
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://bootswatch.com/4/litera/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    type='text/css'>
+  <script src="./node_modules/canvas-gauges/gauge.min.js"> </script>
+  <script src="./node_modules/nipplejs/dist/nipplejs.js"></script>
+  <script type="text/javascript"
+    src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+  <script type="text/javascript" src="https://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+  <title>Portal 2.0</title>
+  <style>
+    #wrapper {
+      position: relative;
+      height: 100%;
+      align-items: stretch;
 
     }
-    #over-map { 
-    position: absolute; 
-    right: 50px; 
-    z-index: 99; 
-    top: 0px; 
-    display: block;
-    }
-    
-      .sidebar {
-        position: absolute;
-        z-index: 1; 
-        right: 20px;
-        top: 200px;
-        background-color: white; 
-        margin-right: 20px;
-        padding: 10px;
-        margin-right: 20px;
-        border-radius: 10px;
-        display: none;
-      }
 
-     #robotFrontCamera {
+    #over-map {
+      position: absolute;
+      right: 50px;
+      z-index: 99;
+      top: 0px;
+      display: block;
+    }
+
+   
+
+    .sidebar {
+      position: absolute;
+      z-index: 1;
+      right: 20px;
+      top: 200px;
+      background-color: white;
+      margin-right: 20px;
+      padding: 10px;
+      margin-right: 20px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    #robotFrontCamera {
       position: absolute;
       right: 20px;
       bottom: 50px;
-      border-style: solid; 
+      border-style: solid;
       border-width: 2px;
       height: 150px;
       width: 200px;
@@ -59,6 +67,7 @@
       right: 50px;
       top: 150px;
     }
+
     /* #robotRearCamera {
       position: absolute;
       right: 80px;
@@ -69,28 +78,46 @@
       z-index: 2;
     }  */
 
-    .jumbotron{
-        margin: 0;
-        padding: 10px 10px;
-        border: 0;
-        margin-bottom: 0em
+    .jumbotron {
+      margin: 0;
+      padding: 10px 10px;
+      border: 0;
+      margin-bottom: 0em
     }
 
-    #vid{
-        margin: auto;
-        border: 0;
-        padding: 100px;
+    #vid {
+      margin: auto;
+      border: 0;
+      padding: 100px;
 
     }
 
     #compass-div {
       position: absolute;
       z-index: 100;
-      top: 80px;
-      left: 10px;
+      top: 120px;
+      right: 10px;
       display: block;
       height: 150px;
       width: 150px;
+    }
+
+    #side-buttons {
+      position: absolute;
+      z-index: 100;
+      /* width: 100%; */
+      top: 300px;
+      left: 10px;
+
+      
+    }
+
+
+    #top-buttons {
+      position: absolute;
+      z-index: 100;
+      top: 10px;
+      left: calc(50vw - 283px/2);
     }
 
 
@@ -101,76 +128,59 @@
       bottom: 200px; */
     }
 
-    #vid{
-        margin: 0px;
-        border: 0;
-        padding: 0px;
+    #vid {
+      margin: 0px;
+      border: 0;
+      padding: 0px;
 
     }
+
     #map {
-        height: 100%;
+      height: 100%;
     }
-      /* Optional: Makes the sample page fill the window. */
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        
+
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+
     }
-    
-    </style>
-   <script src="/socket.io/socket.io.js"></script>
+  </style>
+  <script src="/socket.io/socket.io.js"></script>
 
-  </head>
-  <body>
+</head>
 
- <nav class="navbar navbar-expand-lg navbar-dark bg-primary" >
-  <a class="navbar-brand" href="index.html">Portal 2.0</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<body>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item ">
-        <a class="nav-link" href="planning.html">Mission Planning <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="#">Telemetry</a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="stats.html">Stats For Geeks</a>
-      </li>
-    </ul>
-   
-  </div>
-</nav>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="index.html">Portal 2.0</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-<div class="text-center">
-        <div class="row"> 
-            <div class="col-4"> 
-            <button id = "share" style="margin-top:8px" class="btn btn-primary"> Share</button>
-            </div>
-            <div id="planselect" style="margin-top:8px"  class="col-4">
-           
-             
-       
-           
-                <input id= "planNobox" type="text" placeholder="Plan Name">
-   
-    
-            </div>
-            <div class="col-4"> 
-            <button id = "view" style="margin-top:8px" class="btn btn-primary"> View</button>
-          </div> 
-          <h1 class="col-12" id="main-header">  <!-- Monitor <strong> your </strong> robot. --> </h1> 
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item ">
+          <a class="nav-link" href="planning.html">Mission Planning <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="#">Telemetry</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="stats.html">Stats For Geeks</a>
+        </li>
+      </ul>
 
-        </div> 
     </div>
+  </nav>
 
 
-    <!-- <div class="form-group sidebar text-center" id="sidebar">
+
+  <!-- <div class="form-group sidebar text-center" id="sidebar">
       <div class="row">
         <div class="col-md-5">
             <label style="position: relative; top:8px" for="heading-val"> Heading</label>
@@ -180,11 +190,11 @@
         </div>
     </div>
     </div> -->
-    <!-- <div id="vid2" class="embed-responsive embed-responsive-16by9 w-25 p-8 float-right align-bottom">
+  <!-- <div id="vid2" class="embed-responsive embed-responsive-16by9 w-25 p-8 float-right align-bottom">
             <iframe src="https://www.youtube.com/embed/GJYzDA3ur08" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
     -->
-    <!-- <div>
+  <!-- <div>
       <img id="robotFrontCamera" 
            src="http://211.23.31.192:82/GetData.cgi?CH=1" 
            class="img-responsive img-rounded detailimage" 
@@ -198,133 +208,189 @@
            alt="" 
            title="New South Wales, Sydney">
   </div> -->
-   
+
 
 
   <div id="wrapper">
-      <div id="map">
-            
+    <div id="map">
+
+    </div>
+    
+    <div id="over-map">
+
+      <div class="row ">
+        <div class="col-6 text-right">
+          <h6>H</h6>
         </div>
-        <div id="over-map" >
-                <div class="row " >
-                  <div class="col-6 text-right">
-                      <h3>H</h3>
-                  </div>
-                  <div class="col-6">
-                      <h3 id="heading-val">0</h3>
-                  </div>
-                </div>
-                  <div class="row ">
-                      <div class="col-6 text-right">
-                          <h3>D</h3>
-                      </div>
-                      <div class="col-6">
-                          <h3 id="dist-val">0</h3>
-                      </div>
-                  </div>
-                 
-                   <div class="row ">
-                      <div class="col-6 text-right">
-                          <h3>C</h3>
-                      </div>
-                      <div class="col-6">
-                          <h3 id="bear-val">0</h3>
-                      </div>
-                  </div>
-                  
-             
-
-
-
-              </div>
-
-              
-
-             <div id="compass-div">
-              <canvas 
-              id="compass" 
-              height="100";
-              width="100";
-
-              data-type="radial-gauge"
-              data-min-value="0"
-              data-max-value="360"
-              data-major-ticks="N,NE,E,SE,S,SW,W,NW,N"
-              data-minor-ticks="22"
-              data-ticks-angle="360"
-              data-start-angle="180"
-              data-stroke-ticks="false"
-              data-highlights="true"
-              data-color-plate="#007bff"
-              data-color-major-ticks="#f5f5f5"
-              data-color-minor-ticks="#ddd"
-              data-color-numbers="#ccc"
-              data-color-needle="black"
-              data-color-needle-end="black"
-              data-value-box="false"
-              data-value-text-shadow="false"
-              data-color-circle-inner="#fff"
-              data-color-needle-circle-outer="#fff"
-              data-needle-circle-size="15"
-              data-needle-circle-outer="true"
-              data-animation-rule="linear"
-              data-needle-type="line"
-              data-needle-start="75"
-              data-needle-end="100"
-              data-needle-width="3"
-              data-borders="true"
-              data-border-inner-width="0"
-              data-border-middle-width="0"
-              data-border-outer-width="5"
-              data-color-border-outer="black"
-              data-color-border-outer-end="black"
-              data-color-needle-shadow-down="blue"
-              data-border-shadow-width="10"
-              data-animation-target="plate"
-              data-animation="false"
-              data-animate-on-init="true"
-          ></canvas>
-
-             </div> 
-
-             <div id="joystick">
-
-             </div>
-
-         <div>
-      <img id="robotFrontCamera" 
-           src="" 
-           alt="" 
-          >
-         </div>  
-         
-         <div id="button-div">
-           <button class="btn-lg btn-danger align-items"  id="stopbutton">STOP</button>
-         </div>
-            
-
-
-              
+        <div class="col-6">
+          <h6 id="heading-val">0</h6>
         </div>
-  
+      </div>
+      <div class="row ">
+        <div class="col-6 text-right">
+          <h6>D</h6>
+        </div>
+        <div class="col-6">
+          <h6 id="dist-val">0</h6>
+        </div>
+      </div>
 
-     
-    <script type="module" src=telemetry.js> 
+      <div class="row ">
+        <div class="col-6 text-right">
+          <h6>C</h6>
+        </div>
+        <div class="col-6">
+          <h6 id="bear-val">0</h6>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div id="compass-div">
+      <canvas id="compass" height="100" ; width="100" ; data-type="radial-gauge" data-min-value="0" data-max-value="360"
+        data-major-ticks="N,NE,E,SE,S,SW,W,NW,N" data-minor-ticks="22" data-ticks-angle="360" data-start-angle="180"
+        data-stroke-ticks="false" data-highlights="true" data-color-plate="#007bff" data-color-major-ticks="#f5f5f5"
+        data-color-minor-ticks="#ddd" data-color-numbers="#ccc" data-color-needle="black" data-color-needle-end="black"
+        data-value-box="false" data-value-text-shadow="false" data-color-circle-inner="#fff"
+        data-color-needle-circle-outer="#fff" data-needle-circle-size="15" data-needle-circle-outer="true"
+        data-animation-rule="linear" data-needle-type="line" data-needle-start="75" data-needle-end="100"
+        data-needle-width="3" data-borders="true" data-border-inner-width="0" data-border-middle-width="0"
+        data-border-outer-width="5" data-color-border-outer="black" data-color-border-outer-end="black"
+        data-color-needle-shadow-down="blue" data-border-shadow-width="10" data-animation-target="plate"
+        data-animation="false" data-animate-on-init="true"></canvas>
+
+    </div>
+
+    <div id="joystick">
+
+    </div>
+
+    <div>
+      <img id="robotFrontCamera" src="" alt="">
+    </div>
+<!-- 
+    <div id="button-div">
+      <button class="btn-lg btn-danger align-items" id="stopbutton">STOP</button>
+    </div> -->
+
+    <div id="side-buttons">
+
+        <div class="row">
+            <div class="col-12">
+              <button id="home-button" class="btn btn-primary "><i class="fa fa-home"></i></button>
+            </div>
+          </div>
       
-      
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvw6RInTxTbh-gGvXHdSrWIEE43Je-E40&libraries=geometry"
+        <br>
+
+        <div class="row">
+            <div class="col-12">
+              <button id="import-button" class="btn btn-primary"><i class="fa fa-folder-open" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+        <br>
+
+      <div class="row">
+        <div class="col-12">
+          <button id="share" class="btn btn-primary"><i class="fa fa-mobile fa-2x" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="row">
+        <div class="col-12">
+          <button id="view" class="btn btn-primary"> <i class="fa fa-play" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="top-buttons">
+      <div class="row">
+        <div class="col-3">
+            <button id="pause-robot" class="btn btn-primary"> <i class="fa fa-pause" aria-hidden="true"></i>
+        </div>
+
+
+        <div class="col-3">
+            <button id="stats-robot" class="btn btn-primary"> <i class="fa fa-line-chart" aria-hidden="true"></i> </button>
+
+        </div>
+        <div class="col-3">
+          <button id="pid-robot" class="btn btn-primary"> <i class="fa fa-sliders" aria-hidden="true"></i></button>
+        </div>
+
+        <div class="col-3">
+            <button id="stop-mission" class="btn btn-danger"> <i class="fa fa-stop" aria-hidden="true"></i>
+        </div>
+
+      </div>
+    </div>
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+    <div id="planselect" style="margin-top:8px" class="col-4">
+
+
+
+
+      <!-- <input id= "planNobox" type="text" placeholder="Plan Name"> -->
+
+
+    </div>
+
+    <h1 class="col-12" id="main-header"> </h1>
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+
+
+  <script type="module" src=telemetry.js>
+
+
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvw6RInTxTbh-gGvXHdSrWIEE43Je-E40&libraries=geometry"
     async defer></script>
 
 
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/event-target@latest/min.js"></script>
-    <script src="https://unpkg.com/resize-observer-polyfill@1.5.0/dist/ResizeObserver.global.js"></script>
-    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
-  </body>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/event-target@latest/min.js"></script>
+  <script src="https://unpkg.com/resize-observer-polyfill@1.5.0/dist/ResizeObserver.global.js"></script>
+  <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
+</body>
+
 </html>

@@ -339,7 +339,7 @@ app.get('/plan', (req, res) => {
 
     if(planNo => 1) {
     
-        if (reqNo == "undefined" || reqNo == planNo || reqNo == "")
+        if (reqNo == undefined || reqNo == planNo || reqNo == "" || reqNo == null)
         getPlan(planNo, res);
         else if ( reqNo >= 1 && reqNo <= planNo) {
         getPlan(reqNo, res);

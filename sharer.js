@@ -1,14 +1,10 @@
 import User from './user.js'
 export default class Sharer extends User {
 
-    constructor(title, options, path) {
+    constructor( options, path) {
       super(path); 
       this.options = options; 
-      this.title = title; 
       this.status = "share";
-      this.locating = "Locating";
-      this.tracking =  "Sharing";
-      this.unable = "Unable to retrieve your location";
       this.readno = 0;
 
     }
@@ -34,27 +30,21 @@ export default class Sharer extends User {
     };
   
     error(status) {
-      this.title.textContent = unable;
   
     }; 
     
     getLocation() {
       console.log('view');
       console.log(this); 
-       let status = this.title; 
         
       if (!navigator.geolocation) {
-        status.textContent = 'Geolocation is not supported by your browser';
       } else {
-        if(status.textContent != this.tracking && status.textContent != this.unable)
-        status.textContent = this.locating;
+    
         let success = this.success.bind(this); 
         let error = this.error.bind(this); 
         navigator.geolocation.watchPosition(success, error, this.options);
-        status.textContent = this.tracking;
 
       }
-      status.style.display = "none"; 
 
     }
 
@@ -72,7 +62,7 @@ export default class Sharer extends User {
       // let bytesToSend = [Math.abs(this.accX), Math.abs(this.accY), Math.abs(this.accZ), 
       //   Math.abs(this.rotAlpha)/10, Math.abs(this.rotBeta)/10, Math.abs(this.rotGamma)/10 ];
        let bytesToSend = [this.accX*100, this.accY*100,this.accZ*100, 
-         this.rotAlpha, this.rotBeta,this.rotGamma];
+         this.rotAlpha, this.rotBeta, this.rotGamma];
       let bytesArray = new Int16Array(bytesToSend);
 
       $.ajax({
@@ -121,6 +111,7 @@ export default class Sharer extends User {
     start() {
       $.post('/start', 'mission start');
 
+      if(document.getElementById('planNobox'))
       this.makePlan(); 
       setTimeout(this.getLocation.bind(this), 200);
       setTimeout(this.getHeading.bind(this), 300);
