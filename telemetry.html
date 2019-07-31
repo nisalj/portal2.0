@@ -92,6 +92,21 @@
 
     }
 
+    .modal-content {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+
+    }
+
+    .modal-header {
+      border-bottom: 0px;
+    }
+
+    .modal-footer {
+      border-top: 0px; 
+
+    }
+
     #compass-div {
       position: absolute;
       z-index: 100;
@@ -102,22 +117,57 @@
       width: 150px;
     }
 
+    #side-background {
+        position: absolute;
+        left: 0 px;
+        top: 250px; 
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 80;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+        
+
+        
+        /* width: 60px; */
+        /* height: 100px; */
+        
+
+    }
+
+
     #side-buttons {
-      position: absolute;
+      position: relative;
       z-index: 100;
+
       /* width: 100%; */
-      top: 300px;
-      left: 10px;
+    
+      margin: 20px 20px 20px 10px;
+      /* top: 10px;
+      left: 10px; */
 
       
     }
 
+    #top-background {
+      position: absolute;
+      top: 0px; 
+      left: calc(50vw - 283px/2);
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 80;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+
+        
+
+    }
+
 
     #top-buttons {
-      position: absolute;
+      position: relative;
       z-index: 100;
-      top: 10px;
-      left: calc(50vw - 283px/2);
+      margin: 10px 10px 20px 20px;
+      /* top: 10px;
+      left: calc(50vw - 283px/2); */
     }
 
 
@@ -273,7 +323,7 @@
     <div id="button-div">
       <button class="btn-lg btn-danger align-items" id="stopbutton">STOP</button>
     </div> -->
-
+<div id="side-background">
     <div id="side-buttons">
 
         <div class="row">
@@ -286,7 +336,7 @@
 
         <div class="row">
             <div class="col-12">
-              <button id="import-button" class="btn btn-primary"><i class="fa fa-folder-open" aria-hidden="true"></i>
+              <button id="import-button" class="btn btn-primary"  data-toggle="modal" data-target="#plan-modal"  ><i class="fa fa-folder-open" aria-hidden="true"></i>
               </button>
             </div>
           </div>
@@ -310,6 +360,10 @@
       </div>
     </div>
 
+  </div>
+
+<div id="top-background">
+
 
     <div id="top-buttons">
       <div class="row">
@@ -327,17 +381,80 @@
         </div>
 
         <div class="col-3">
-            <button id="stop-mission" class="btn btn-danger"> <i class="fa fa-stop" aria-hidden="true"></i>
+            <button id="stop-mission" class="btn btn-danger" data-toggle="modal" data-target="#stop-mission-modal"> <i class="fa fa-stop" aria-hidden="true"></i>
         </div>
 
       </div>
     </div>
 
+  </div>
+
+
+
+  <div class="modal fade" id="plan-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+          <h5 class="modal-title w-100" id="exampleModalLabel">New plan</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+        <!-- <h1 id="modaltext" class="text-center"> GFGH</h1> -->
+        <input type="text" class="form-control" placeholder="Enter plan name" id="recipient-name">
+        <!-- <h3 id="planno" style="display: inline" class="text-center"> Hello </h3> -->
+      </div>
+      <div class="modal-footer">
+        <div class="row"></div>
+        <div class="col-md-12 text-center">
+          <button type="button" class="btn btn-secondary align-middle" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Load plan</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="stop-mission-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+          <h5 class="modal-title w-100" id="exampleModalLabel">Stop mission</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+        <h1  class="text-center"> Are you sure? </h1> 
+
+        <!-- <h3 id="planno" style="display: inline" class="text-center"> Hello </h3> -->
+      </div>
+      <div class="modal-footer">
+        <div class="row"></div>
+        <div class="col-md-12 text-center">
+          <button type="button" class="btn btn-secondary align-middle" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-danger">Yes</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
 
 
+
+
+
+
+  <!-- wrapper -->
   </div>
 
 
