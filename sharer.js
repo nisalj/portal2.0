@@ -1,8 +1,8 @@
 import User from './user.js'
 export default class Sharer extends User {
 
-    constructor( options, path) {
-      super(path); 
+    constructor( options, path, plan) {
+      super(path, plan); 
       this.options = options; 
       this.status = "share";
       this.readno = 0;
@@ -111,8 +111,8 @@ export default class Sharer extends User {
     start() {
       $.post('/start', 'mission start');
 
-      if(document.getElementById('planNobox'))
-      this.makePlan(); 
+      // if(document.getElementById('planNobox'))
+      // this.makePlan(); 
       setTimeout(this.getLocation.bind(this), 200);
       setTimeout(this.getHeading.bind(this), 300);
       setTimeout(this.getMotion.bind(this),400);
@@ -180,7 +180,7 @@ export default class Sharer extends User {
 
     shareDetails() {
       let detail;
-      if (this.planPlath.segNo() == 0) {
+      if (!this.planPath) {
         detail = {
           latitude: this.lat,
           longitude: this.long,

@@ -2,9 +2,9 @@ import User from './user.js'
 export default class Viewer extends User {
 
  
-    constructor(path, socket) {
+    constructor(path, socket, plan) {
 
-    super(path); 
+    super(path, plan); 
     this.status = "view"; 
     this.socket = socket;
     this.firstloc = true; 
@@ -54,7 +54,7 @@ export default class Viewer extends User {
     
     start() {
 
-        this.makePlan(); 
+       // this.makePlan(); 
         setTimeout(this.getLocation.bind(this), 200); 
         setTimeout(this.getHeading.bind(this), 200); 
 

@@ -2,7 +2,7 @@ import Path from './path.js';
 
 export default class User {
 
-    constructor(path) {
+    constructor(path, plan) {
       this.path = path; 
       this.lat;
       this.long; 
@@ -19,7 +19,7 @@ export default class User {
       this.firstReading = true;  
       this.intfunc;
       this.status;
-      this.planPlath = new Path(); 
+      this.planPlath = plan; 
       this.heading; 
       this.distance;
       this.correction;
@@ -41,7 +41,7 @@ export default class User {
     //checks if the currentSeg and targetWayPoint need to be updated 
     checkForNewSeg() {
 
-      if(!this.planPlath.segNo())
+      if(!this.planPlath)
       return; 
 
       let latlng = new google.maps.LatLng(this.lat, this.long);
@@ -137,6 +137,16 @@ export default class User {
 
       }
 
+    }
+
+
+    zoomToLoc() {
+      if (!this.lat || !this.long)
+      return; 
+      let latlng = new google.maps.LatLng(this.lat, this.long);
+      let map = this.path.map; 
+      map.panTo(latlng);
+      map.setZoom(17); 
     }
 
    
@@ -309,7 +319,7 @@ export default class User {
       let latlng = new google.maps.LatLng(this.lat, this.long);
       let map = this.path.map; 
 
-      if(this.firstReading && this.planPlath.segNo()) {
+      if(this.firstReading && this.planPlath) {
         setInterval(this.blink.bind(this), 4000);
         this.addFirst();
         this.targetWayPoint = this.getCurrentSeg().getStart(); 
@@ -319,7 +329,10 @@ export default class User {
         this.correction = ((this.targetBearing - this.heading + 180 + 360)%360 - 180).toFixed(0); 
         this.updateTargetWayPoint();
         map.panTo(latlng);
-
+      } else if (this.firstReading) {
+        setInterval(this.blink.bind(this), 4000);
+        map.panTo(latlng);
+        this.firstReading = false; 
       }
       //window.testfunc(); 
    //   let map = this.path.map; 
@@ -345,7 +358,7 @@ export default class User {
     //changes color of the line according to correction value
     //displays correction value in UI
     changeColor() {
-      if(!this.planPlath.segNo()){
+      if(!this.planPlath){
         return; 
 
       }
@@ -366,7 +379,7 @@ export default class User {
 
 
     updateBearing(latlng) {
-      if(!this.planPlath.segNo())
+      if(!this.planPlath)
       return; 
 
       let bearing = google.maps.geometry.spherical.computeHeading(latlng, this.targetWayPoint.position);

@@ -1,8 +1,8 @@
 import Viewer from './viewer.js';
 
 export default class Operator extends Viewer {
-    constructor(path, socket, ros){
-    super(path, socket);
+    constructor(path, socket, ros, plan){
+    super(path, socket, plan);
     this.ros = ros; 
     this.cmdVel = new ROSLIB.Topic({
         ros : this.ros,
@@ -55,7 +55,7 @@ export default class Operator extends Viewer {
    
     }); 
 
-    this.makePlan(); 
+    // this.makePlan(); 
     setTimeout(this.getLocation.bind(this), 200);
     setTimeout(this.getHeading.bind(this), 300);
     

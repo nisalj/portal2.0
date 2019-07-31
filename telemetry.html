@@ -165,7 +165,7 @@
     #top-buttons {
       position: relative;
       z-index: 100;
-      margin: 10px 10px 20px 20px;
+      margin: 10px 20px 20px 20px;
       /* top: 10px;
       left: calc(50vw - 283px/2); */
     }
@@ -328,7 +328,7 @@
 
         <div class="row">
             <div class="col-12">
-              <button id="home-button" class="btn btn-primary "><i class="fa fa-home"></i></button>
+              <button id="home-button" class="btn btn-primary " disabled="true"><i class="fa fa-home"></i></button>
             </div>
           </div>
       
@@ -367,20 +367,21 @@
 
     <div id="top-buttons">
       <div class="row">
-        <div class="col-3">
+        <div class="col">
+          <button id="home-mission" class="btn btn-primary"> <i class="fa fa-home"></i> </button>
+        </div>
+        <div class="col">
             <button id="pause-robot" class="btn btn-primary"> <i class="fa fa-pause" aria-hidden="true"></i>
         </div>
 
-
-        <div class="col-3">
+        <div class="col">
             <button id="stats-robot" class="btn btn-primary"> <i class="fa fa-line-chart" aria-hidden="true"></i> </button>
 
         </div>
-        <div class="col-3">
+        <div class="col">
           <button id="pid-robot" class="btn btn-primary"> <i class="fa fa-sliders" aria-hidden="true"></i></button>
-        </div>
-
-        <div class="col-3">
+        </div> 
+        <div class="col">
             <button id="stop-mission" class="btn btn-danger" data-toggle="modal" data-target="#stop-mission-modal"> <i class="fa fa-stop" aria-hidden="true"></i>
         </div>
 
@@ -403,14 +404,14 @@
       </div>
       <div class="modal-body">
         <!-- <h1 id="modaltext" class="text-center"> GFGH</h1> -->
-        <input type="text" class="form-control" placeholder="Enter plan name" id="recipient-name">
+        <input type="text" class="form-control" placeholder="Enter plan name" id="planNoBox">
         <!-- <h3 id="planno" style="display: inline" class="text-center"> Hello </h3> -->
       </div>
       <div class="modal-footer">
         <div class="row"></div>
         <div class="col-md-12 text-center">
           <button type="button" class="btn btn-secondary align-middle" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Load plan</button>
+          <button id="plan-load-button" type="button" class="btn btn-primary">Load plan</button>
 
         </div>
       </div>

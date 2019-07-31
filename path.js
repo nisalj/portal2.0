@@ -256,7 +256,7 @@ export default class Path extends EventTarget {
 
     clear(map) {
         this.segments.forEach((seg) => {
-            seg.clearSeg(); 
+            seg.clearWholeSeg(); 
         })
         this.segments = []; 
         
