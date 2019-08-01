@@ -218,14 +218,28 @@ function initMap() {
             $('#modaltext').text("Please select waypoints") 
             $('#modal').modal('show'); 
           } else{
-            $('#modaltext').text("Enter name:") 
+            document.getElementById('modaltext').style.display = "none"; 
+            document.getElementById('planName').style.display = ""; 
+            document.getElementById('planSaveButton').style.display = ""; 
 
-            path.sendPath(); 
+            // $('#modaltext').style.display = "none"; 
+            // $('#planName').style.display = "";
+            $('#modal').modal('show'); 
+
+
+         //   path.sendPath(); 
          //   setTimeout(showModal, 500); 
           //  console.log(path.planNo);
           }
 
         }); 
+
+        document.getElementById('planSaveButton').addEventListener('click', () => {
+          $('#modal').modal('hide'); 
+          let planName  = document.getElementById('planName').value;
+          console.log(planName);
+          path.sendPath(planName);
+        })
      
        start = true; 
        $('#sidebar')[0].style.display = "none"

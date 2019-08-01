@@ -290,13 +290,20 @@
             </button>
           </div>
           <div class="modal-body">
+          <input type="text" display="none" class="form-control" placeholder="Enter plan name" id="planName">
+
+
             <h1 id="modaltext" class="text-center"> GFGH</h1>
             <h3 id="planno" style="display: none" class="text-center"> Hello </h3>
           </div>
           <div class="modal-footer">
-            <div class="row"></div>
-            <div class="col-md-12 text-center">
+            <div class="row">
+            <div class="col text-center">
               <button type="button" class="btn btn-secondary align-middle" data-dismiss="modal">Close</button>
+            </div>
+            <div class="col text-center">
+                <button type="button" style="display: none"  id="planSaveButton" class="btn btn-primary align-middle">Save</button>
+              </div>
             </div>
           </div>
         </div>

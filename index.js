@@ -227,9 +227,10 @@ fs.appendFile(`./missions/mission${missionNo}/details.csv`, helper(Object.values
 
 
 
-function getPlan(reqNo, res) {
-    console.log("reqNo", reqNo);
-    const csvFilePath= `./plans/plan${reqNo}.csv`
+function getPlan(planName, res) {
+    //console.log("reqNo", reqNo);
+    const csvFilePath= `./plans/${planName}.csv`
+    //check if file exists here 
     const csv = require('csvtojson')
     csv()
     .fromFile(csvFilePath)
@@ -250,9 +251,11 @@ function getPlan(reqNo, res) {
 
 
 
-function planWrite(object) {
+function planWrite(object, name) {
 
-const ws = fs.createWriteStream(`./plans/plan${planNo}.csv`,{'flags': 'a'});
+
+
+const ws = fs.createWriteStream(`./plans/${name}.csv`,);
 fastcsv
 .write(object, { headers: true, includeEndRowDelimiter: true })
 .pipe(ws) ;
@@ -319,33 +322,36 @@ app.post('/plan', (req, res) => {
    // var text = String(req.body);
     //console.log(JSON.stringify(req.body));
     plan = req.body; 
-    console.log(plan); 
+   // console.log(plan); 
     let string = JSON.stringify(plan); 
     let end = string.length - 4;
     let start = 1; 
     let mod = string.slice(start, end); 
     array = JSON.parse(JSON.parse(mod)); 
+    let planName = array.pop();
+    console.log(planName);
     console.log(array);
     planNo = fs.readdirSync('./plans').length; 
-    console.log(plan);
     res.send(String(planNo));
-    planWrite(array);
+    planWrite(array,planName);
 
 }); 
 
 app.get('/plan', (req, res) => {
-    let reqNo = req.query.planNo; 
+    let planName = req.query.planName; 
     //console.log("requested plan", req.query.planNo)
 
     if(planNo => 1) {
-    
-        if (reqNo == undefined || reqNo == planNo || reqNo == "" || reqNo == null)
-        getPlan(planNo, res);
-        else if ( reqNo >= 1 && reqNo <= planNo) {
-        getPlan(reqNo, res);
-        } else {
-        getPlan(planNo, res);
-        }
+        getPlan(planName, res);
+
+
+        // if (reqNo == undefined || reqNo == planNo || reqNo == "" || reqNo == null)
+        // getPlan(planNo, res);
+        // else if ( reqNo >= 1 && reqNo <= planNo) {
+        // getPlan(reqNo, res);
+        // } else {
+        // getPlan(planNo, res);
+        // }
     }
     else 
     res.send("{}");

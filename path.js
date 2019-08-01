@@ -308,16 +308,15 @@ export default class Path extends EventTarget {
         return this.segments[no]; 
     }
 
-    makePath(map, planNo) {
+    makePath(map, planName) {
 
         let array; 
         this.segments = []; 
         let that = this; 
-        console.log(planNo);
         var request = $.ajax({
             url: '/plan',
             type: 'GET',
-            data: { planNo: planNo} ,
+            data: { planName: planName} ,
             contentType: 'text; charset=utf-8'
         });
 
@@ -411,11 +410,12 @@ export default class Path extends EventTarget {
 
 
 
-    sendPath() {
+    sendPath(planName) {
         let array = [];
         for (let i = 0; i < this.segNo(); i++) {
             array.push(this.segments[i].convertSeg());
         }
+        array.push(planName);
 
 
        let text = JSON.stringify(array);
@@ -424,8 +424,8 @@ export default class Path extends EventTarget {
      
 
         $.post('/plan', text, function (data) {
-            window.showModal(data);
-            console.log(this.planNo);
+          //  window.showModal(data);
+          //  console.log(this.planNo);
         }, "text"); 
 
 

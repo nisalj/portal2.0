@@ -138,6 +138,7 @@ function initGraph() {
          
         }          // options
       );
+      console.log('creating graph');
 
      let g = g1;
 
@@ -211,8 +212,8 @@ function initGraph() {
  hide.addEventListener("click", () => {
    let graph = document.getElementById('graph-area');
 
-  if (graph.style.display == "none") {
-    graph.style.display = "";
+  if (graph.style.display == "none" || graph.style.display == "") {
+    graph.style.display = "block";
     hide.classList.remove("btn-primary");
     hide.classList.add("btn-success");
 
@@ -451,8 +452,8 @@ pMagSlider.noUiSlider.on('update', (value) => {
   pidHide.addEventListener('click', () => {
     console.log('clicked');
     let area = document.getElementById('pid-area');
-    if(area.style.display == "none") {
-      area.style.display = "";  
+    if(area.style.display == "none" || area.style.display == "") {
+      area.style.display = "block";  
       pidHide.classList.remove("btn-primary");
       pidHide.classList.add("btn-success");
     } else {
@@ -714,10 +715,14 @@ console.log('clicked view');
 //  element.style.display = "none";
 // element.parentElement.removeChild(element);
 toggleSideBar();
-
+toggleCompass(true);
+toggleTopBar(true);
+toggleChart(true);
 //window.user = new Viewer(robotpath, socket);
 user = new Operator(robotpath, socket, ros, plan);
 user.start();
+//toggleTopBar(true);
+//toggleCompass(true);
 //window.user.start();
 }
 
@@ -743,7 +748,7 @@ setTimeout(zoomToWayPoint,500);
 function zoomToWayPoint() {
   let position = plan.getFirst().getStart().position; 
   map.panTo(position);
-  map.setZoom(14);
+  map.setZoom(17);
 
 }
 
@@ -770,31 +775,34 @@ function toggleTopBar(enabled) {
   // } else {
   //   button.style.display = "none";
   // }
-  document.getElementById('top-buttons').style.display = enabled ? '' : 'none';
+  console.log('turning on');
+  document.getElementById('top-background').style.display = enabled ? "block" : 'none';
 
 }
 
 
 function toggleGraph(enabled) {
-  document.getElementById('graph-area').style.display = enabled ? '' : 'none';
+  document.getElementById('graph-area').style.display = enabled ? "block" : 'none';
 }
 
 function toggleStats(enabled) {
-  document.getElementById('pid-area').style.display = enabled ? '' : 'none';
+  document.getElementById('pid-area').style.display = enabled ? "block": 'none';
 }
 
 function toggleJoystick(enabled) {
-  document.getElementById('joystick').style.display = enabled ? '' : 'none';
+  document.getElementById('joystick').style.display = enabled ? "block" : 'none';
 
 }
 
 function toggleChart(enabled) {
-  document.getElementById('pie-chart').style.display = enabled ? '' : 'none';
+  document.getElementById('pie-chart').style.display = enabled ? "block" : 'none';
 
 }
 
 function toggleCompass(enabled) {
-  document.getElementById('dist-eta-background').style.display = enabled ? '' : 'none';
+  document.getElementById('dist-eta-background').style.display = enabled ? "block" : 'none';
+  document.getElementById('compass-div').style.display = enabled ? "block" : 'none';
+
 
 }
 
@@ -809,13 +817,13 @@ function getColor(value, opacity){
 }
 
 function switchToVid() {
-if (document.getElementById('pid-area').style.display == "none") {
+if (document.getElementById('pid-area').style.display == "none" || document.getElementById('pid-area').style.display == "") {
   pidOn = false;
 } else {
   pidOn = true;
 
 }
-if (document.getElementById('graph-area').style.display == "none") {
+if (document.getElementById('graph-area').style.display == "none" || document.getElementById('graph-area').style.display == "") {
   graphOn = false;
 } else {
   graphOn = true; 
@@ -865,6 +873,11 @@ function switchToMap() {
 
 
 window.onload = function() {
+
+  toggleCompass(false);
+  toggleGraph(false);
+  toggleStats(false);
+
   socket = io.connect("https://localhost:5000", {secure:true, rejectUnauthorized: false}); 
   socket.on('connection', () => {
     console.log("connected to server socket"); 
@@ -872,12 +885,13 @@ window.onload = function() {
   socket.on('error', err => {
     console.log('error', err);
   });
-        
-  initMap(); 
   initGraph();
+  initMap(); 
   initPID();
   initChart();
-  
+  g1.resize(480,320);
+
+
   document.getElementById('share').addEventListener('click', shareClick);
   document.getElementById('view').addEventListener('click', viewClick);
   document.getElementById('plan-load-button').addEventListener('click', loadPlan);
