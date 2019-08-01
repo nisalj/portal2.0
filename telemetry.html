@@ -12,6 +12,8 @@
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     type='text/css'>
+  <link rel="stylesheet" href="./node_modules/dygraphs/dist/dygraph.min.css">
+  <link rel="stylesheet" href="./node_modules/nouislider/distribute/nouislider.css">
   <script src="./node_modules/canvas-gauges/gauge.min.js"> </script>
   <script src="./node_modules/nipplejs/dist/nipplejs.js"></script>
   <script type="text/javascript"
@@ -36,10 +38,10 @@
     }
 
     .white-text {
-      color: white; 
+      color: white;
     }
 
-   
+
 
     .sidebar {
       position: absolute;
@@ -53,6 +55,8 @@
       border-radius: 10px;
       display: none;
     }
+
+   
 
     #robotFrontCamera {
       position: absolute;
@@ -82,6 +86,11 @@
       z-index: 2;
     }  */
 
+
+    .noUi-connect {
+      background: #007bff;
+    }
+
     .jumbotron {
       margin: 0;
       padding: 10px 10px;
@@ -107,7 +116,7 @@
     }
 
     .modal-footer {
-      border-top: 0px; 
+      border-top: 0px;
 
     }
 
@@ -125,19 +134,19 @@
     }
 
     #side-background {
-        position: absolute;
-        left: 0 px;
-        top: 250px; 
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 80;
-        border-top-right-radius: 20px;
-        border-bottom-right-radius: 20px;
-        
+      position: absolute;
+      left: 0 px;
+      top: 250px;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 80;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
 
-        
-        /* width: 60px; */
-        /* height: 100px; */
-        
+
+
+      /* width: 60px; */
+      /* height: 100px; */
+
 
     }
 
@@ -147,36 +156,36 @@
       z-index: 100;
 
       /* width: 100%; */
-    
+
       margin: 20px 20px 20px 10px;
       /* top: 10px;
       left: 10px; */
 
-      
+
     }
 
     #top-background {
       position: absolute;
-      top: 0px; 
+      top: 0px;
       left: calc(50vw - 283px/2);
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 80;
       border-bottom-left-radius: 20px;
       border-bottom-right-radius: 20px;
 
-        
+
 
     }
 
     #dist-eta-background {
       position: absolute;
-      top:20px;
-      right: 200px; 
+      top: 0px;
+      right: 0px;
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 80;
-      padding: 5px; 
-      border-radius: 3px; 
-     
+      padding: 5px;
+      border-radius: 3px;
+
     }
 
 
@@ -186,6 +195,30 @@
       margin: 10px 20px 20px 20px;
       /* top: 10px;
       left: calc(50vw - 283px/2); */
+    }
+
+    #graph-area {
+      position: absolute;
+      bottom: 200px;
+      left: 300px;
+      background-color: rgba(0, 0, 0, 0.9);
+      /* background-color: white; */
+      z-index: 80;
+      color: white;
+      width: 800px;
+      /* width: 50%;
+      height: 500px; */
+
+    }
+
+    #pid-area {
+      position: absolute;
+      bottom: 200px;
+      right: 200px;
+      background-color: rgba(0, 0, 0, 0.9);
+      /* background-color: white; */
+      z-index: 80;
+      color: white;
     }
 
 
@@ -201,6 +234,18 @@
       border: 0;
       padding: 0px;
 
+    }
+
+    #graph-1 {
+      pointer-events: all;
+    }
+
+    .dygraph-axis-label.dygraph-axis-label-x {
+      color: white;
+    }
+
+    .dygraph-axis-label.dygraph-axis-label-y {
+      color: white;
     }
 
     #map {
@@ -283,7 +328,7 @@
     <div id="map">
 
     </div>
-    
+
     <div id="over-map">
 
       <!-- <div class="row ">
@@ -311,11 +356,11 @@
           <h6 id="bear-val">0</h6>
         </div>
       </div> -->
-    </div> 
+    </div>
 
 
 
-   
+
 
     <div id="joystick">
 
@@ -324,208 +369,212 @@
     <div>
       <img id="robotFrontCamera" src="" alt="">
     </div>
-<!-- 
+    <!-- 
     <div id="button-div">
       <button class="btn-lg btn-danger align-items" id="stopbutton">STOP</button>
     </div> -->
-<div id="side-background">
-    <div id="side-buttons">
+    <div id="side-background">
+      <div id="side-buttons">
 
         <div class="row">
-            <div class="col-12">
-              <button id="home-button" class="btn btn-primary " disabled="true"><i class="fa fa-home"></i></button>
-            </div>
+          <div class="col-12">
+            <button id="home-button" class="btn btn-primary " disabled="true"><i class="fa fa-home"></i></button>
           </div>
-      
+        </div>
+
         <br>
 
         <div class="row">
-            <div class="col-12">
-              <button id="import-button" class="btn btn-primary"  data-toggle="modal" data-target="#plan-modal"  ><i class="fa fa-folder-open" aria-hidden="true"></i>
-              </button>
-            </div>
+          <div class="col-12">
+            <button id="import-button" class="btn btn-primary" data-toggle="modal" data-target="#plan-modal"><i
+                class="fa fa-folder-open" aria-hidden="true"></i>
+            </button>
           </div>
+        </div>
 
         <br>
 
-      <div class="row">
-        <div class="col-12">
-          <button id="share" class="btn btn-primary"><i class="fa fa-mobile fa-2x" aria-hidden="true"></i>
-          </button>
+        <div class="row">
+          <div class="col-12">
+            <button id="share" class="btn btn-primary"><i class="fa fa-mobile fa-2x" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+          <div class="col-12">
+            <button id="view" class="btn btn-primary"> <i class="fa fa-play" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
       </div>
 
-      <br>
-
-      <div class="row">
-        <div class="col-12">
-          <button id="view" class="btn btn-primary"> <i class="fa fa-play" aria-hidden="true"></i>
-          </button>
-        </div>
-      </div>
     </div>
 
-  </div>
-
-<div id="top-background">
+    <div id="top-background">
 
 
-    <div id="top-buttons">
-      <div class="row">
-        <div class="col">
-          <button id="home-mission" class="btn btn-primary"> <i class="fa fa-home"></i> </button>
-        </div>
-        <div class="col">
+      <div id="top-buttons">
+        <div class="row">
+          <div class="col">
+            <button id="home-mission" class="btn btn-primary"> <i class="fa fa-home"></i> </button>
+          </div>
+          <div class="col">
             <button id="pause-robot" class="btn btn-primary"> <i class="fa fa-pause" aria-hidden="true"></i>
-        </div>
+          </div>
 
-        <div class="col">
-            <button id="stats-robot" class="btn btn-primary"> <i class="fa fa-line-chart" aria-hidden="true"></i> </button>
-
-        </div>
-        <div class="col">
-          <button id="pid-robot" class="btn btn-primary"> <i class="fa fa-sliders" aria-hidden="true"></i></button>
-        </div> 
-        <div class="col">
-            <button id="stop-mission" class="btn btn-danger" data-toggle="modal" data-target="#stop-mission-modal"> <i class="fa fa-stop" aria-hidden="true"></i>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-
-
-
-  <div class="modal fade" id="plan-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header text-center">
-          <h5 class="modal-title w-100" id="exampleModalLabel">New plan</h5>
-        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button> -->
-      </div>
-      <div class="modal-body">
-        <!-- <h1 id="modaltext" class="text-center"> GFGH</h1> -->
-        <input type="text" class="form-control" placeholder="Enter plan name" id="planNoBox">
-        <!-- <h3 id="planno" style="display: inline" class="text-center"> Hello </h3> -->
-      </div>
-      <div class="modal-footer">
-        <div class="row"></div>
-        <div class="col-md-12 text-center">
-          <button type="button" class="btn btn-secondary align-middle" data-dismiss="modal">Close</button>
-          <button id="plan-load-button" type="button" class="btn btn-primary">Load plan</button>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="modal fade" id="stop-mission-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header text-center">
-          <h5 class="modal-title w-100" id="exampleModalLabel">Stop mission</h5>
-        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button> -->
-      </div>
-      <div class="modal-body">
-        <h1  class="text-center"> Are you sure? </h1> 
-
-        <!-- <h3 id="planno" style="display: inline" class="text-center"> Hello </h3> -->
-      </div>
-      <div class="modal-footer">
-        <div class="row"></div>
-        <div class="col-md-12 text-center">
-          <button type="button" class="btn btn-secondary align-middle" data-dismiss="modal">No</button>
-          <button type="button" class="btn btn-danger">Yes</button>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-  <div class="white-text" id="dist-eta-background">
-  <div class="row">
-
-    <div class="col">
-      <div class="col">
-        <div class="row">
           <div class="col">
-              <h5>Distance </h5>
+            <button id="stats-robot" id="clear-graph" class="btn btn-primary"> <i class="fa fa-line-chart"
+                aria-hidden="true"></i> </button>
 
           </div>
           <div class="col">
-              <h5 id="dist-val">0m </h5>
-
+            <button id="pid-robot" class="btn btn-primary"> <i class="fa fa-sliders" aria-hidden="true"></i></button>
           </div>
+          <div class="col">
+            <button id="stop-mission" class="btn btn-danger" data-toggle="modal" data-target="#stop-mission-modal"> <i
+                class="fa fa-stop" aria-hidden="true"></i>
+          </div>
+
         </div>
       </div>
-      <div class="col">
 
-          <div id="compass-div">
-     
-              <canvas id="compass" height="100" ; width="100" ; data-type="radial-gauge" data-min-value="0" data-max-value="360"
-              data-major-ticks="N,NE,E,SE,S,SW,W,NW,N" data-minor-ticks="22" data-ticks-angle="360" data-start-angle="180"
-              data-stroke-ticks="false" data-highlights="true" data-color-plate="#007bff" data-color-major-ticks="#f5f5f5"
-              data-color-minor-ticks="#ddd" data-color-numbers="#ccc" data-color-needle="black" data-color-needle-end="black"
-              data-value-box="false" data-value-text-shadow="false" data-color-circle-inner="#fff"
-              data-color-needle-circle-outer="#fff" data-needle-circle-size="15" data-needle-circle-outer="true"
-              data-animation-rule="linear" data-needle-type="line" data-needle-start="75" data-needle-end="100"
-              data-needle-width="3" data-borders="true" data-border-inner-width="0" data-border-middle-width="0"
-              data-border-outer-width="0" data-color-border-outer="black" data-color-border-outer-end="black"
-              data-color-needle-shadow-down="blue" data-border-shadow-width="10" data-animation-target="plate"
-              data-animation="false" data-animate-on-init="true"></canvas>
-  
-       
-          
-             
+    </div>
+
+
+
+    <div class="modal fade" id="plan-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header text-center">
+            <h5 class="modal-title w-100" id="exampleModalLabel">New plan</h5>
+            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+          </div>
+          <div class="modal-body">
+            <!-- <h1 id="modaltext" class="text-center"> GFGH</h1> -->
+            <input type="text" class="form-control" placeholder="Enter plan name" id="planNoBox">
+            <!-- <h3 id="planno" style="display: inline" class="text-center"> Hello </h3> -->
+          </div>
+          <div class="modal-footer">
+            <div class="row"></div>
+            <div class="col-md-12 text-center">
+              <button type="button" class="btn btn-secondary align-middle" data-dismiss="modal">Close</button>
+              <button id="plan-load-button" type="button" class="btn btn-primary">Load plan</button>
+
             </div>
-      </div>
-
-    </div>
-    <div class="row">
- 
-    </div>
-
-    <div class="col">
-      <div class="row">
-        <div class="col">
-            <h5> Time </h5>
-        </div>
-        <div class="col">
-            <h5> 0s </h5>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <h5 id="heading-val">0&#176</h5>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-            <h5 id="bear-val" style="color: lime"> 0&#176</h5>
-        
-        </div>
-      </div>
-      <div class="row">
-          <div class="col">
-              <h5> 0 m/s </h5>
           </div>
-          
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" id="stop-mission-modal" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header text-center">
+            <h5 class="modal-title w-100" id="exampleModalLabel">Stop mission</h5>
+            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+          </div>
+          <div class="modal-body">
+            <h1 class="text-center"> Are you sure? </h1>
+
+            <!-- <h3 id="planno" style="display: inline" class="text-center"> Hello </h3> -->
+          </div>
+          <div class="modal-footer">
+            <div class="row"></div>
+            <div class="col-md-12 text-center">
+              <button type="button" class="btn btn-secondary align-middle" data-dismiss="modal">No</button>
+              <button type="button" class="btn btn-danger">Yes</button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="white-text" id="dist-eta-background">
+      <div class="row">
+
+        <div class="col">
+          <div class="col">
+            <div class="row">
+              <div class="col">
+                <h5>Distance </h5>
+
+              </div>
+              <div class="col">
+                <h5 id="dist-val">0m </h5>
+
+              </div>
+            </div>
+          </div>
+          <div class="col">
+
+            <div id="compass-div">
+
+              <canvas id="compass" height="100" ; width="100" ; data-type="radial-gauge" data-min-value="0"
+                data-max-value="360" data-major-ticks="N,NE,E,SE,S,SW,W,NW,N" data-minor-ticks="22"
+                data-ticks-angle="360" data-start-angle="180" data-stroke-ticks="false" data-highlights="true"
+                data-color-plate="#007bff" data-color-major-ticks="#f5f5f5" data-color-minor-ticks="#ddd"
+                data-color-numbers="#ccc" data-color-needle="black" data-color-needle-end="black" data-value-box="false"
+                data-value-text-shadow="false" data-color-circle-inner="#fff" data-color-needle-circle-outer="#fff"
+                data-needle-circle-size="15" data-needle-circle-outer="true" data-animation-rule="linear"
+                data-needle-type="line" data-needle-start="75" data-needle-end="100" data-needle-width="3"
+                data-borders="true" data-border-inner-width="0" data-border-middle-width="0" data-border-outer-width="0"
+                data-color-border-outer="black" data-color-border-outer-end="black" data-color-needle-shadow-down="blue"
+                data-border-shadow-width="10" data-animation-target="plate" data-animation="false"
+                data-animate-on-init="true"></canvas>
+
+
+
+
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+
         </div>
 
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <h5> Time </h5>
+            </div>
+            <div class="col">
+              <h5> 0s </h5>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h5 id="heading-val">0&#176</h5>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h5 id="bear-val" style="color: lime"> 0&#176</h5>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h5> 0 m/s </h5>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
     </div>
-  </div>  
-  </div>
 
 
 
@@ -535,7 +584,7 @@
 
 
 
-<!-- 
+    <!-- 
     <div  class="row">
     <div class="col-3 text-left" >
       <h5>Distance</h5>
@@ -595,6 +644,189 @@
 
   </div> -->
 
+    <script type="module" src=telemetry.js> </script>
+
+
+    <div id="graph-area">
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col-6 text-right">
+              <div class="form-check">
+
+                <input class="form-check-input" type="checkbox" value="" id="accX">
+                <label class="form-check-label" for="accX">
+                  AccX
+                </label>
+              </div>
+              <div class="form-check">
+
+                <input class="form-check-input" type="checkbox" value="" id="accY">
+                <label class="form-check-label" for="accY">
+                  AccY
+                </label>
+              </div>
+
+              <div class="form-check">
+
+                <input class="form-check-input" type="checkbox" value="" id="accZ">
+                <label class="form-check-label" for="accZ">
+                  AccZ
+                </label>
+
+              </div>
+
+            </div>
+            <div class="col-6 text-left">
+              <div class="form-check">
+
+                <input class="form-check-input" type="checkbox" value="" id="rotA">
+                <label class="form-check-label" for="rotA">
+                  RotA
+                </label>
+              </div>
+              <div class="form-check">
+
+                <input class="form-check-input" type="checkbox" value="" id="rotB">
+                <label class="form-check-label" for="rotB">
+                  RotB
+                </label>
+              </div>
+
+              <div class="form-check">
+
+                <input class="form-check-input" type="checkbox" value="" id="rotG">
+                <label class="form-check-label" for="rotG">
+                  RotG
+                </label>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col text-center">
+              <button class="btn btn-lg btn-primary" id="toggle-graph" value=""><i id="play-icon" class="fa fa-play"
+                  aria-hidden="true"></i></button>
+            </div>
+            <div class="col">
+              <div id="graph-legend">
+
+              </div>
+            </div>
+          </div>
+
+
+
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col-12">
+              <div id="graph_1"></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div id="pid-area">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link"  id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Contact</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">...</div>
+            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">...</div>
+            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
+          </div>
+      </div>
+
+
+
+
+
+
+    <div class="row">
+  
+
+
+      
+          <div class="col">
+            <div class="row">
+              <div class="col">
+                <h3>MP</h3>
+              </div>
+              <div class="col">
+
+              </div>
+              <div class="col">
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <h3>MI</h3>
+
+              </div>
+              <div class="col">
+
+              </div>
+              <div class="col">
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <h3>MD</h3>
+
+              </div>
+              <div class="col">
+
+              </div>
+              <div class="col">
+
+              </div>
+            </div>
+            
+
+
+
+
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+          <!-- <button class="btn btn-lg btn-primary" id="toggle-graph" value= "">Start</button> -->
+      
+
+    </div>
+
+
+
+
+
+
+
+  </div>
+
+
 
 
 
@@ -608,17 +840,17 @@
 
 
 
-    <div id="planselect" style="margin-top:8px" class="col-4">
+  <div id="planselect" style="margin-top:8px" class="col-4">
 
 
 
 
-      <!-- <input id= "planNobox" type="text" placeholder="Plan Name"> -->
+    <!-- <input id= "planNobox" type="text" placeholder="Plan Name"> -->
 
 
-    </div>
+  </div>
 
-    <h1 class="col-12" id="main-header"> </h1>
+  <h1 class="col-12" id="main-header"> </h1>
 
 
 
@@ -634,10 +866,6 @@
 
 
 
-  <script type="module" src=telemetry.js>
-
-
-  </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvw6RInTxTbh-gGvXHdSrWIEE43Je-E40&libraries=geometry"
     async defer></script>
 
@@ -655,6 +883,9 @@
   <script src="https://unpkg.com/event-target@latest/min.js"></script>
   <script src="https://unpkg.com/resize-observer-polyfill@1.5.0/dist/ResizeObserver.global.js"></script>
   <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
+  <script src="./node_modules/dygraphs/dist/dygraph.min.js"></script>
+  <script src="./node_modules/nouislider/distribute/nouislider.js"> </script>
+  <script src="node_modules/wnumb/wNumb.js"></script>
 </body>
 
 </html>

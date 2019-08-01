@@ -17,6 +17,10 @@ let homeButton;
 let missionHome; 
 window.operator; 
 window.operatorClass = Operator; 
+let g1; 
+let acc  = [];
+let updated = false; 
+let started = false;
 
 function initMap() {
 
@@ -46,6 +50,7 @@ function initMap() {
   {
     center: {lat:-33.814451, lng:151.171332},
     zoom: 14,
+    fullscreenControl: false,
     gestureHandling: 'greedy',
   }),
     
@@ -75,6 +80,171 @@ function initMap() {
  
 
 }
+
+
+function initGraph() {
+
+  let toggle = document.getElementById("toggle-graph");
+  //let clear = document.getElementById("clear-graph");
+
+
+
+    g1 = new Dygraph(
+        document.getElementById("graph_1"),
+        `${new Date()}, 0,0,0,0,0,0\n`, // path to CSV file
+        {
+            drawPoints: false,
+            showRoller: false,
+            rollPeriod: 0,
+            axes: {
+              x : {
+                drawAxis: true, 
+                drawGrid: false
+              },
+              y : {
+                drawGrid: false,
+                valueRange: [-20,20]
+              
+              },
+            },
+            labelsDiv: document.getElementById("graph-legend"),
+            axisLineColor: "white",
+            legend: 'always',
+            labels: ['Time', 'AccX (m/s)','AccY (m/s)', 'AccZ (m/s)', 'rotA (rad/s)', 'rotB (rad/s)', 'rotG (rad/s)'],
+            labelsSeparateLines: true,
+            visibility: [false, false, false, false, false, false],
+            dateWindow: [Date.now(), Date.now() + 30000]
+        }          // options
+      );
+
+      document.getElementById('accX').addEventListener('click', toggleAccX); 
+      document.getElementById('accY').addEventListener('click', toggleAccY); 
+      document.getElementById('accZ').addEventListener('click', toggleAccZ);
+      document.getElementById('rotA').addEventListener('click', toggleRotA); 
+      document.getElementById('rotB').addEventListener('click', toggleRotB); 
+      document.getElementById('rotG').addEventListener('click', toggleRotG); 
+    
+
+
+
+
+    // clear.addEventListener("click" , () => {
+    //   //console.log("clear");
+    //   document.getElementById('play-icon').className = "fa fa-play"
+    //   started = false; 
+    //   acc = []; 
+    //   acc.push([new Date(), 0, 0, 0, 0,0,0]); 
+    //   g1.updateOptions({'file': acc }); 
+    //   socket.off('new-acc');
+
+
+    // }); 
+
+
+ toggle.addEventListener( "click", () => {
+    if (!started) {
+    
+      document.getElementById('play-icon').className = "fa fa-pause"
+      socket.on('new-acc', (data) => {
+        g1.updateOptions({dateWindow: [Date.now() - 6000, Date.now()]}); 
+        let arr = new Int16Array(data);
+        //console.log('new data');
+         // arr[0] = arr[0]/100;
+         // arr[1] = arr[1]/100;
+         // arr[2] = arr[2]/100;
+        //console.log(arr);
+       if(!updated) {
+        //console.log('update');
+        updated = true; 
+        if(acc.length == 400) {
+          acc.splice(0,150);
+          //acc = []; 
+          //g1.updateOptions({dateWindow: [Date.now(), Date.now() + 6000]}); 
+
+        }
+        let d = new Date(); 
+
+        acc.push([d, arr[0]/100, arr[1]/100, arr[2]/100, arr[3]*Math.PI/180, arr[4]*Math.PI/180, arr[5]*Math.PI/180]);
+       // console.log(row);
+        g1.updateOptions({'file': acc }  
+        //{dateWindow: [0, Date.now()]} 
+        ); 
+        updated = false; 
+       }
+       
+  
+        //console.log("new acc");
+  
+      }); 
+      started = true; 
+    } else {
+      document.getElementById('play-icon').className = "fa fa-play"
+      started = false; 
+      socket.off('new-acc');
+    }
+
+  });
+
+
+
+}
+
+
+function toggleAccX() {
+var checkBox = document.getElementById("accX");
+  if (checkBox.checked == true){
+    g1.setVisibility(0, true);
+  } else {
+    g1.setVisibility(0, false);
+  }
+}
+
+function toggleAccY() {
+
+  var checkBox = document.getElementById("accY");
+  if (checkBox.checked == true){
+    g1.setVisibility(1, true);
+  } else {
+    g1.setVisibility(1, false);
+  }
+}
+
+function toggleAccZ() {
+
+  var checkBox = document.getElementById("accZ");
+  if (checkBox.checked == true){
+    g1.setVisibility(2, true);
+  } else {
+    g1.setVisibility(2, false);
+  }
+}
+function toggleRotA () {
+  console.log(this);
+  console.log('tog');
+  var checkBox = document.getElementById("rotA");
+  if (checkBox.checked == true){
+    g1.setVisibility(3, true);
+  } else {
+    g1.setVisibility(3, false);
+  }
+}
+function toggleRotB () {
+  var checkBox = document.getElementById("rotB");
+  if (checkBox.checked == true){
+    g1.setVisibility(4, true);
+  } else {
+    g1.setVisibility(4, false);
+  }
+}
+function toggleRotG () {
+  var checkBox = document.getElementById("rotG");
+  if (checkBox.checked == true){
+    g1.setVisibility(5, true);
+  } else {
+    g1.setVisibility(5, false);
+  }
+}
+
 
 
 
@@ -113,7 +283,6 @@ console.log('clicked view');
 //  element.style.display = "none";
 // element.parentElement.removeChild(element);
 toggleSideBar();
-socket = io.connect("https://localhost:5000", {secure:true, rejectUnauthorized: false}); 
 
 //window.user = new Viewer(robotpath, socket);
 user = new Operator(robotpath, socket, ros, plan);
@@ -179,8 +348,16 @@ function toggleTopBar() {
 
 
 window.onload = function() {
-
+  socket = io.connect("https://localhost:5000", {secure:true, rejectUnauthorized: false}); 
+  socket.on('connection', () => {
+    console.log("connected to server socket"); 
+  });
+  socket.on('error', err => {
+    console.log('error', err);
+  });
+        
   initMap(); 
+  initGraph();
   
   document.getElementById('share').addEventListener('click', shareClick);
   document.getElementById('view').addEventListener('click', viewClick);
@@ -189,6 +366,12 @@ window.onload = function() {
   homeButton.addEventListener('click', zoomToWayPoint); 
   missionHome = document.getElementById('home-mission');
   missionHome.addEventListener('click', zoomToLocation);
+
+
+
+
+
+
   //getLocation();
 }
 
