@@ -29,6 +29,9 @@
 
     }
 
+  .noUi-handle{
+    box-shadow: black;
+  }
     #over-map {
       position: absolute;
       right: 50px;
@@ -206,6 +209,8 @@
       z-index: 80;
       color: white;
       width: 800px;
+      padding: 10px;
+      border-radius: 0.25em;
       /* width: 50%;
       height: 500px; */
 
@@ -219,6 +224,8 @@
       /* background-color: white; */
       z-index: 80;
       color: white;
+      padding-right: 10px;
+      border-radius: 0.25em;
     }
 
 
@@ -235,6 +242,8 @@
       padding: 0px;
 
     }
+
+
 
     #graph-1 {
       pointer-events: all;
@@ -651,7 +660,7 @@
       <div class="row">
         <div class="col">
           <div class="row">
-            <div class="col-6 text-right">
+            <div class="col-3 text-right">
               <div class="form-check">
 
                 <input class="form-check-input" type="checkbox" value="" id="accX">
@@ -677,7 +686,7 @@
               </div>
 
             </div>
-            <div class="col-6 text-left">
+            <div class="col-3 text-center">
               <div class="form-check">
 
                 <input class="form-check-input" type="checkbox" value="" id="rotA">
@@ -701,11 +710,12 @@
                 </label>
               </div>
             </div>
+           
           </div>
           <br>
           <div class="row">
-            <div class="col text-center">
-              <button class="btn btn-lg btn-primary" id="toggle-graph" value=""><i id="play-icon" class="fa fa-play"
+            <div class="col text-left">
+              <button class="btn btn-lg btn-primary" style="margin-left: 0px;" id="toggle-graph" value=""><i id="play-icon" class="fa fa-play"
                   aria-hidden="true"></i></button>
             </div>
             <div class="col">
@@ -733,19 +743,126 @@
     <div id="pid-area">
         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
             <li class="nav-item">
-              <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Home</a>
+              <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true"><i class="fa fa-compass fa-2x"></i></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link"  id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</a>
+              <a class="nav-link"  id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false"><i class="fa fa-tachometer fa-2x" aria-hidden="true"></i>
+              </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Contact</a>
-            </li>
+          
           </ul>
           <div class="tab-content" id="pills-tabContent">
-            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">...</div>
-            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">...</div>
-            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="row">
+                    <div class="col">
+                      <div class="row">
+                        <div class="col-2 text-right">
+                          <h3>P</h3>
+                        </div>
+                        <div class="col-7">
+                          <div id="p-mag">
+
+                          </div>
+                        </div>
+                        <div class="col-3">
+                          <input  class="form-control" id="p-mag-text" placeholder="100">
+
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-2 text-center">
+                          <h3>I</h3>
+          
+                        </div>
+                        <div class="col-7">
+                            <div id="i-mag">
+
+                              </div>
+                        </div>
+                        <div class="col-3">
+                            <input  class="form-control" id="i-mag-text" placeholder="100">
+
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-2 text-right">
+                          <h3>D</h3>
+          
+                        </div>
+                        <div class="col-7">
+                            <div id="d-mag">
+
+                              </div>
+                        </div>
+                        <div class="col-3">
+                            <input  class="form-control" id="d-mag-text" placeholder="100">
+                        </div>
+                      </div>
+                      
+          
+          
+          
+          
+                    </div>
+          
+              </div>
+            </div>
+            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                <div class="row">
+                    <div class="col">
+                      <div class="row">
+                        <div class="col-2">
+                          <h3>P</h3>
+                        </div>
+                        <div class="col-7">
+                          <div id="p-speed"></div>
+          
+                        </div>
+                        <div class="col-3">
+                            <input  class="form-control" id="p-speed-text" placeholder="100">
+
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-2">
+                          <h3>I</h3>
+          
+                        </div>
+                        <div class="col-7">
+                            <div id="i-speed"></div>
+
+          
+                        </div>
+                        <div class="col-3">
+                            <input  class="form-control" id="i-speed-text" placeholder="100">
+
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-2">
+                          <h3>D</h3>
+          
+                        </div>
+                        <div class="col-7">
+                            <div id="d-speed"></div>
+
+                        </div>
+                        <div class="col-3">
+                            <input  class="form-control" id="d-speed-text" placeholder="100">
+
+                        </div>
+                      </div>
+                      
+          
+          
+          
+          
+                    </div>
+              </div>
+
+
+
+            </div>
           </div>
       </div>
 
@@ -755,10 +872,6 @@
 
 
     <div class="row">
-  
-
-
-      
           <div class="col">
             <div class="row">
               <div class="col">

@@ -21,6 +21,12 @@ let g1;
 let acc  = [];
 let updated = false; 
 let started = false;
+let pMag;
+let iMag;
+let dMag;
+let pSpeed; 
+let iSpeed; 
+let dSpeed; 
 
 function initMap() {
 
@@ -188,6 +194,101 @@ function initGraph() {
 
 
 }
+
+function initPID () {
+pMag = document.getElementById('p-mag');
+iMag = document.getElementById('i-mag');
+dMag = document.getElementById('d-mag');
+pSpeed = document.getElementById('p-speed'); 
+iSpeed = document.getElementById('i-speed'); 
+dSpeed = document.getElementById('d-speed'); 
+
+noUiSlider.create(pMag, {
+
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 0.1, 
+  tooltips: false,
+
+});
+
+noUiSlider.create(iMag, {
+
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 0.1, 
+  tooltips: false,
+
+});
+
+noUiSlider.create(dMag, {
+
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 0.1, 
+  tooltips: false,
+
+});
+
+noUiSlider.create(pSpeed, {
+
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 0.1, 
+  tooltips: false,
+
+});
+
+noUiSlider.create(iSpeed, {
+
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 0.1, 
+  tooltips: false,
+
+});
+
+noUiSlider.create(dSpeed, {
+
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 0.1, 
+  tooltips: false,
+
+});
+
+
+
+
+
+
+}
+
+
 
 
 function toggleAccX() {
@@ -358,6 +459,7 @@ window.onload = function() {
         
   initMap(); 
   initGraph();
+  initPID();
   
   document.getElementById('share').addEventListener('click', shareClick);
   document.getElementById('view').addEventListener('click', viewClick);
