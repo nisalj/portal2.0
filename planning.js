@@ -218,6 +218,8 @@ function initMap() {
             $('#modaltext').text("Please select waypoints") 
             $('#modal').modal('show'); 
           } else{
+            $('#modaltext').text("Enter name:") 
+
             path.sendPath(); 
          //   setTimeout(showModal, 500); 
           //  console.log(path.planNo);

@@ -35,6 +35,9 @@ let iSpeedSlider;
 let dSpeedSlider; 
 let button_; 
 let zoomOn = false; 
+let pidOn = true;
+let graphOn = true; 
+
 function initMap() {
 
    lineSymbol = {
@@ -209,7 +212,7 @@ function initGraph() {
    let graph = document.getElementById('graph-area');
 
   if (graph.style.display == "none") {
-    graph.style.display = "block";
+    graph.style.display = "";
     hide.classList.remove("btn-primary");
     hide.classList.add("btn-success");
 
@@ -449,7 +452,7 @@ pMagSlider.noUiSlider.on('update', (value) => {
     console.log('clicked');
     let area = document.getElementById('pid-area');
     if(area.style.display == "none") {
-      area.style.display = "block";  
+      area.style.display = "";  
       pidHide.classList.remove("btn-primary");
       pidHide.classList.add("btn-success");
     } else {
@@ -596,6 +599,12 @@ function initChart() {
             getColor(0),
             getColor(0),
           ],
+          hoverBackgroundColor: [
+            getColor(0,1),
+            getColor(0,1),
+            getColor(0,1),
+            getColor(0,1),
+          ],
         }, {
         data: [10, 10, 10,10],
         backgroundColor: [
@@ -604,6 +613,13 @@ function initChart() {
            getColor(0.5),
            getColor(0.5),
         ],
+
+        hoverBackgroundColor: [
+          getColor(0.5,1),
+          getColor(0.5,1),
+          getColor(0.5,1),
+          getColor(0.5,1),
+        ]
       },
       {
         data: [10, 10, 10,10],
@@ -613,6 +629,12 @@ function initChart() {
           getColor(0.75),
           getColor(0.75),
         ],
+        hoverBackgroundColor: [
+          getColor(0.75,1),
+          getColor(0.75,1),
+          getColor(0.75,1),
+          getColor(0.75,1),
+        ]
       },
       {
         data: [10, 10, 10,10],
@@ -622,6 +644,13 @@ function initChart() {
           getColor(1),
           getColor(1),
         ],
+
+        hoverBackgroundColor: [
+          getColor(1,1),
+          getColor(1,1),
+          getColor(1,1),
+          getColor(1,1),
+        ]
       }
       ],
 
@@ -629,10 +658,10 @@ function initChart() {
   
       // These labels appear in the legend and in the tooltips when hovering different arcs
       labels: [
-          'Red',
-          'Yellow',
-          'Blue',
-          'Orange',
+          'Right',
+          'Back',
+          'Left',
+          'Front',
       ],
 
   
@@ -734,20 +763,102 @@ function toggleSideBar() {
 }
 
 
-function toggleTopBar() {
-  let button = document.getElementById('top-buttons'); 
-  if (button.style.display == "none") {
-    button.style.display = "block"
-  } else {
-    button.style.display = "none";
-  }
+function toggleTopBar(enabled) {
+  // let button = document.getElementById('top-buttons'); 
+  // if (button.style.display == "none") {
+  //   button.style.display = "block"
+  // } else {
+  //   button.style.display = "none";
+  // }
+  document.getElementById('top-buttons').style.display = enabled ? '' : 'none';
+
 }
 
-function getColor(value){
+
+function toggleGraph(enabled) {
+  document.getElementById('graph-area').style.display = enabled ? '' : 'none';
+}
+
+function toggleStats(enabled) {
+  document.getElementById('pid-area').style.display = enabled ? '' : 'none';
+}
+
+function toggleJoystick(enabled) {
+  document.getElementById('joystick').style.display = enabled ? '' : 'none';
+
+}
+
+function toggleChart(enabled) {
+  document.getElementById('pie-chart').style.display = enabled ? '' : 'none';
+
+}
+
+function toggleCompass(enabled) {
+  document.getElementById('dist-eta-background').style.display = enabled ? '' : 'none';
+
+}
+
+function getColor(value, opacity){
   //value from 0 to 1
   var hue=((1-value)*120).toString(10);
-  return ["hsla(",hue,",100%,50%,50%)"].join("");
+  if(opacity)
+  return ["hsla(",hue,",100%,50%,100%)"].join("")
+  else
+  return ["hsla(",hue,",100%,50%,40%)"].join("");
+
 }
+
+function switchToVid() {
+if (document.getElementById('pid-area').style.display == "none") {
+  pidOn = false;
+} else {
+  pidOn = true;
+
+}
+if (document.getElementById('graph-area').style.display == "none") {
+  graphOn = false;
+} else {
+  graphOn = true; 
+}
+console.log(pidOn, graphOn);
+toggleGraph(false);
+toggleCompass(false);
+toggleJoystick(false);
+toggleChart(false); 
+toggleStats(false); 
+toggleTopBar(false);
+
+document.getElementById('map').classList.remove('map-big');
+document.getElementById('map').classList.add('map-small');
+document.getElementById('robotFrontCamera').classList.remove('video-small');
+document.getElementById('robotFrontCamera').classList.add('video-big');
+
+
+}
+
+function switchToMap() {
+  console.log(pidOn, graphOn);
+
+  if(pidOn)
+  toggleStats(true);
+  if(graphOn)
+  toggleGraph(true);  
+
+  toggleCompass(true);
+  toggleJoystick(true);
+  toggleChart(true); 
+  toggleTopBar(true);
+
+
+  document.getElementById('map').classList.remove('map-small');
+  document.getElementById('map').classList.add('map-big');
+  document.getElementById('robotFrontCamera').classList.remove('video-big');
+  document.getElementById('robotFrontCamera').classList.add('video-small');
+
+
+}
+
+
 
 
 
@@ -775,8 +886,13 @@ window.onload = function() {
   missionHome = document.getElementById('home-mission');
   missionHome.addEventListener('click', zoomToLocation);
 
- 
+  document.getElementById('robotFrontCamera').addEventListener('click', switchToVid);
+  map.addListener('click', () => {
+    console.log('clicked');
+    if(document.getElementById('robotFrontCamera').classList.contains('video-big'))
+    switchToMap(); 
 
+  })
 
 
 
