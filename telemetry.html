@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="./node_modules/nouislider/distribute/nouislider.css">
   <script src="./node_modules/canvas-gauges/gauge.min.js"> </script>
   <script src="./node_modules/nipplejs/dist/nipplejs.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
   <script type="text/javascript"
     src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
   <script type="text/javascript" src="https://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
@@ -44,8 +45,15 @@
       color: white;
     }
 
-
-
+    .btn-success,
+    .btn-success:hover,
+    .btn-success:active,
+    .btn-success:visited,
+    .btn-success:focus {
+    background-color: lime;
+    border-color: lime;
+    color: black;
+    }
     .sidebar {
       position: absolute;
       z-index: 1;
@@ -71,6 +79,15 @@
       width: 200px;
       z-index: 3;
       display: none;
+    }
+
+    #pie-chart {
+      position: absolute;
+      top:300px;
+      right: -65px; 
+      z-index: 99;
+      height: 500px;
+      width: 500px;
     }
 
     #button-div {
@@ -202,13 +219,13 @@
 
     #graph-area {
       position: absolute;
-      bottom: 200px;
-      left: 300px;
+      bottom: 100px;
+      left: 400px;
       background-color: rgba(0, 0, 0, 0.9);
       /* background-color: white; */
       z-index: 80;
       color: white;
-      width: 800px;
+      width: 820px;
       padding: 10px;
       border-radius: 0.25em;
       /* width: 50%;
@@ -218,13 +235,14 @@
 
     #pid-area {
       position: absolute;
-      bottom: 200px;
-      right: 200px;
+      bottom: 249px;
+      right: 520px;
       background-color: rgba(0, 0, 0, 0.9);
       /* background-color: white; */
       z-index: 80;
       color: white;
       padding-right: 10px;
+      padding-bottom: 5px; 
       border-radius: 0.25em;
     }
 
@@ -435,7 +453,7 @@
           </div>
 
           <div class="col">
-            <button id="stats-robot" id="clear-graph" class="btn btn-primary"> <i class="fa fa-line-chart"
+            <button id="stats-robot"  class="btn btn-primary"> <i class="fa fa-line-chart"
                 aria-hidden="true"></i> </button>
 
           </div>
@@ -811,7 +829,7 @@
                 <div class="row">
                     <div class="col">
                       <div class="row">
-                        <div class="col-2">
+                        <div class="col-2 text-right">
                           <h3>P</h3>
                         </div>
                         <div class="col-7">
@@ -824,7 +842,7 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-2">
+                        <div class="col-2 text-center">
                           <h3>I</h3>
           
                         </div>
@@ -839,7 +857,7 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-2">
+                        <div class="col-2 text-right">
                           <h3>D</h3>
           
                         </div>
@@ -941,7 +959,9 @@
 
 
 
-
+  <div id="pie-chart">
+    <canvas id="chart-canvas"></canvas>
+  </div>
 
 
 
@@ -997,6 +1017,7 @@
   <script src="https://unpkg.com/resize-observer-polyfill@1.5.0/dist/ResizeObserver.global.js"></script>
   <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
   <script src="./node_modules/dygraphs/dist/dygraph.min.js"></script>
+  <script src="./node_modules/dygraphs/src/extras/unzoom.js"></script>
   <script src="./node_modules/nouislider/distribute/nouislider.js"> </script>
   <script src="node_modules/wnumb/wNumb.js"></script>
 </body>

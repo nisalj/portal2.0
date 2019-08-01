@@ -22,12 +22,19 @@ let acc  = [];
 let updated = false; 
 let started = false;
 let pMag;
-let iMag;
-let dMag;
-let pSpeed; 
+let iMag; 
+let dMag; 
+let pSpeed;
 let iSpeed; 
 let dSpeed; 
-
+let pMagSlider;
+let iMagSlider;
+let dMagSlider;
+let pSpeedSlider; 
+let iSpeedSlider; 
+let dSpeedSlider; 
+let button_; 
+let zoomOn = false; 
 function initMap() {
 
    lineSymbol = {
@@ -91,6 +98,7 @@ function initMap() {
 function initGraph() {
 
   let toggle = document.getElementById("toggle-graph");
+  let hide = document.getElementById("stats-robot");
   //let clear = document.getElementById("clear-graph");
 
 
@@ -113,15 +121,65 @@ function initGraph() {
               
               },
             },
+            zoomCallback: zoomingGraph, 
             labelsDiv: document.getElementById("graph-legend"),
             axisLineColor: "white",
             legend: 'always',
             labels: ['Time', 'AccX (m/s)','AccY (m/s)', 'AccZ (m/s)', 'rotA (rad/s)', 'rotB (rad/s)', 'rotG (rad/s)'],
             labelsSeparateLines: true,
             visibility: [false, false, false, false, false, false],
-            dateWindow: [Date.now(), Date.now() + 30000]
+            dateWindow: [Date.now(), Date.now() + 30000],
+            // plugins : [
+            //   Dygraph.Plugins.Unzoom
+            // ]
+         
         }          // options
       );
+
+     let g = g1;
+
+     button_ = document.createElement('button');
+     button_.innerHTML = '<i class="fa fa-search-minus" aria-hidden="true"></i>';
+    button_.style.display = 'none';
+    button_.classList.add('btn');
+    button_.classList.add('btn-sm');
+
+    button_.classList.add('btn-secondary');
+     button_.style.position = 'absolute';
+    var area = g.plotter_.area;
+    button_.style.top = (area.y + 4) + 'px';
+    button_.style.left = (area.x + 4) + 'px';
+    button_.style.zIndex = 11;
+    var parent = g.graphDiv;
+    parent.insertBefore(button_, parent.firstChild);
+    button_.style.display = "none";
+    button_.addEventListener('click', () => {
+      g1.resetZoom();
+      g1.updateOptions ( {
+        axes: {
+          y: {
+            valueRange: [-20,20],
+          }
+        }
+      });
+      button_.style.display = "none";
+      zoomOn = false; 
+    });
+
+
+    g1.addAndTrackEvent(parent, 'mouseover', function() {
+      if (zoomOn) {
+        button_.style.display = "";      
+      }
+     
+    });
+
+    g1.addAndTrackEvent(parent, 'mouseout', function() {
+      button_.style.display = "none";      
+    });
+  
+
+
 
       document.getElementById('accX').addEventListener('click', toggleAccX); 
       document.getElementById('accY').addEventListener('click', toggleAccY); 
@@ -147,46 +205,68 @@ function initGraph() {
     // }); 
 
 
+ hide.addEventListener("click", () => {
+   let graph = document.getElementById('graph-area');
+
+  if (graph.style.display == "none") {
+    graph.style.display = "block";
+    hide.classList.remove("btn-primary");
+    hide.classList.add("btn-success");
+
+    //playGraph();
+  } else {
+    pauseGraph();
+    graph.style.display = "none";
+    hide.classList.remove("btn-success");
+    hide.classList.add("btn-primary");
+
+
+  }
+
+
+ });    
+
+
  toggle.addEventListener( "click", () => {
     if (!started) {
+      playGraph();
     
-      document.getElementById('play-icon').className = "fa fa-pause"
-      socket.on('new-acc', (data) => {
-        g1.updateOptions({dateWindow: [Date.now() - 6000, Date.now()]}); 
-        let arr = new Int16Array(data);
-        //console.log('new data');
-         // arr[0] = arr[0]/100;
-         // arr[1] = arr[1]/100;
-         // arr[2] = arr[2]/100;
-        //console.log(arr);
-       if(!updated) {
-        //console.log('update');
-        updated = true; 
-        if(acc.length == 400) {
-          acc.splice(0,150);
-          //acc = []; 
-          //g1.updateOptions({dateWindow: [Date.now(), Date.now() + 6000]}); 
+      // document.getElementById('play-icon').className = "fa fa-pause"
+      // socket.on('new-acc', (data) => {
+      //   g1.updateOptions({dateWindow: [Date.now() - 6000, Date.now()]}); 
+      //   let arr = new Int16Array(data);
+      //   //console.log('new data');
+      //    // arr[0] = arr[0]/100;
+      //    // arr[1] = arr[1]/100;
+      //    // arr[2] = arr[2]/100;
+      //   //console.log(arr);
+      //  if(!updated) {
+      //   //console.log('update');
+      //   updated = true; 
+      //   if(acc.length == 400) {
+      //     acc.splice(0,150);
+      //     //acc = []; 
+      //     //g1.updateOptions({dateWindow: [Date.now(), Date.now() + 6000]}); 
 
-        }
-        let d = new Date(); 
+      //   }
+      //   let d = new Date(); 
 
-        acc.push([d, arr[0]/100, arr[1]/100, arr[2]/100, arr[3]*Math.PI/180, arr[4]*Math.PI/180, arr[5]*Math.PI/180]);
-       // console.log(row);
-        g1.updateOptions({'file': acc }  
-        //{dateWindow: [0, Date.now()]} 
-        ); 
-        updated = false; 
-       }
+      //   acc.push([d, arr[0]/100, arr[1]/100, arr[2]/100, arr[3]*Math.PI/180, arr[4]*Math.PI/180, arr[5]*Math.PI/180]);
+      //  // console.log(row);
+      //   g1.updateOptions({'file': acc }  
+      //   //{dateWindow: [0, Date.now()]} 
+      //   ); 
+      //   updated = false; 
+      //  }
        
   
-        //console.log("new acc");
+      //   //console.log("new acc");
   
-      }); 
-      started = true; 
+      // }); 
+      // started = true; 
     } else {
-      document.getElementById('play-icon').className = "fa fa-play"
-      started = false; 
-      socket.off('new-acc');
+      pauseGraph();
+
     }
 
   });
@@ -196,27 +276,24 @@ function initGraph() {
 }
 
 function initPID () {
-pMag = document.getElementById('p-mag');
-iMag = document.getElementById('i-mag');
-dMag = document.getElementById('d-mag');
-pSpeed = document.getElementById('p-speed'); 
-iSpeed = document.getElementById('i-speed'); 
-dSpeed = document.getElementById('d-speed'); 
+pMagSlider = document.getElementById('p-mag');
+iMagSlider = document.getElementById('i-mag');
+dMagSlider = document.getElementById('d-mag');
+pSpeedSlider = document.getElementById('p-speed'); 
+iSpeedSlider = document.getElementById('i-speed'); 
+dSpeedSlider = document.getElementById('d-speed'); 
+pMag = document.getElementById('p-mag-text');
+iMag = document.getElementById('i-mag-text');
+dMag = document.getElementById('d-mag-text');
+pSpeed = document.getElementById('p-speed-text');
+iSpeed = document.getElementById('i-speed-text');
+dSpeed = document.getElementById('d-speed-text');
+let pidHide = document.getElementById('pid-robot');
 
-noUiSlider.create(pMag, {
 
-  start: 2,
-  connect: [true, false],
-  range: {
-      'min': 0,
-      'max': 100
-  },
-  step: 0.1, 
-  tooltips: false,
 
-});
 
-noUiSlider.create(iMag, {
+noUiSlider.create(pMagSlider, {
 
   start: 2,
   connect: [true, false],
@@ -224,12 +301,14 @@ noUiSlider.create(iMag, {
       'min': 0,
       'max': 100
   },
-  step: 0.1, 
+  step: 1, 
   tooltips: false,
 
 });
 
-noUiSlider.create(dMag, {
+
+
+noUiSlider.create(iMagSlider, {
 
   start: 2,
   connect: [true, false],
@@ -237,12 +316,12 @@ noUiSlider.create(dMag, {
       'min': 0,
       'max': 100
   },
-  step: 0.1, 
+  step: 1, 
   tooltips: false,
 
 });
 
-noUiSlider.create(pSpeed, {
+noUiSlider.create(dMagSlider, {
 
   start: 2,
   connect: [true, false],
@@ -250,12 +329,12 @@ noUiSlider.create(pSpeed, {
       'min': 0,
       'max': 100
   },
-  step: 0.1, 
+  step: 1, 
   tooltips: false,
 
 });
 
-noUiSlider.create(iSpeed, {
+noUiSlider.create(pSpeedSlider, {
 
   start: 2,
   connect: [true, false],
@@ -263,12 +342,12 @@ noUiSlider.create(iSpeed, {
       'min': 0,
       'max': 100
   },
-  step: 0.1, 
+  step: 1, 
   tooltips: false,
 
 });
 
-noUiSlider.create(dSpeed, {
+noUiSlider.create(iSpeedSlider, {
 
   start: 2,
   connect: [true, false],
@@ -276,10 +355,111 @@ noUiSlider.create(dSpeed, {
       'min': 0,
       'max': 100
   },
-  step: 0.1, 
+  step: 1, 
   tooltips: false,
 
 });
+
+noUiSlider.create(dSpeedSlider, {
+
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 1, 
+  tooltips: false,
+
+});
+
+
+pMagSlider.noUiSlider.on('update', (value) => {
+  pMag.value = parseInt(value); 
+  });
+  
+  iMagSlider.noUiSlider.on('update', (value) => {
+  iMag.value = parseInt(value); 
+  });
+  
+  dMagSlider.noUiSlider.on('update', (value) => {
+  dMag.value = parseInt(value); 
+  });
+   
+  pSpeedSlider.noUiSlider.on('update', (value) => {
+  pSpeed.value = parseInt(value); 
+  });
+  
+   
+  iSpeedSlider.noUiSlider.on('update', (value) => {
+  iSpeed.value = parseInt(value); 
+  });
+  
+   
+  dSpeedSlider.noUiSlider.on('update', (value) => {
+  dSpeed.value = parseInt(value); 
+  });
+ 
+  pMag.addEventListener("blur", () => {
+    let val = pMag.value;
+    if (val >= 0 && val <= 100) {
+      pMagSlider.noUiSlider.set(val);
+    }
+      
+  }); 
+
+  iMag.addEventListener("blur", () => {
+    let val = iMag.value;
+    if (val >= 0 && val <= 100) {
+      iMagSlider.noUiSlider.set(val);
+    }
+      
+  }); 
+
+  dMag.addEventListener("blur", () => {
+    let val = dMag.value;
+    if (val >= 0 && val <= 100) {
+      dMagSlider.noUiSlider.set(val);
+    }
+      
+  }); 
+
+  pSpeed.addEventListener("blur", () => {
+    let val = pSpeed.value;
+    if (val >= 0 && val <= 100) {
+      pSpeedSlider.noUiSlider.set(val);
+    }
+  });
+
+  iSpeed.addEventListener("blur", () => {
+    let val = iSpeed.value;
+    if (val >= 0 && val <= 100) {
+      iSpeedSlider.noUiSlider.set(val);
+    }
+  });
+
+  dSpeed.addEventListener("blur", () => {
+    let val = dSpeed.value;
+    if (val >= 0 && val <= 100) {
+      dSpeedSlider.noUiSlider.set(val);
+    }
+  });
+
+  pidHide.addEventListener('click', () => {
+    console.log('clicked');
+    let area = document.getElementById('pid-area');
+    if(area.style.display == "none") {
+      area.style.display = "block";  
+      pidHide.classList.remove("btn-primary");
+      pidHide.classList.add("btn-success");
+    } else {
+      area.style.display = "none"; 
+      pidHide.classList.remove("btn-success");
+      pidHide.classList.add("btn-primary");
+
+    }
+  });
+
 
 
 
@@ -289,6 +469,62 @@ noUiSlider.create(dSpeed, {
 }
 
 
+function zoomingGraph(minDate, maxDate, yRange) {
+  g1.updateOptions ( {
+    axes: {
+      y: {
+        valueRange: null,
+      }
+    }
+  });
+  button_.style.display = "";
+  zoomOn = true; 
+
+}; 
+
+function playGraph() {
+     
+  document.getElementById('play-icon').className = "fa fa-pause"
+  socket.on('new-acc', (data) => {
+    g1.updateOptions({dateWindow: [Date.now() - 6000, Date.now()]}); 
+    let arr = new Int16Array(data);
+    //console.log('new data');
+     // arr[0] = arr[0]/100;
+     // arr[1] = arr[1]/100;
+     // arr[2] = arr[2]/100;
+    //console.log(arr);
+   if(!updated) {
+    //console.log('update');
+    updated = true; 
+    if(acc.length == 600) {
+      acc.splice(0,100);
+      //acc = []; 
+      //g1.updateOptions({dateWindow: [Date.now(), Date.now() + 6000]}); 
+
+    }
+    let d = new Date(); 
+
+    acc.push([d, arr[0]/100, arr[1]/100, arr[2]/100, arr[3]*Math.PI/180, arr[4]*Math.PI/180, arr[5]*Math.PI/180]);
+   // console.log(row);
+    g1.updateOptions({'file': acc }  
+    //{dateWindow: [0, Date.now()]} 
+    ); 
+    updated = false; 
+   }
+   
+
+    //console.log("new acc");
+
+  }); 
+  started = true;  
+}
+
+
+function pauseGraph() {
+  document.getElementById('play-icon').className = "fa fa-play"
+  started = false; 
+  socket.off('new-acc');
+}
 
 
 function toggleAccX() {
@@ -347,7 +583,72 @@ function toggleRotG () {
 }
 
 
+function initChart() {
+  var ctx = document.getElementById('chart-canvas').getContext('2d');
+  var myDoughnutChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+          data: [10, 10, 10,10],
+          backgroundColor: [
+            getColor(0),
+            getColor(0),
+            getColor(0),
+            getColor(0),
+          ],
+        }, {
+        data: [10, 10, 10,10],
+        backgroundColor: [
+           getColor(0.5),
+           getColor(0.5),
+           getColor(0.5),
+           getColor(0.5),
+        ],
+      },
+      {
+        data: [10, 10, 10,10],
+        backgroundColor: [
+          getColor(0.75),
+          getColor(0.75),
+          getColor(0.75),
+          getColor(0.75),
+        ],
+      },
+      {
+        data: [10, 10, 10,10],
+        backgroundColor: [
+          getColor(1),
+          getColor(1),
+          getColor(1),
+          getColor(1),
+        ],
+      }
+      ],
 
+
+  
+      // These labels appear in the legend and in the tooltips when hovering different arcs
+      labels: [
+          'Red',
+          'Yellow',
+          'Blue',
+          'Orange',
+      ],
+
+  
+  },
+
+  options: {
+    rotation: -0.25*Math.PI,
+    legend: {
+      display: false,
+    },
+
+    backgroundColor: "#F5DEB3",
+  },
+});
+
+}
 
 
 
@@ -442,7 +743,11 @@ function toggleTopBar() {
   }
 }
 
-
+function getColor(value){
+  //value from 0 to 1
+  var hue=((1-value)*120).toString(10);
+  return ["hsla(",hue,",100%,50%,50%)"].join("");
+}
 
 
 
@@ -460,6 +765,7 @@ window.onload = function() {
   initMap(); 
   initGraph();
   initPID();
+  initChart();
   
   document.getElementById('share').addEventListener('click', shareClick);
   document.getElementById('view').addEventListener('click', viewClick);
@@ -468,6 +774,9 @@ window.onload = function() {
   homeButton.addEventListener('click', zoomToWayPoint); 
   missionHome = document.getElementById('home-mission');
   missionHome.addEventListener('click', zoomToLocation);
+
+ 
+
 
 
 
