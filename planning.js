@@ -43,9 +43,44 @@ let defTol;
 
 
 window.onload = function() {
-  initMap(); 
   initDefaultModal(); 
+  initMap(); 
+ // document.getElementById("setting-save").addEventListener('click', sendConfig); 
+
+
 }
+
+
+function sendConfig(planName) {
+let conf = 
+{
+  time : new Date(), 
+  name: planName,  
+  cruisingSpeed : parseFloat(defCruise.value),
+  maxSpeed : parseFloat(defMax.value),
+  tolerance: parseFloat(defTol.value), 
+  pSpeed : parseInt(pSpeed.value), 
+  iSpeed : parseInt(iSpeed.value), 
+  dSpeed : parseInt(dSpeed.value), 
+  pMag : parseInt(pMag.value), 
+  iMag : parseInt(iMag.value), 
+  dMag : parseInt(dMag.value),
+}
+
+
+$.post('/conf', conf, (res, req) => {
+console.log('Sent config');
+}); 
+
+
+//console.log(conf);
+
+}
+
+
+
+
+
 
 function initDefaultModal() {
 defCruiseSlider = document.getElementById("defCruiseSlider"); 
@@ -319,7 +354,7 @@ function initMap() {
         maxText = document.getElementById("max-text"); 
         noUiSlider.create(cruiseSlider, {
 
-          start: 2,
+          start: defCruise.value,
           connect: [true, false],
           range: {
               'min': 0,
@@ -361,7 +396,7 @@ function initMap() {
 
       noUiSlider.create(maxSlider, {
 
-        start: 5,
+        start: defMax.value,
         connect: [true, false],
         range: {
             'min': 0,
@@ -472,8 +507,8 @@ function initMap() {
           }
           displayCurrentLatLng(null); 
           cruiseSlider.setAttribute('disabled', true);
-          cruiseSlider.noUiSlider.set(2);
-          maxSlider.noUiSlider.set(5);
+          cruiseSlider.noUiSlider.set(defCruise.value);
+          maxSlider.noUiSlider.set(defMax.value);
           maxSlider.setAttribute('disabled', true);
           maxText.setAttribute('disabled', true);
           speedText.setAttribute('disabled', true);
@@ -507,7 +542,7 @@ function initMap() {
             $('#modal').modal('show'); 
 
 
-         //   path.sendPath(); 
+        //   path.sendPath(); 
          //   setTimeout(showModal, 500); 
           //  console.log(path.planNo);
           }
@@ -519,6 +554,8 @@ function initMap() {
           let planName  = document.getElementById('planName').value;
           console.log(planName);
           path.sendPath(planName);
+          sendConfig(planName); 
+
         })
      
        start = true; 
@@ -627,6 +664,7 @@ if (title == 1) {
 window.insertSeg = function (event) {
   document.getElementById("undo").disabled = false; 
   document.getElementById("insert").disabled = false; 
+
   maxText.disabled = false;
   speedText.disabled = false;
   let index = event.detail[0];
@@ -662,8 +700,8 @@ window.insertSeg = function (event) {
 window.removeSeg = (event) => {
   if (path.segNo() == 0) {
     highlightMarker(firstMarker);
-    maxSlider.noUiSlider.set(5);
-    cruiseSlider.noUiSlider.set(2);
+    maxSlider.noUiSlider.set(defMax.value);
+    cruiseSlider.noUiSlider.set(defCruise.value);
   }
 
   if (event.detail == path.segNo()) {
@@ -780,7 +818,7 @@ function addLatLng(event) {
     start = false; 
   } else {
     firstMarker.setIcon(null);
-    let seg = new Segment(last, current);
+    let seg = new Segment(last, current, defMax.value, defCruise.value);
     //console.log(seg.convertSeg()); 
     path.addSeg(seg);
     path.newUpdate(map); 

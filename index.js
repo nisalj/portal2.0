@@ -30,6 +30,30 @@ app.use(express.static('.'));
 //     console.log(files);
 // })
 
+if (!fs.existsSync('./configs')) {
+  fs.mkdir(`./configs`, { recursive: true }, (err) => {
+    if (err) throw err;
+  });
+  // Do something
+}
+
+if (!fs.existsSync('./missions')) {
+  fs.mkdir(`./missions`, { recursive: true }, (err) => {
+    if (err) throw err;
+  });
+  // Do something
+}
+
+if (!fs.existsSync('./plans')) {
+  fs.mkdir(`./plans`, { recursive: true }, (err) => {
+    if (err) throw err;
+  });
+  // Do something
+}
+
+
+
+
 missionNo = fs.readdirSync('./missions').length - 1; 
 planNo = fs.readdirSync('./plans').length - 1; 
 console.log(missionNo, planNo);
@@ -77,6 +101,11 @@ missionNo = fs.readdirSync('./missions').length;
 fs.mkdir(`./missions/mission${missionNo}`, { recursive: true }, (err) => {
     if (err) throw err;
 });
+
+
+
+
+
 
 console.log("started. mission No ", missionNo);
 //console.log("first connection!")
@@ -357,6 +386,21 @@ app.get('/plan', (req, res) => {
     res.send("{}");
 
 });
+
+
+app.post("/conf", (req,res) => {
+  let planName = req.body.name; 
+  fs.writeFile(`./configs/${planName}.json`, JSON.stringify(req.body) , (err) => {
+    if(err)
+    throw err; 
+
+    console.log("Written config file"); 
+  }); 
+  res.send("Config recieved"); 
+
+});
+
+
 
 app.get("/latlong.csv", (req,res) => {  
     fs.readFile(`./missions/mission${missionNo}/latlong.csv`, function read(err, data) {

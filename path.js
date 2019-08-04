@@ -14,6 +14,7 @@ export default class Path extends EventTarget {
         if (!this.selectedSeg) {
         this.selectedSeg = segment;
         this.selectedSeg.changeColor("blue");
+        window.displayCurrentSeg(); 
         return; 
         }
 
