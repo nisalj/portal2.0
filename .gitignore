@@ -6,3 +6,7 @@ index-backup.js
 node_modules
 missions
 plans
+imu.html
+fileio.js
+test_acc.csv
+test_file
