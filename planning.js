@@ -40,32 +40,39 @@ let tolSlider;
 let defCruise; 
 let defMax;
 let defTol;
+let conf; 
 
 
 window.onload = function() {
   initDefaultModal(); 
   initMap(); 
- // document.getElementById("setting-save").addEventListener('click', sendConfig); 
 
+
+
+}
+
+
+function updateConfig() {
+  conf = 
+  {
+    time : new Date(), 
+    cruisingSpeed : parseFloat(defCruise.value),
+    maxSpeed : parseFloat(defMax.value),
+    tolerance: parseFloat(defTol.value), 
+    pSpeed : parseInt(pSpeed.value), 
+    iSpeed : parseInt(iSpeed.value), 
+    dSpeed : parseInt(dSpeed.value), 
+    pMag : parseInt(pMag.value), 
+    iMag : parseInt(iMag.value), 
+    dMag : parseInt(dMag.value),
+  }
+  
 
 }
 
 
 function sendConfig(planName) {
-let conf = 
-{
-  time : new Date(), 
-  name: planName,  
-  cruisingSpeed : parseFloat(defCruise.value),
-  maxSpeed : parseFloat(defMax.value),
-  tolerance: parseFloat(defTol.value), 
-  pSpeed : parseInt(pSpeed.value), 
-  iSpeed : parseInt(iSpeed.value), 
-  dSpeed : parseInt(dSpeed.value), 
-  pMag : parseInt(pMag.value), 
-  iMag : parseInt(iMag.value), 
-  dMag : parseInt(dMag.value),
-}
+  conf.name = planName; 
 
 
 $.post('/conf', conf, (res, req) => {
@@ -549,6 +556,13 @@ function initMap() {
 
         }); 
 
+        document.getElementById("setting-save").addEventListener('click', updateConfig); 
+        document.getElementById('setting-close').addEventListener('click', resetDefSliders);
+        document.getElementById('setting-x').addEventListener('click',resetDefSliders); 
+
+
+
+
         document.getElementById('planSaveButton').addEventListener('click', () => {
           $('#modal').modal('hide'); 
           let planName  = document.getElementById('planName').value;
@@ -623,6 +637,33 @@ function panMapTo(position) {
    
   map.panTo(position); 
   map.setZoom(14);
+}
+
+function resetDefSliders() {
+  if(!conf) {
+    defCruiseSlider.noUiSlider.reset();
+    defMaxSlider.noUiSlider.reset();
+    tolSlider.noUiSlider.reset();
+    pMagSlider.noUiSlider.reset();
+    pSpeedSlider.noUiSlider.reset();
+    iMagSlider.noUiSlider.reset();
+    iSpeedSlider.noUiSlider.reset();
+    dMagSlider.noUiSlider.reset();
+    dSpeedSlider.noUiSlider.reset();
+  } else {
+    defCruiseSlider.noUiSlider.set(conf.cruisingSpeed);
+    defMaxSlider.noUiSlider.set(conf.maxSpeed);
+    tolSlider.noUiSlider.set(conf.tolerance);
+    pMagSlider.noUiSlider.set(conf.pMag);
+    pSpeedSlider.noUiSlider.set(conf.pSpeed);
+    iMagSlider.noUiSlider.set(conf.iMag);
+    iSpeedSlider.noUiSlider.set(conf.iSpeed);
+    dMagSlider.noUiSlider.set(conf.dMag);
+    dSpeedSlider.noUiSlider.set(conf.dSpeed);
+  }
+  
+  $('#setting-modal').modal('hide'); 
+
 }
 
 
@@ -735,6 +776,7 @@ window.removeSeg = (event) => {
   console.log('remove seg', path.segNo());
 
 }
+
 
 function displayCurrentLatLng(marker) {
   if (!marker)  {
