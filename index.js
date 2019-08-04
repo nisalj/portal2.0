@@ -18,6 +18,7 @@ let firstLatLong = true;
 let firstDetail = true; 
 let firstAcc = true; 
 let firstRot = true; 
+let loadedPlan; 
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -38,6 +39,7 @@ if (!fs.existsSync('./configs')) {
 }
 
 if (!fs.existsSync('./missions')) {
+  console.log('making');
   fs.mkdir(`./missions`, { recursive: true }, (err) => {
     if (err) throw err;
   });
@@ -76,7 +78,7 @@ server.listen(PORT, () => console.log("Server running on port " + PORT));
 
 io = io.listen(server, {pingTimeout: 70000, pingInterval: 10000, rejectUnauthorized: false, upgradeTimeout:30000,   'force new connection': true
 } ); 
-io.set( {rememberTransport : false, transports: ["xhr-polling","WebSocket","polling", "Flash Socket", "htmlfile"]});
+//io.set( {rememberTransport : false, transports: ["xhr-polling","WebSocket","polling", "Flash Socket", "htmlfile"]});
 
 
 
@@ -96,11 +98,32 @@ io.sockets.on('error', err => {
 });
       
 app.post('/start', function(req,res) {
+
 console.log(req.body);
 missionNo = fs.readdirSync('./missions').length; 
-fs.mkdir(`./missions/mission${missionNo}`, { recursive: true }, (err) => {
+let writeDir = `./missions/mission${missionNo}/`; 
+fs.mkdir(writeDir, { recursive: true }, (err) => {
+    if (err) throw err;
+    console.log(writeDir);
+});
+
+if(loadedPlan != undefined) {
+fs.copyFile(`./plans/${loadedPlan}.csv`, `${writeDir}/plan-${loadedPlan}.csv`, (err) => {
     if (err) throw err;
 });
+
+fs.copyFile(`./configs/${loadedPlan}.json`, `${writeDir}/settings-${loadedPlan}.json`, (err) => {
+  if (err) throw err;
+});
+  
+}
+
+
+// fs.copyFile(`./configs/${loadedPlan}.json`, writeDir, (err) => {
+//   if (err) throw err;
+// });
+
+
 
 
 
@@ -260,6 +283,7 @@ function getPlan(planName, res) {
     //console.log("reqNo", reqNo);
     const csvFilePath= `./plans/${planName}.csv`
     //check if file exists here 
+    loadedPlan = planName;
     const csv = require('csvtojson')
     csv()
     .fromFile(csvFilePath)
