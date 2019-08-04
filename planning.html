@@ -117,6 +117,12 @@
       left: 10px;
     }
 
+    #setting-button {
+      position: absolute;
+      bottom: 80px;
+      left: 150px; 
+    }
+
     @media screen and (max-width: 700px) {
       .sidebar {
         width: 100%;
@@ -279,12 +285,15 @@
     <button id="save-button" class="btn btn-primary"><i class="fa fa-save"></i></button>
     <button id="clear-button" class="btn btn-primary"><i class="fa fa-trash"></i></button>
     <button id="home-button" class="btn btn-primary "><i class="fa fa-home"></i></button>
+    <button id="setting-button" class="btn btn-primary" data-toggle="modal" data-target="#setting-modal" > <i class="fa fa-sliders"></i> </button>
+
 
     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-          <div class="modal-header">
+          <div class="modal-header text-center">
+            <h5 class="modal-title w-100">Save plan</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -293,7 +302,7 @@
           <input type="text" display="none" class="form-control" placeholder="Enter plan name" id="planName">
 
 
-            <h1 id="modaltext" class="text-center"> GFGH</h1>
+            <h1 id="modaltext" class="text-center">Please select waypoints</h1>
             <h3 id="planno" style="display: none" class="text-center"> Hello </h3>
           </div>
           <div class="modal-footer">
@@ -309,6 +318,204 @@
         </div>
       </div>
     </div>
+
+
+    <div class="modal fade" id="setting-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header text-center">
+              <h5 class="modal-title w-100">Default settings</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col">
+                  <h6>Cruising speed</h6>
+                </div>
+                <div class="col">
+                  <div id="defCruiseSlider">
+
+                  </div>
+                </div>
+                <div class="col">
+                    <input class="form-control" id="defCruiseText" placeholder="100">
+
+                </div>
+
+              </div>
+              <div class="row">
+                  <div class="col">
+                    <h6>Max speed</h6>
+                  </div>
+                  <div class="col">
+                    <div id="defMaxSlider">
+
+                    </div>
+                  </div>
+                  <div class="col">
+                <input class="form-control" id="defMaxText" placeholder="100">
+
+                  </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                      <h6>Tolerance</h6>
+                    </div>
+                    <div class="col">
+                      <div id="tolSlider">
+
+                      </div>
+    
+                    </div>
+                    <div class="col">
+                  <input class="form-control" id="tolText" placeholder="100">
+
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    
+                    <div class="col">
+                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                            <li class="nav-item">
+                              <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true"><i class="fa fa-compass fa-2x"></i></a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link"  id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false"><i class="fa fa-tachometer fa-2x" aria-hidden="true"></i>
+                              </a>
+                            </li>
+                          
+                          </ul>
+                          <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                                <div class="row">
+                                    <div class="col">
+                                      <div class="row">
+                                        <div class="col-2 text-center">
+                                          <h3>P</h3>
+                                        </div>
+                                        <div class="col-7">
+                                          <div id="p-mag">
+                
+                                          </div>
+                                        </div>
+                                        <div class="col-3">
+                                          <input  class="form-control" id="p-mag-text" placeholder="100">
+                
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-2 text-center">
+                                          <h3>I</h3>
+                          
+                                        </div>
+                                        <div class="col-7">
+                                            <div id="i-mag">
+                
+                                              </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <input  class="form-control" id="i-mag-text" placeholder="100">
+                
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-2 text-center">
+                                          <h3>D</h3>
+                          
+                                        </div>
+                                        <div class="col-7">
+                                            <div id="d-mag">
+                
+                                              </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <input  class="form-control" id="d-mag-text" placeholder="100">
+                                        </div>
+                                      </div>
+                                      
+                          
+                          
+                          
+                          
+                                    </div>
+                          
+                              </div>
+                            </div>
+                            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                                <div class="row">
+                                    <div class="col">
+                                      <div class="row">
+                                        <div class="col-2 text-center">
+                                          <h3>P</h3>
+                                        </div>
+                                        <div class="col-7">
+                                          <div id="p-speed"></div>
+                          
+                                        </div>
+                                        <div class="col-3">
+                                            <input  class="form-control" id="p-speed-text" placeholder="100">
+                
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-2 text-center">
+                                          <h3>I</h3>
+                          
+                                        </div>
+                                        <div class="col-7">
+                                            <div id="i-speed"></div>
+                
+                          
+                                        </div>
+                                        <div class="col-3">
+                                            <input  class="form-control" id="i-speed-text" placeholder="100">
+                
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-2 text-center">
+                                          <h3>D</h3>
+                          
+                                        </div>
+                                        <div class="col-7">
+                                            <div id="d-speed"></div>
+                
+                                        </div>
+                                        <div class="col-3">
+                                            <input  class="form-control" id="d-speed-text" placeholder="100">
+                
+                                        </div>
+                                      </div>
+                                      
+                          
+                          
+                          
+                          
+                                    </div>
+                              </div>
+                
+                
+                
+                            </div>
+                          </div>
+                    </div>
+                  </div>
+                  <div class="row">
+
+                  </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
 
 
     <script type="module" src="planning.js"> </script>

@@ -215,8 +215,12 @@ function initMap() {
         maxSlider.setAttribute('disabled', true);
         save = document.getElementById("save-button").addEventListener('click', () => {
           if(path.segNo() == 0){
-            $('#modaltext').text("Please select waypoints") 
+            //$('#modaltext').text("Please select waypoints") 
+            document.getElementById('modaltext').style.display = "block"; 
+            document.getElementById('planName').style.display = "none"; 
+            document.getElementById('planSaveButton').style.display = "none"; 
             $('#modal').modal('show'); 
+
           } else{
             document.getElementById('modaltext').style.display = "none"; 
             document.getElementById('planName').style.display = ""; 
@@ -380,7 +384,6 @@ window.insertSeg = function (event) {
 
 
 window.removeSeg = (event) => {
-
   if (path.segNo() == 0) {
     highlightMarker(firstMarker);
     maxSlider.noUiSlider.set(5);
