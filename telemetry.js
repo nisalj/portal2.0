@@ -889,6 +889,11 @@ window.onload = function() {
   initMap(); 
   initPID();
   initChart();
+
+
+ 
+ 
+  $('#pid-area').draggable();
   g1.resize(480,320);
 
 

@@ -22,10 +22,286 @@ let home;
 let speedText;
 let maxText;  
 let planNo; 
+let pMag;
+let iMag; 
+let dMag; 
+let pSpeed;
+let iSpeed; 
+let dSpeed; 
+let pMagSlider;
+let iMagSlider;
+let dMagSlider;
+let pSpeedSlider; 
+let iSpeedSlider; 
+let dSpeedSlider; 
+let defCruiseSlider;
+let defMaxSlider;
+let tolSlider; 
+let defCruise; 
+let defMax;
+let defTol;
+
 
 window.onload = function() {
   initMap(); 
+  initDefaultModal(); 
 }
+
+function initDefaultModal() {
+defCruiseSlider = document.getElementById("defCruiseSlider"); 
+defMaxSlider = document.getElementById("defMaxSlider"); 
+tolSlider = document.getElementById("tolSlider"); 
+defCruise = document.getElementById("defCruiseText");
+defMax = document.getElementById("defMaxText");
+defTol = document.getElementById("tolText");
+
+pMagSlider = document.getElementById('p-mag');
+iMagSlider = document.getElementById('i-mag');
+dMagSlider = document.getElementById('d-mag');
+pSpeedSlider = document.getElementById('p-speed'); 
+iSpeedSlider = document.getElementById('i-speed'); 
+dSpeedSlider = document.getElementById('d-speed'); 
+pMag = document.getElementById('p-mag-text');
+iMag = document.getElementById('i-mag-text');
+dMag = document.getElementById('d-mag-text');
+pSpeed = document.getElementById('p-speed-text');
+iSpeed = document.getElementById('i-speed-text');
+dSpeed = document.getElementById('d-speed-text');
+
+
+noUiSlider.create(defCruiseSlider, {
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 10
+  },
+  step: 0.1, 
+  tooltips: false,
+}); 
+
+noUiSlider.create(defMaxSlider, {
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 10
+  },
+  step: 0.1, 
+  tooltips: false,
+}); 
+
+noUiSlider.create(tolSlider, {
+  start: 50,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 0.1, 
+  tooltips: false,
+}); 
+
+
+defCruise.addEventListener("blur", () => {
+  let val = defCruise.value;
+  if (val >= 0 && val <= 10) {
+    defCruiseSlider.noUiSlider.set(val);
+  }
+    
+}); 
+
+defMax.addEventListener("blur", () => {
+  let val = defMax.value;
+  if (val >= 0 && val <= 10) {
+    defMaxSlider.noUiSlider.set(val);
+  }
+  console.log(defMax);
+}); 
+
+
+defTol.addEventListener("blur", () => {
+  let val = defTol.value;
+  if (val >= 0 && val <= 100) {
+    tolSlider.noUiSlider.set(val);
+  }
+    
+}); 
+
+
+defCruiseSlider.noUiSlider.on('update', (value) => {
+  defCruise.value = parseFloat(value); 
+});
+
+defMaxSlider.noUiSlider.on('update', (value) => {
+  defMax.value = parseFloat(value); 
+});
+
+tolSlider.noUiSlider.on('update', (value) => {
+  defTol.value = parseFloat(value); 
+});
+
+
+
+
+
+
+noUiSlider.create(pMagSlider, {
+
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 1, 
+  tooltips: false,
+
+});
+
+
+
+noUiSlider.create(iMagSlider, {
+
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 1, 
+  tooltips: false,
+
+});
+
+noUiSlider.create(dMagSlider, {
+
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 1, 
+  tooltips: false,
+
+});
+
+noUiSlider.create(pSpeedSlider, {
+
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 1, 
+  tooltips: false,
+
+});
+
+noUiSlider.create(iSpeedSlider, {
+
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 1, 
+  tooltips: false,
+
+});
+
+noUiSlider.create(dSpeedSlider, {
+
+  start: 2,
+  connect: [true, false],
+  range: {
+      'min': 0,
+      'max': 100
+  },
+  step: 1, 
+  tooltips: false,
+
+});
+
+
+pMagSlider.noUiSlider.on('update', (value) => {
+  pMag.value = parseInt(value); 
+  });
+  
+  iMagSlider.noUiSlider.on('update', (value) => {
+  iMag.value = parseInt(value); 
+  });
+  
+  dMagSlider.noUiSlider.on('update', (value) => {
+  dMag.value = parseInt(value); 
+  });
+   
+  pSpeedSlider.noUiSlider.on('update', (value) => {
+  pSpeed.value = parseInt(value); 
+  });
+  
+   
+  iSpeedSlider.noUiSlider.on('update', (value) => {
+  iSpeed.value = parseInt(value); 
+  });
+  
+   
+  dSpeedSlider.noUiSlider.on('update', (value) => {
+  dSpeed.value = parseInt(value); 
+  });
+ 
+  pMag.addEventListener("blur", () => {
+    let val = pMag.value;
+    if (val >= 0 && val <= 100) {
+      pMagSlider.noUiSlider.set(val);
+    }
+      
+  }); 
+
+  iMag.addEventListener("blur", () => {
+    let val = iMag.value;
+    if (val >= 0 && val <= 100) {
+      iMagSlider.noUiSlider.set(val);
+    }
+      
+  }); 
+
+  dMag.addEventListener("blur", () => {
+    let val = dMag.value;
+    if (val >= 0 && val <= 100) {
+      dMagSlider.noUiSlider.set(val);
+    }
+      
+  }); 
+
+  pSpeed.addEventListener("blur", () => {
+    let val = pSpeed.value;
+    if (val >= 0 && val <= 100) {
+      pSpeedSlider.noUiSlider.set(val);
+    }
+  });
+
+  iSpeed.addEventListener("blur", () => {
+    let val = iSpeed.value;
+    if (val >= 0 && val <= 100) {
+      iSpeedSlider.noUiSlider.set(val);
+    }
+  });
+
+  dSpeed.addEventListener("blur", () => {
+    let val = dSpeed.value;
+    if (val >= 0 && val <= 100) {
+      dSpeedSlider.noUiSlider.set(val);
+    }
+  });
+
+
+
+}
+
 function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           //center: {lat:-33.814451, lng:151.171332},
