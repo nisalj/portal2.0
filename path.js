@@ -136,6 +136,10 @@ export default class Path extends EventTarget {
         //  let seg  = this.getSegAt(segIndex);
         let start = seg.getStart(); 
         let end = seg.getEnd(); 
+        let speed = seg.getSpeed(); 
+        let speedDef = seg.isSpeedDef();
+        let max = seg.getMaxSpeed();
+        let maxDef = seg.isMaxDef();
        // console.log(start); 
        // console.log(end); 
         let prevEnd = start; 
@@ -161,6 +165,17 @@ export default class Path extends EventTarget {
             endMarker.addListener('click', window.markerClick); 
             endMarker.addListener('drag', window.dragListen); 
             let seg  = new Segment(prevEnd, endMarker);
+            if(!speedDef) {
+            seg.setSpeedDef(false);    
+            seg.setSpeed(speed); 
+            }
+            if(!maxDef) {
+           seg.setMaxDef(false);    
+           seg.setMaxSpeed(max);
+
+            }
+
+
             this.insertAt(segIndex+i, seg);
             prevEnd = endMarker; 
             seg.renderStart(map);
