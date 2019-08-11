@@ -46,6 +46,7 @@ let conf;
 window.onload = function() {
   initDefaultModal(); 
   initMap(); 
+  updateConfig();
 
 
 

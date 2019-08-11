@@ -428,6 +428,28 @@ app.post("/conf", (req,res) => {
 });
 
 
+app.get("/conf", (req,res) => {
+  let planName = req.query.planName; 
+  data = require(`./configs/${planName}.json`);
+//   fs.readFile(`./configs/${planName}.json`, function read(err, data) {
+//     if (err) {
+//         res.send('{}');
+//         throw err;
+//     }
+//     res.header('Content-Type', 'application/json');
+//     console.log(JSON.stringify(data));
+//     res.status(200).send(JSON.stringify(data));
+// });
+
+res.header('Content-Type', 'application/json');
+console.log(JSON.stringify(data));
+res.status(200).send(JSON.stringify(data));
+
+
+});
+
+
+
 
 app.get("/latlong.csv", (req,res) => {  
     fs.readFile(`./missions/mission${missionNo}/latlong.csv`, function read(err, data) {

@@ -37,6 +37,7 @@ let button_;
 let zoomOn = false; 
 let pidOn = true;
 let graphOn = true; 
+let planConfig; 
 
 function initMap() {
 
@@ -280,6 +281,8 @@ function initGraph() {
 }
 
 function initPID () {
+
+  
 pMagSlider = document.getElementById('p-mag');
 iMagSlider = document.getElementById('i-mag');
 dMagSlider = document.getElementById('d-mag');
@@ -299,7 +302,7 @@ let pidHide = document.getElementById('pid-robot');
 
 noUiSlider.create(pMagSlider, {
 
-  start: 2,
+  start: planConfig.pMag,
   connect: [true, false],
   range: {
       'min': 0,
@@ -314,7 +317,7 @@ noUiSlider.create(pMagSlider, {
 
 noUiSlider.create(iMagSlider, {
 
-  start: 2,
+  start: planConfig.iMag,
   connect: [true, false],
   range: {
       'min': 0,
@@ -327,7 +330,7 @@ noUiSlider.create(iMagSlider, {
 
 noUiSlider.create(dMagSlider, {
 
-  start: 2,
+  start: planConfig.dMag,
   connect: [true, false],
   range: {
       'min': 0,
@@ -340,7 +343,7 @@ noUiSlider.create(dMagSlider, {
 
 noUiSlider.create(pSpeedSlider, {
 
-  start: 2,
+  start: planConfig.pSpeed,
   connect: [true, false],
   range: {
       'min': 0,
@@ -353,7 +356,7 @@ noUiSlider.create(pSpeedSlider, {
 
 noUiSlider.create(iSpeedSlider, {
 
-  start: 2,
+  start: planConfig.iSpeed,
   connect: [true, false],
   range: {
       'min': 0,
@@ -366,7 +369,7 @@ noUiSlider.create(iSpeedSlider, {
 
 noUiSlider.create(dSpeedSlider, {
 
-  start: 2,
+  start: planConfig.dSpeed,
   connect: [true, false],
   range: {
       'min': 0,
@@ -695,6 +698,8 @@ console.log('clicked share');
 
 //element.parentElement.removeChild(element);
 toggleSideBar();
+initPID();
+
 user = new Sharer(options, robotpath, plan);
 console.log(user); 
 user.start(); 
@@ -719,6 +724,8 @@ toggleCompass(true);
 toggleTopBar(true);
 toggleChart(true);
 //window.user = new Viewer(robotpath, socket);
+initPID();
+
 user = new Operator(robotpath, socket, ros, plan);
 user.start();
 //toggleTopBar(true);
@@ -741,9 +748,31 @@ if(!plan) {
 $('#plan-modal').modal('hide')
 homeButton.disabled = false; 
 setTimeout(zoomToWayPoint,500);
-
+getPlanConfig(planInput);
 
 }
+
+function getPlanConfig(planName) {
+
+   var request = $.ajax({
+            url: '/conf',
+            type: 'GET',
+            data: {planName: String(planName)},
+            contentType: 'text; charset=utf-8'
+  });
+
+  request.done(function (data) {
+    if (data != '{}')
+    planConfig = data; 
+
+  });
+
+
+           
+
+}
+
+
 
 function zoomToWayPoint() {
   let position = plan.getFirst().getStart().position; 
@@ -866,6 +895,23 @@ function switchToMap() {
 
 }
 
+function loadDefaultConfig() {
+  
+  planConfig = 
+  {
+    time : new Date(), 
+    cruisingSpeed : 2,
+    maxSpeed : 2,
+    tolerance: 50, 
+    pSpeed : 2, 
+    iSpeed : 2, 
+    dSpeed : 2, 
+    pMag : 2, 
+    iMag : 2, 
+    dMag : 2,
+  }
+}
+
 
 
 
@@ -887,9 +933,8 @@ window.onload = function() {
   });
   initGraph();
   initMap(); 
-  initPID();
   initChart();
-
+  loadDefaultConfig(); 
 
  
  
