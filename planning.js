@@ -618,9 +618,18 @@ function initMap() {
 
         }); 
 
+
+       
+        $('#setting-modal').on('hidden.bs.modal', function (e) {
+          console.log('hiding');
+          resetDefSliders();
+          // do something...
+        })
+
+
         document.getElementById("setting-save").addEventListener('click', updateConfig); 
-        document.getElementById('setting-close').addEventListener('click', resetDefSliders);
-        document.getElementById('setting-x').addEventListener('click',resetDefSliders); 
+       // document.getElementById('setting-close').addEventListener('click', resetDefSliders);
+       // document.getElementById('setting-x').addEventListener('click',resetDefSliders); 
 
 
 
