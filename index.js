@@ -61,10 +61,13 @@ planNo = fs.readdirSync('./plans').length - 1;
 console.log(missionNo, planNo);
 
 
+
+
 const options = {
-  key: fs.readFileSync('/Users/Nisal/server.key'),
-  cert: fs.readFileSync('/Users/Nisal/server.crt')
-  };
+  key: fs.readFileSync('/home/nj/server.key'),
+  cert: fs.readFileSync('/home/nj/server.crt')
+};
+
 
 
 

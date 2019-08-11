@@ -66,9 +66,27 @@ function updateConfig() {
     iMag : parseInt(iMag.value), 
     dMag : parseInt(dMag.value),
   }
-  
+  updateDefSegs();
 
 }
+
+function updateDefSegs() {
+
+  path.segments.forEach(segment => {
+    console.log('updating');
+    if (segment.isMaxDef())
+    segment.setMaxSpeed(defMax.value);
+    if (segment.isSpeedDef())
+    segment.setSpeed(defCruise.value);
+    
+  });
+
+
+}
+
+
+
+
 
 
 function sendConfig(planName) {
@@ -147,6 +165,8 @@ noUiSlider.create(tolSlider, {
 
 defCruise.addEventListener("blur", () => {
   let val = defCruise.value;
+ 
+
   if (val >= 0 && val <= 10) {
     defCruiseSlider.noUiSlider.set(val);
   }
@@ -361,7 +381,7 @@ function initMap() {
         maxText = document.getElementById("max-text"); 
         noUiSlider.create(cruiseSlider, {
 
-          start: defCruise.value,
+          start: 0,
           connect: [true, false],
           range: {
               'min': 0,
@@ -374,9 +394,20 @@ function initMap() {
 
   speedText.addEventListener("blur", () => {
       let val = speedText.value;
-      if (val >= 0 && val <= 10) {
+      if (val == 0) {
+        cruiseSlider.noUiSlider.set(val);
+        speedText.value = "cruise";
+        let seg = path.getSelected(); 
+        seg.setSpeedDef(true); 
+        seg.setSpeed(defCruise.value);
+      }
+        
+
+
+      if (val > 0 && val <= 10) {
         cruiseSlider.noUiSlider.set(val);
         let seg = path.getSelected(); 
+        seg.setSpeedDef(false); 
         seg.setSpeed(val);
       }
         
@@ -387,13 +418,25 @@ function initMap() {
         let val = parseFloat(values); 
         console.log(val); 
         let seg = path.getSelected(); 
-        seg.setSpeed(val);
+        if (val != 0) {
+          seg.setSpeedDef(false); 
+          seg.setSpeed(val);
+        }
+        else {
+          seg.setSpeedDef(true); 
+          seg.setSpeed(defCruise.value);
+        }
+
       });
    
 
       cruiseSlider.noUiSlider.on('update', function (values, handle) {
         let val = parseFloat(values); 
+        if (val != 0)
         speedText.value = val;
+        else 
+        speedText.value = "cruise";
+
         //console.log(val); 
         //let seg = path.getSelected(); 
        // seg.setSpeed(val);
@@ -403,7 +446,7 @@ function initMap() {
 
       noUiSlider.create(maxSlider, {
 
-        start: defMax.value,
+        start: 0,
         connect: [true, false],
         range: {
             'min': 0,
@@ -431,9 +474,18 @@ function initMap() {
 
     maxText.addEventListener("blur", () => {
       let val = maxText.value;
-      if (val >= 0 && val <= 10) {
+      let seg = path.getSelected(); 
+      if (val == 0) {
+        maxSlider.noUiSlider.set(val);
+        maxText.value = "max";
+        seg.setMaxDef(true); 
+        seg.setMaxSpeed(defMax.value);
+      }
+
+      if (val > 0 && val <= 10) {
         maxSlider.noUiSlider.set(val);
         let seg = path.getSelected(); 
+        seg.setMaxDef(false); 
         seg.setMaxSpeed(val);
       }
         
@@ -441,15 +493,25 @@ function initMap() {
 
     maxSlider.noUiSlider.on('update', function (values, handle) {
       let val = parseFloat(values); 
+      if (val != 0)
       maxText.value = val;
+      else
+      maxText.value = "max"; 
 
     });
 
     maxSlider.noUiSlider.on('change', function (values, handle) {
       let val = parseFloat(values); 
-      console.log(val); 
+      console.log(val);
       let seg = path.getSelected(); 
-      seg.setMaxSpeed(val);
+      if (val != 0) {
+        seg.setMaxDef(false);
+        seg.setMaxSpeed(val);
+      } else {
+        seg.setMaxDef(true);
+        seg.setMaxSpeed(defMax.value);
+      }
+
     });
     
 
@@ -514,8 +576,8 @@ function initMap() {
           }
           displayCurrentLatLng(null); 
           cruiseSlider.setAttribute('disabled', true);
-          cruiseSlider.noUiSlider.set(defCruise.value);
-          maxSlider.noUiSlider.set(defMax.value);
+          cruiseSlider.noUiSlider.set(0);
+          maxSlider.noUiSlider.set(0);
           maxSlider.setAttribute('disabled', true);
           maxText.setAttribute('disabled', true);
           speedText.setAttribute('disabled', true);
@@ -670,7 +732,15 @@ function resetDefSliders() {
 
 window.displayCurrentSeg = function () {
   let seg = path.getSelected(); 
+  if(seg.isMaxDef()) 
+  maxSlider.noUiSlider.set(0);
+  else 
   maxSlider.noUiSlider.set(seg.getMaxSpeed());
+
+
+  if(seg.isSpeedDef())
+  cruiseSlider.noUiSlider.set(0);
+  else
   cruiseSlider.noUiSlider.set(seg.getSpeed());
   //when the sliders get set the text values also get set 
 };
@@ -741,8 +811,8 @@ window.insertSeg = function (event) {
 window.removeSeg = (event) => {
   if (path.segNo() == 0) {
     highlightMarker(firstMarker);
-    maxSlider.noUiSlider.set(defMax.value);
-    cruiseSlider.noUiSlider.set(defCruise.value);
+    maxSlider.noUiSlider.set(0);
+    cruiseSlider.noUiSlider.set(0);
   }
 
   if (event.detail == path.segNo()) {

@@ -11,7 +11,36 @@ export default class Segment{
             strokeOpacity: 1.0,
             strokeWeight: 3
           });
+        this.speedDef = true; 
+        this.maxSpeedDef = true; 
     }
+
+
+    isSpeedDef() {
+        return this.speedDef;
+    }
+
+    isMaxDef() {
+        return this.maxSpeedDef;
+    }
+
+    setSpeedDef(bool) {
+        if (bool)
+        this.speedDef = true; 
+        else 
+        this.speedDef = false; 
+    }
+
+
+    setMaxDef (bool) {
+        if (bool)
+        this.maxSpeedDef = true;
+        else 
+        this.maxSpeedDef = false; 
+    }
+
+
+
 
     updateBearing() {
     this.bearing = google.maps.geometry.spherical.computeHeading(this.start.position, this.end.position);
