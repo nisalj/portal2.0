@@ -62,12 +62,10 @@ console.log(missionNo, planNo);
 
 
 
-
 const options = {
-  key: fs.readFileSync('/home/nj/server.key'),
-  cert: fs.readFileSync('/home/nj/server.crt')
+  key: fs.readFileSync('/home/nisal/server.key'),
+  cert: fs.readFileSync('/home/nisal/server.crt')
 };
-
 
 
 

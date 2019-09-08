@@ -34,6 +34,7 @@ export default class User {
       this.bearval = document.getElementById('bear-val');
       this.compass = document.gauges.get('compass');
       this.planNo = document.getElementById('planNobox');  
+      this.missionStarted = false; 
     }
 
 
@@ -41,7 +42,7 @@ export default class User {
     //checks if the currentSeg and targetWayPoint need to be updated 
     checkForNewSeg() {
 
-      if(!this.planPlath)
+      if(!this.planPlath || !this.missionStarted)
       return; 
 
       let latlng = new google.maps.LatLng(this.lat, this.long);
@@ -172,7 +173,7 @@ export default class User {
 
    
     updateCompass(heading, target, noplan) {
-      if(noplan) {
+      if(noplan || !this.missionStarted) {
         this.compass.value = heading;
         return;
       }
@@ -319,8 +320,8 @@ export default class User {
       let latlng = new google.maps.LatLng(this.lat, this.long);
       let map = this.path.map; 
 
-      if(this.firstReading && this.planPlath) {
-        setInterval(this.blink.bind(this), 4000);
+      if(this.firstReading && this.planPlath  && this.missionStarted) {
+     //   setInterval(this.blink.bind(this), 4000);
         this.addFirst();
         this.targetWayPoint = this.getCurrentSeg().getStart(); 
         this.targetBearing = this.getCurrentSeg().getBearing(); 
@@ -330,7 +331,7 @@ export default class User {
         this.updateTargetWayPoint();
         map.panTo(latlng);
       } else if (this.firstReading) {
-        setInterval(this.blink.bind(this), 4000);
+      //  setInterval(this.blink.bind(this), 4000);
         map.panTo(latlng);
         this.firstReading = false; 
       }
@@ -347,6 +348,7 @@ export default class User {
       console.log(path); 
       path.push(latlng);
       this.renderCircle();
+
       this.updateBearing(latlng); 
       this.checkForNewSeg();
       this.changeColor();
@@ -358,7 +360,7 @@ export default class User {
     //changes color of the line according to correction value
     //displays correction value in UI
     changeColor() {
-      if(!this.planPlath){
+      if(!this.planPlath  || !this.missionStarted){
         return; 
 
       }
@@ -379,7 +381,7 @@ export default class User {
 
 
     updateBearing(latlng) {
-      if(!this.planPlath)
+      if(!this.planPlath  || !this.missionStarted)
       return; 
 
       let bearing = google.maps.geometry.spherical.computeHeading(latlng, this.targetWayPoint.position);

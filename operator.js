@@ -39,7 +39,7 @@ export default class Operator extends Viewer {
   
     this.joystick();
     this.cmdVel.advertise();
-    this.video.style.display = "block";
+   // this.video.style.display = "block";
     //$.post('/start', 'mission start');
  
     this.pausebutton.addEventListener("click", () => {
@@ -60,7 +60,7 @@ export default class Operator extends Viewer {
     setTimeout(this.getHeading.bind(this), 300);
     
     //setTimeout(this.getMotion.bind(this),400);
-    this.video.src = "http://115.70.221.82:8888/mjpg/video.mjpg";
+   // this.video.src = "http://115.70.221.82:8888/mjpg/video.mjpg";
    // this.video.src = "http://" + this.robot_IP + ":8080/stream/video.mjpeg";
    // this.video.src = "http://127.0.0.1:8080/stream_viewer?topic=/webcam/image_raw&type=mjpeg&quality=80"
     //setInterval(this.sendCommand.bind(this, twist), 100); 
