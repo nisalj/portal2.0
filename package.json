@@ -21,6 +21,7 @@
     "dygraphs": "^2.1.0",
     "express": "^4.17.1",
     "fast-csv": "^3.1.0",
+    "gps-module": "^1.0.0",
     "json2csv": "^4.5.2",
     "nipplejs": "^0.8.2",
     "nouislider": "^14.0.2",

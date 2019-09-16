@@ -1,14 +1,32 @@
-import Viewer from './viewer.js';
+import Sharer from './sharer.js'; 
 
-export default class Operator extends Viewer {
-    constructor(path, socket, ros, plan){
-    super(path, socket, plan);
+export default class Operator extends Sharer {
+    constructor(options, path, ros, plan){
+    super(options, path, plan);
     this.ros = ros; 
     this.cmdVel = new ROSLIB.Topic({
         ros : this.ros,
         name : '/mobile_base_controller/cmd_vel',
         messageType : 'geometry_msgs/Twist'
       });
+
+    this.headingListener = new ROSLIB.Topic({
+      ros: this.ros,
+      name: '/sensed/yaw',
+      messageType: 'std_msgs/Float64'
+    }); 
+
+    this.fixListener = new ROSLIB.Topic({
+      ros: this.ros,
+      name: '/fix',
+      messageType: 'sensor_msgs/NavSatFix'
+    })
+
+    this.headingRefPublisher = new ROSLIB.Topic({
+      ros: this.ros,
+      name: '/ref/yaw',
+      messageType: 'std_msgs/Float64'
+    })
     
     this.twist = new ROSLIB.Message({
       linear : {
@@ -33,6 +51,61 @@ export default class Operator extends Viewer {
 
     }
 
+  
+
+    getLocation() {
+      let that = this;
+      that.fixListener.subscribe(function(message) {
+        that.lat = message.latitude;
+        that.long = message.longitude;
+        if (message.status.status == 2)
+        that.dgps = true;
+        that.fixMode = message.status.service;
+        that.longError = message.position_covariance[0];
+        that.latError = message.position_covariance[4];
+        that.uncertRadius = Math.sqrt(Math.pow(that.latError,2) + Math.pow(that.longError,2))
+        that.shareLocation();
+        that.plotPath();
+        that.shareDetails(); 
+      });
+
+
+    }
+
+
+    publishRefHeading() {
+
+    }
+
+
+    getHeading() {
+      let that = this; 
+      that.headingListener.subscribe(function(message) {
+        that.heading = that.convertFromRosHeading(message.data).toFixed(0);
+        that.shareHeading(that.heading);
+        that.showHeading(that.heading);
+      }
+
+      )}
+
+
+     convertFromRosHeading(heading) {
+      if (heading < 0)
+      return  -heading;
+      else 
+      return 360 - heading;
+  
+     }
+    
+
+    convertToRosHeading(heading) {
+      if (heading <= 180)
+      return -heading
+      else 
+      return 360 - heading; 
+
+    }
+ 
 
 
     start() {
@@ -91,14 +164,14 @@ export default class Operator extends Viewer {
             }
             // convert angles to radians and scale linear and angular speed
             // adjust if youwant robot to drvie faster or slower
-            var lin = Math.cos(direction / 57.29) * nipple.distance * 0.005;
-            var ang = Math.sin(direction / 57.29) * nipple.distance * 0.02;
+            var lin = Math.cos(direction / 57.29) * nipple.distance * 0.01;
+            var ang = Math.sin(direction / 57.29) * nipple.distance * 0.015;
             // nipplejs is triggering events when joystic moves each pixel
             // we need delay between consecutive messege publications to
             // prevent system from being flooded by messages
             // events triggered earlier than 50ms after last publication will be dropped
             if (lin !== undefined && ang !== undefined){
-              that.twist.linear.x = lin;
+              that.twist.linear.x = -lin;
               that.twist.angular.z = ang;  
             } else {
               that.twist.linear.x = 0;
@@ -192,7 +265,7 @@ export default class Operator extends Viewer {
       clearInterval(this.turnSpotFunc);
       this.initialTurn = 0;
       this.pidFunc = setInterval(this.magnetoPID.bind(this), 50); 
-     // setImmediate(this.magnetoPID);
+      setImmediate(this.magnetoPID);
       console.log('here');
       return;
     } else if (this.correction < 0) {
@@ -211,7 +284,7 @@ export default class Operator extends Viewer {
 
     let correction_cw = 0.1;
     let correction_ccw = -0.1
-    let move_forward = 0.3; 
+    let move_forward = -0.3; 
     this.twist.linear.x = move_forward; 
     console.log('here pid');
       if (Math.abs(this.correction) < 10) {

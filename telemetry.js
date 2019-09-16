@@ -726,7 +726,7 @@ toggleChart(true);
 //window.user = new Viewer(robotpath, socket);
 initPID();
 
-user = new Operator(robotpath, socket, ros, plan);
+user = new Operator(options, robotpath, ros, plan);
 user.start();
 //toggleTopBar(true);
 //toggleCompass(true);

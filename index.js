@@ -5,6 +5,8 @@ const ui = require('nouislider');
 const fs  = require('fs'); 
 const express = require('express'); 
 var bodyParser = require('body-parser');
+const GPS = require('gps-module');
+
 let fastcsv = require('fast-csv'); 
 const app = express(); 
 let plan; 
@@ -24,6 +26,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw({type: 'application/octet-stream', limit : '2mb'}));
 app.use(express.static('.'));
+
+ 
+
+
 
 //io.set("transports", ["xhr-polling","websocket","polling", "htmlfile"]);
 

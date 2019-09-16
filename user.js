@@ -34,7 +34,11 @@ export default class User {
       this.bearval = document.getElementById('bear-val');
       this.compass = document.gauges.get('compass');
       this.planNo = document.getElementById('planNobox');  
-      this.missionStarted = false; 
+      this.missionStarted = true; 
+      this.dgps = false;
+      this.fixMode = 0;
+      this.longError;
+      this.latError;
     }
 
 
