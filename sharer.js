@@ -227,7 +227,6 @@ export default class Sharer extends User {
         //  console.log(xhr.responseText); 
         }
       }
-        console.log(params);
   
         xhr.open('POST', location.origin +'/loc');
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

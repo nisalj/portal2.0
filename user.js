@@ -157,6 +157,8 @@ export default class User {
 
    
     renderCircle() {
+      if (!this.uncertRadius)
+      return; 
       let radius = this.uncertRadius; 
       let latlng = {lat: this.lat, lng: this.long};
       if(!this.circle && radius && latlng) {
@@ -346,11 +348,9 @@ export default class User {
       let path = this.path.getPath();
     //  let latlng = new google.maps.LatLng(this.lat, this.long);
      // map.panTo(latlng);
-      console.log("updating",latlng.lat(),latlng.lng() );
 
      // path.icons[0].icon.scale = 50; 
 
-      console.log(path); 
       path.push(latlng);
       this.renderCircle();
 

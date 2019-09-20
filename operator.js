@@ -18,6 +18,9 @@ export default class Operator extends Sharer {
     serviceType : 'dynamic_reconfigure/Reconfigure' 
   });
   
+  this.refHeadingMsg = new ROSLIB.Message({
+    data: 0
+  });
   
   
   this.configHeadingClient = new ROSLIB.Service({
@@ -33,6 +36,12 @@ export default class Operator extends Sharer {
         messageType : 'geometry_msgs/Twist'
       });
 
+    this.toggleHeadingRef = new ROSLIB.Topic({
+      ros: this.ros,
+      name: '/toggle_heading_pid',
+      messageType: 'std_msgs/Bool'
+    })
+
     this.headingListener = new ROSLIB.Topic({
       ros: this.ros,
       name: '/sensed/yaw',
@@ -43,13 +52,18 @@ export default class Operator extends Sharer {
       ros: this.ros,
       name: '/fix',
       messageType: 'sensor_msgs/NavSatFix'
-    })
+    });
 
     this.headingRefPublisher = new ROSLIB.Topic({
       ros: this.ros,
       name: '/ref/yaw',
       messageType: 'std_msgs/Float64'
-    })
+    });
+
+    this.enableMsg = new ROSLIB.Message({
+      data: true,
+    });
+ 
     
     this.twist = new ROSLIB.Message({
       linear : {
@@ -77,6 +91,7 @@ export default class Operator extends Sharer {
       this.pidFunc; 
       this.pausebutton = document.getElementById("view")
       this.initialTurn = 0;
+      this.refInterval; 
     }
 
   
@@ -101,11 +116,6 @@ export default class Operator extends Sharer {
     }
 
 
-    publishRefHeading() {
-
-    }
-
-
     getHeading() {
       let that = this; 
       that.headingListener.subscribe(function(message) {
@@ -117,11 +127,13 @@ export default class Operator extends Sharer {
       )}
 
     sendRefHeading() {
-      if (this.targetBearing == undefined) 
+      console.log(this.targetBearing);
+      if (this.targetBearing === undefined) 
       return; 
-      let heading = this.convertToRosHeading(this.targetBearing);
-      this.headingRefPublisher.publish(heading);
-      console.log('publishing ref');
+
+      
+      this.refHeadingMsg.data = this.convertToRosHeading(this.targetBearing);
+      this.headingRefPublisher.publish(this.refHeadingMsg);
     } 
 
 
@@ -138,7 +150,10 @@ export default class Operator extends Sharer {
   let request = new ROSLIB.ServiceRequest({
     config: {
         doubles: [
-            {name: coeff, value: value},       
+           {name: 'Kp_scale', value: 0.1},
+           {name: 'Kd_scale', value: 0.1},
+           {name: 'Ki_scale', value: 1.0},
+           {name: coeff, value: value},       
         ]    
     }
    });
@@ -147,26 +162,19 @@ export default class Operator extends Sharer {
 
      if(type == 'speed') {
       this.configLeftSpeedClient.callService(request, function(result) {
-        console.log('hey');
         console.log('Result for service call on '
-            + configLeftSpeedClient.name
-            + ': '
             + JSON.stringify(result, null, 2));
       });
-      this.configRightSpeedClient.callService(this.request, function(result) {
+      this.configRightSpeedClient.callService(request, function(result) {
         console.log('Result for service call on '
-            + configRightSpeedClient.name
-            + ': '
             + JSON.stringify(result, null, 2));
       });
 
      } else {
        //console.log(request);
-       this.configHeadingClient.callService(this.request, function(result){
+       this.configHeadingClient.callService(request, function(result){
         console.log('Result for service call on '
-        + configHeadingClient.name
-        + ': '
-        + JSON.stringify(result, null, 2));
+      + JSON.stringify(result, null, 2));
        });
 
      }
@@ -197,11 +205,22 @@ export default class Operator extends Sharer {
 
 
     startheadingPID() {
-      setInterval(this.sendRefHeading, 50); 
+      this.enableMsg.data = true; 
+      this.toggleHeadingRef.publish(this.enableMsg);
+      this.refInterval = setInterval(this.sendRefHeading.bind(this), 100); 
+      console.log('starting');
     }
 
     stopheadingPID() {
-      clearInterval(this.sendRefHeading); 
+      console.log('clear');
+      clearInterval(this.refInterval); 
+      this.enableMsg.data = false; 
+      this.toggleHeadingRef.publish(this.enableMsg);
+    
+       this.twist.linear.x = 0;
+       this.twist.angular.z = 0;
+       this.moveAction();
+
     }
  
 
@@ -211,6 +230,7 @@ export default class Operator extends Sharer {
     this.joystick();
     this.cmdVel.advertise();
     this.headingRefPublisher.advertise();
+    this.toggleHeadingRef.advertise();
 
     this.wayPointButton.addEventListener("click", () => {
       if(!this.waypointStarted) {
@@ -221,8 +241,8 @@ export default class Operator extends Sharer {
         this.startheadingPID(); 
       } else {
         this.wayPointButton.innerHTML = '<i class="fa fa-play"</i>';
-        this.waypointStarted = false;
         this.stopheadingPID();
+        this.waypointStarted = false;
       }
     });
 
@@ -273,7 +293,7 @@ export default class Operator extends Sharer {
             // prevent system from being flooded by messages
             // events triggered earlier than 50ms after last publication will be dropped
             if (lin !== undefined && ang !== undefined){
-              that.twist.linear.x = -lin;
+              that.twist.linear.x = lin;
               that.twist.angular.z = ang;  
             } else {
               that.twist.linear.x = 0;
