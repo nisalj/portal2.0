@@ -4,6 +4,29 @@ export default class Operator extends Sharer {
     constructor(options, path, ros, plan){
     super(options, path, plan);
     this.ros = ros; 
+
+
+  this.configLeftSpeedClient = new ROSLIB.Service({
+      ros : this.ros,
+      name : '/left_wheel_pid/set_parameters',
+      serviceType : 'dynamic_reconfigure/Reconfigure' 
+   });
+  
+   this.configRightSpeedClient = new ROSLIB.Service({
+    ros : this.ros,
+    name : '/right_wheel_pid/set_parameters',
+    serviceType : 'dynamic_reconfigure/Reconfigure' 
+  });
+  
+  
+  
+  this.configHeadingClient = new ROSLIB.Service({
+     ros: this.ros, 
+     name: '/heading_pid/set_parameters',
+     serviceType : 'dynamic_reconfigure/Reconfigure' 
+    });
+  
+
     this.cmdVel = new ROSLIB.Topic({
         ros : this.ros,
         name : '/mobile_base_controller/cmd_vel',
@@ -40,6 +63,12 @@ export default class Operator extends Sharer {
         z : 0.0
       }
   });
+
+
+ 
+
+
+      this.wayPointButton = document.getElementById("start-waypoint");
       this.movefunc;
       this.publish = true;
       this.video = document.getElementById("robotFrontCamera"); 
@@ -48,7 +77,6 @@ export default class Operator extends Sharer {
       this.pidFunc; 
       this.pausebutton = document.getElementById("view")
       this.initialTurn = 0;
-
     }
 
   
@@ -88,6 +116,66 @@ export default class Operator extends Sharer {
 
       )}
 
+    sendRefHeading() {
+      if (this.targetBearing == undefined) 
+      return; 
+      let heading = this.convertToRosHeading(this.targetBearing);
+      this.headingRefPublisher.publish(heading);
+      console.log('publishing ref');
+    } 
+
+
+
+    
+
+
+
+
+    updatePID(type, coeff, value) {
+      if(coeff == 'Kd')
+      return; 
+
+  let request = new ROSLIB.ServiceRequest({
+    config: {
+        doubles: [
+            {name: coeff, value: value},       
+        ]    
+    }
+   });
+
+
+
+     if(type == 'speed') {
+      this.configLeftSpeedClient.callService(request, function(result) {
+        console.log('hey');
+        console.log('Result for service call on '
+            + configLeftSpeedClient.name
+            + ': '
+            + JSON.stringify(result, null, 2));
+      });
+      this.configRightSpeedClient.callService(this.request, function(result) {
+        console.log('Result for service call on '
+            + configRightSpeedClient.name
+            + ': '
+            + JSON.stringify(result, null, 2));
+      });
+
+     } else {
+       //console.log(request);
+       this.configHeadingClient.callService(this.request, function(result){
+        console.log('Result for service call on '
+        + configHeadingClient.name
+        + ': '
+        + JSON.stringify(result, null, 2));
+       });
+
+     }
+
+    }
+    
+
+
+
 
      convertFromRosHeading(heading) {
       if (heading < 0)
@@ -105,6 +193,16 @@ export default class Operator extends Sharer {
       return 360 - heading; 
 
     }
+
+
+
+    startheadingPID() {
+      setInterval(this.sendRefHeading, 50); 
+    }
+
+    stopheadingPID() {
+      clearInterval(this.sendRefHeading); 
+    }
  
 
 
@@ -112,23 +210,27 @@ export default class Operator extends Sharer {
   
     this.joystick();
     this.cmdVel.advertise();
+    this.headingRefPublisher.advertise();
+
+    this.wayPointButton.addEventListener("click", () => {
+      if(!this.waypointStarted) {
+        this.waypointStarted = true;
+        this.wayPointButton.innerHTML = '<i class="fa fa-pause"</i>';
+
+       // this.wayPointButton.className = "fa fa-pause";
+        this.startheadingPID(); 
+      } else {
+        this.wayPointButton.innerHTML = '<i class="fa fa-play"</i>';
+        this.waypointStarted = false;
+        this.stopheadingPID();
+      }
+    });
+
    // this.video.style.display = "block";
     //$.post('/start', 'mission start');
  
-    this.pausebutton.addEventListener("click", () => {
-      if(this.turnSpotFunc)
-      clearInterval(this.turnSpotFunc);
-      if(this.pidFunc)
-      clearInterval(this.pidFunc);
-      if(this.movefunc)
-      clearInterval(this.movefunc);
-      this.twist.linear.x = 0;
-      this.twist.angular.z = 0;
-      this.moveAction();
-   
-    }); 
 
-    // this.makePlan(); 
+   // this.makePlan(); 
     setTimeout(this.getLocation.bind(this), 200);
     setTimeout(this.getHeading.bind(this), 300);
     
@@ -205,109 +307,6 @@ export default class Operator extends Sharer {
 
 
 
-  updateTargetWayPoint() {
-       console.log('op');
-       if(this.pidFunc)
-       clearInterval(this.pidFunc);   
-      if (this.atSegStart) {
-      this.targetWayPoint = this.getCurrentSeg().getEnd(); 
-      this.atSegStart = false; 
-      //console.log('update');
-      console.log(this.planPlath.segNo());
-      this.turnSpotFunc = setInterval(this.turnToWaypoint.bind(this), 50);
-      //this.turnToWaypoint();
-     // setTimeout(this.turnToWaypoint.bind(this), 1000);
-      
-    } else if(this.currentSeg != this.planPlath.segNo()) {
-      this.updateCurrentSeg(); 
-      this.targetWayPoint = this.getCurrentSeg().getStart(); 
-      this.atSegStart = true; 
-      this.turnSpotFunc= setInterval(this.turnToWaypoint.bind(this), 50);
-
-      
-   //   this.turnToWaypoint();
-  //    setTimeout(this.turnToWaypoint.bind(this), 1000);
-
-    } else {
-      clearInterval(this.pidFunc);
-      console.log("Mission complete"); 
-    }
-    console.log(this.targetBearing); 
-  }
-
-
-  turnToWaypoint() {
-  
-    let correction_cw = 0.3;
-    let correction_ccw = -0.3; 
-    if(this.initialTurn <= 35) 
-    {
-
-        correction_cw = 0.5;
-        correction_ccw = -0.5;
-      
-     
-      this.initialTurn++; 
-    } else{
-      correction_cw = 0.3;
-      correction_ccw = -0.3;
-    }
-
-   
-    if(this.pidFunc)
-    clearInterval(this.pidFunc);
-  
-    this.twist.linear.x = 0; 
-    if (Math.abs(this.correction) < 10) {
-      this.twist.linear.x = 0; 
-      this.twist.angular.z = 0;
-      this.moveAction();
-      clearInterval(this.turnSpotFunc);
-      this.initialTurn = 0;
-      this.pidFunc = setInterval(this.magnetoPID.bind(this), 50); 
-      setImmediate(this.magnetoPID);
-      console.log('here');
-      return;
-    } else if (this.correction < 0) {
-      this.twist.angular.z = correction_cw;
-      this.moveAction();
-    } else {
-      this.twist.angular.z = correction_ccw;
-      this.moveAction();
-    }
-
-
-  }
-
-
-  magnetoPID() {
-
-    let correction_cw = 0.1;
-    let correction_ccw = -0.1
-    let move_forward = -0.3; 
-    this.twist.linear.x = move_forward; 
-    console.log('here pid');
-      if (Math.abs(this.correction) < 10) {
-        this.twist.linear.x = move_forward; 
-        this.twist.angular.z = 0;
-        this.moveAction();
-        //return;
-       // clearInterval(this.turnSpotFunc);
-      } else if (this.correction < 0) {
-        this.twist.linear.x = move_forward; 
-        this.twist.angular.z = correction_cw;
-        this.moveAction();
-      } else {
-        this.twist.linear.x = move_forward; 
-        this.twist.angular.z = correction_ccw;
-        this.moveAction();
-      }
-  
-    
-
-  }
-    
-
 
     
 
@@ -327,17 +326,6 @@ export default class Operator extends Sharer {
 
 
     moveAction() {
-      //console.log(this);
-      //let twist = this.twist; 
-      // if (lin != undefined && ang != undefined) {
-      //     this.twist.linear.x = lin;
-      //     this.twist.angular.z = ang;
-      //    // console.log(linear, angular);
-      //     //console.log(this.twist);
-      // } else {
-      //     this.twist.linear.x = 0;
-      //     this.twist.angular.z = 0;
-      // }
       console.log('moving');
       this.cmdVel.publish(this.twist);
   

@@ -39,6 +39,7 @@ export default class User {
       this.fixMode = 0;
       this.longError;
       this.latError;
+      this.waypointStarted = false; 
     }
 
 

@@ -280,6 +280,11 @@ function initGraph() {
 
 }
 
+
+
+
+
+
 function initPID () {
 
   
@@ -306,10 +311,10 @@ noUiSlider.create(pMagSlider, {
   connect: [true, false],
   range: {
       'min': 0,
-      'max': 100
+      'max': 2
   },
-  step: 1, 
   tooltips: false,
+  step: 0.01
 
 });
 
@@ -321,9 +326,9 @@ noUiSlider.create(iMagSlider, {
   connect: [true, false],
   range: {
       'min': 0,
-      'max': 100
+      'max': 2
   },
-  step: 1, 
+  step: 0.01, 
   tooltips: false,
 
 });
@@ -334,9 +339,9 @@ noUiSlider.create(dMagSlider, {
   connect: [true, false],
   range: {
       'min': 0,
-      'max': 100
+      'max': 2
   },
-  step: 1, 
+  step: 0.01, 
   tooltips: false,
 
 });
@@ -347,9 +352,9 @@ noUiSlider.create(pSpeedSlider, {
   connect: [true, false],
   range: {
       'min': 0,
-      'max': 100
+      'max': 2
   },
-  step: 1, 
+  step: 0.01, 
   tooltips: false,
 
 });
@@ -360,9 +365,9 @@ noUiSlider.create(iSpeedSlider, {
   connect: [true, false],
   range: {
       'min': 0,
-      'max': 100
+      'max': 2
   },
-  step: 1, 
+  step: 0.01, 
   tooltips: false,
 
 });
@@ -373,38 +378,38 @@ noUiSlider.create(dSpeedSlider, {
   connect: [true, false],
   range: {
       'min': 0,
-      'max': 100
+      'max': 2
   },
-  step: 1, 
+  step: 0.01, 
   tooltips: false,
 
 });
 
 
 pMagSlider.noUiSlider.on('update', (value) => {
-  pMag.value = parseInt(value); 
+  pMag.value = parseFloat(value); 
   });
   
   iMagSlider.noUiSlider.on('update', (value) => {
-  iMag.value = parseInt(value); 
+  iMag.value = parseFloat(value); 
   });
   
   dMagSlider.noUiSlider.on('update', (value) => {
-  dMag.value = parseInt(value); 
+  dMag.value = parseFloat(value); 
   });
    
   pSpeedSlider.noUiSlider.on('update', (value) => {
-  pSpeed.value = parseInt(value); 
+  pSpeed.value = parseFloat(value); 
   });
   
    
   iSpeedSlider.noUiSlider.on('update', (value) => {
-  iSpeed.value = parseInt(value); 
+  iSpeed.value = parseFloat(value); 
   });
   
    
   dSpeedSlider.noUiSlider.on('update', (value) => {
-  dSpeed.value = parseInt(value); 
+  dSpeed.value = parseFloat(value); 
   });
  
   pMag.addEventListener("blur", () => {
@@ -468,10 +473,39 @@ pMagSlider.noUiSlider.on('update', (value) => {
   });
 
 
+ setPID();
+}
 
 
+function setPID() {
+
+  pMagSlider.noUiSlider.on('set', (value) => {
+    console.log('set');
+    user.updatePID('heading', 'Kp', parseFloat(value));
+    });
 
 
+  iMagSlider.noUiSlider.on('set', (value) => {
+    user.updatePID('heading', 'Ki', parseFloat(value));
+    });
+
+  dMagSlider.noUiSlider.on('set', (value) => {
+      user.updatePID('heading', 'Kd', parseFloat(value));
+  });
+
+  pSpeedSlider.noUiSlider.on('set', (value) => {
+    user.updatePID('speed', 'Kp', parseFloat(value)); 
+  });
+
+  iSpeedSlider.noUiSlider.on('set', (value) => {
+    user.updatePID('speed', 'Ki', parseFloat(value)); 
+  });
+
+  dSpeedSlider.noUiSlider.on('set', (value) => {
+    user.updatePID('speed', 'Kd', parseFloat(value)); 
+  })
+  
+  
 
 }
 
@@ -903,12 +937,12 @@ function loadDefaultConfig() {
     cruisingSpeed : 2,
     maxSpeed : 2,
     tolerance: 50, 
-    pSpeed : 2, 
-    iSpeed : 2, 
-    dSpeed : 2, 
-    pMag : 2, 
-    iMag : 2, 
-    dMag : 2,
+    pSpeed : 0.5, 
+    iSpeed : 1.5, 
+    dSpeed : 0, 
+    pMag : 0.07, 
+    iMag : 0.07, 
+    dMag : 0,
   }
 }
 
@@ -919,7 +953,6 @@ function loadDefaultConfig() {
 
 
 window.onload = function() {
-
   toggleCompass(false);
   toggleGraph(false);
   toggleStats(false);
@@ -935,8 +968,6 @@ window.onload = function() {
   initMap(); 
   initChart();
   loadDefaultConfig(); 
-
- 
  
   $('#pid-area').draggable();
   g1.resize(480,320);
