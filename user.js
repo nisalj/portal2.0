@@ -157,6 +157,7 @@ export default class User {
 
    
     renderCircle() {
+      console.log(this.uncertRadius);
       if (!this.uncertRadius)
       return; 
       let radius = this.uncertRadius; 
@@ -228,7 +229,7 @@ export default class User {
       //let target = this.targetBearing; 
     
       // this.compass.update({
-      //   highlights: [
+      //   highlights: 
       //     {from: heading, to: target, color: 'blue'}
       //   ]
       // });

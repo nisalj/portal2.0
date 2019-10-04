@@ -50,7 +50,7 @@ export default class Operator extends Sharer {
 
     this.fixListener = new ROSLIB.Topic({
       ros: this.ros,
-      name: '/fix',
+      name: '/ublox_gps/fix',
       messageType: 'sensor_msgs/NavSatFix'
     });
 
@@ -104,9 +104,7 @@ export default class Operator extends Sharer {
         if (message.status.status == 2)
         that.dgps = true;
         that.fixMode = message.status.service;
-        that.longError = message.position_covariance[0];
-        that.latError = message.position_covariance[4];
-        that.uncertRadius = Math.sqrt(Math.pow(that.latError,2) + Math.pow(that.longError,2))
+        that.uncertRadius = Math.sqrt(message.position_covariance[0]);
         that.shareLocation();
         that.plotPath();
         that.shareDetails(); 
@@ -119,7 +117,7 @@ export default class Operator extends Sharer {
     getHeading() {
       let that = this; 
       that.headingListener.subscribe(function(message) {
-        that.heading = that.convertFromRosHeading(message.data).toFixed(0);
+        that.heading = that.convertFromRosHeading(message.data).toFixed(0)-13;
         that.shareHeading(that.heading);
         that.showHeading(that.heading);
       }
@@ -127,7 +125,6 @@ export default class Operator extends Sharer {
       )}
 
     sendRefHeading() {
-      console.log(this.targetBearing);
       if (this.targetBearing === undefined) 
       return; 
 
@@ -144,13 +141,12 @@ export default class Operator extends Sharer {
 
 
     updatePID(type, coeff, value) {
-      if(coeff == 'Kd')
-      return; 
+    
 
   let request = new ROSLIB.ServiceRequest({
     config: {
         doubles: [
-           {name: 'Kp_scale', value: 0.1},
+           {name: 'Kp_scale', value: 1.0},
            {name: 'Kd_scale', value: 0.1},
            {name: 'Ki_scale', value: 1.0},
            {name: coeff, value: value},       
@@ -195,7 +191,7 @@ export default class Operator extends Sharer {
     
 
     convertToRosHeading(heading) {
-      if (heading <= 180)
+      if ( heading >= 0 && heading <= 180)
       return -heading
       else 
       return 360 - heading; 
