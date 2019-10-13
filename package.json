@@ -27,6 +27,7 @@
     "nouislider": "^14.0.2",
     "socket.io": "*",
     "uuid": "^3.3.2",
+    "victor": "^1.1.0",
     "webpack": "^4.35.3",
     "wnumb": "^1.1.0"
   },

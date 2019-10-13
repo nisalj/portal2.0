@@ -1,0 +1,21 @@
+{
+  "name": "portal2.0",
+  "description": "Portal",
+  "main": "index.js",
+  "authors": [
+    "nj"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "victor": "^1.1.0"
+  }
+}

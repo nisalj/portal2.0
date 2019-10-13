@@ -1,9 +1,7 @@
-import Sharer from './sharer.js'; 
-
-export default class Operator extends Sharer {
-    constructor(options, path, ros, plan){
-    super(options, path, plan);
+export default class Operator{
+    constructor(med,ros){
     this.ros = ros; 
+    this.med = med; 
 
 
   this.configLeftSpeedClient = new ROSLIB.Service({
@@ -42,18 +40,7 @@ export default class Operator extends Sharer {
       messageType: 'std_msgs/Bool'
     })
 
-    this.headingListener = new ROSLIB.Topic({
-      ros: this.ros,
-      name: '/sensed/yaw',
-      messageType: 'std_msgs/Float64'
-    }); 
-
-    this.fixListener = new ROSLIB.Topic({
-      ros: this.ros,
-      name: '/ublox_gps/fix',
-      messageType: 'sensor_msgs/NavSatFix'
-    });
-
+  
     this.headingRefPublisher = new ROSLIB.Topic({
       ros: this.ros,
       name: '/ref/yaw',
@@ -92,37 +79,13 @@ export default class Operator extends Sharer {
       this.pausebutton = document.getElementById("view")
       this.initialTurn = 0;
       this.refInterval; 
+      this.targetBearing; 
     }
 
-  
-
-    getLocation() {
-      let that = this;
-      that.fixListener.subscribe(function(message) {
-        that.lat = message.latitude;
-        that.long = message.longitude;
-        if (message.status.status == 2)
-        that.dgps = true;
-        that.fixMode = message.status.service;
-        that.uncertRadius = Math.sqrt(message.position_covariance[0]);
-        that.shareLocation();
-        that.plotPath();
-        that.shareDetails(); 
-      });
-
-
+ 
+    receiveFromMed(bearing) {
+      this.targetBearing = bearing; 
     }
-
-
-    getHeading() {
-      let that = this; 
-      that.headingListener.subscribe(function(message) {
-        that.heading = that.convertFromRosHeading(message.data).toFixed(0)-13;
-        that.shareHeading(that.heading);
-        that.showHeading(that.heading);
-      }
-
-      )}
 
     sendRefHeading() {
       if (this.targetBearing === undefined) 
@@ -133,14 +96,20 @@ export default class Operator extends Sharer {
       this.headingRefPublisher.publish(this.refHeadingMsg);
     } 
 
+    convertToRosHeading(heading) {
+      if ( heading >= 0 && heading <= 180)
+      return -heading
+      else 
+      return 360 - heading; 
 
+  }
 
     
 
 
 
 
-    updatePID(type, coeff, value) {
+  updatePID(type, coeff, value) {
     
 
   let request = new ROSLIB.ServiceRequest({
@@ -181,22 +150,6 @@ export default class Operator extends Sharer {
 
 
 
-     convertFromRosHeading(heading) {
-      if (heading < 0)
-      return  -heading;
-      else 
-      return 360 - heading;
-  
-     }
-    
-
-    convertToRosHeading(heading) {
-      if ( heading >= 0 && heading <= 180)
-      return -heading
-      else 
-      return 360 - heading; 
-
-    }
 
 
 
@@ -227,6 +180,7 @@ export default class Operator extends Sharer {
     this.cmdVel.advertise();
     this.headingRefPublisher.advertise();
     this.toggleHeadingRef.advertise();
+    this.med.registerOperator(this); 
 
     this.wayPointButton.addEventListener("click", () => {
       if(!this.waypointStarted) {
@@ -247,8 +201,7 @@ export default class Operator extends Sharer {
  
 
    // this.makePlan(); 
-    setTimeout(this.getLocation.bind(this), 200);
-    setTimeout(this.getHeading.bind(this), 300);
+  
     
     //setTimeout(this.getMotion.bind(this),400);
    // this.video.src = "http://115.70.221.82:8888/mjpg/video.mjpg";

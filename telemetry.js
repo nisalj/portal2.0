@@ -1,7 +1,9 @@
-import Viewer from './viewer.js';
-import Sharer from './sharer.js';
+import Sharer from './phoneUpdater.js';
 import Operator from './operator.js'
 import Path from './path.js';
+import StateMediator from './stateMediator.js';
+import RosUpdater from './rosUpdater.js';
+import MissionController from './missionController.js';
 
 window.user; 
 let robotpath;
@@ -742,6 +744,17 @@ user.start();
 
 }
 
+function startTeleop() {
+  let med = new StateMediator(); 
+  let rosUpdater = new RosUpdater(med, ros);
+  let missionController = new MissionController(med, robotpath, plan); 
+  user = new Operator(med, ros);
+  missionController.start(); 
+  user.start(); 
+  rosUpdater.start();
+
+}
+
 function viewClick() {
 console.log('clicked view');
 
@@ -759,9 +772,9 @@ toggleTopBar(true);
 toggleChart(true);
 //window.user = new Viewer(robotpath, socket);
 initPID();
-
-user = new Operator(options, robotpath, ros, plan);
-user.start();
+startTeleop(); 
+//user = new Operator(options, robotpath, ros, plan);
+//user.start();
 //toggleTopBar(true);
 //toggleCompass(true);
 //window.user.start();
