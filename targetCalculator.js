@@ -5,17 +5,21 @@ export default class TargetCalculator {
         this.angular; 
         this.vec1 = new Victor(1, 1); 
         this.vec2 = new Victor(1, 1); 
-        this.sampleTime = 2;  
+        this.sampleTime = 1;  
         this.location = location; 
         this.heading = heading; 
         this.currentSeg;
         this.targetPerp;
+        this.prevTargetPerp; 
         this.targetWaypoint; 
         this.predictedPoint; 
         this.targetBearing;  
-        this.tolerance = 1;
-        this.offSetDist = 5; 
+        this.tolerance = 0.25;
+        this.offSetDist = 1.5; 
         this.offsetPoint;
+        this.prevSeg;
+        //0.25,1.5
+        //1,3
 
     }
 
@@ -46,38 +50,14 @@ calcTargetPoint() {
 makeOffsetPoint(pos, dist, ang) {
     this.offsetPoint = google.maps.geometry.spherical.computeOffset(pos, dist, ang); 
 }
+
 onLocUpdate(currentSeg, point) {
-    if(!this.currentSeg || currentSeg != this.currentSeg) {
-        this.currentSeg = currentSeg; 
-        let lat = this.location.getLat(); 
-        let long = this.location.getLong(); 
-        let latlng = new google.maps.LatLng({lat: lat, lng: long}); 
-        this.calcTargetPoint(); 
-
-    let dist = this.calcDistance(latlng, this.targetPerp); 
-
-    if (dist > this.tolerance) {
-       this.targetWaypoint = this.offsetPoint; 
-       this.targetBearing = this.calcBearing(latlng, this.offsetPoint)
-    } else {
-        this.targetWaypoint = this.currentSeg.getEnd().position;
-        this.targetBearing =  this.calcBearing(latlng, point.position);  
-    }  
-    return this.targetBearing; 
-    } 
-    
+  
     this.currentSeg = currentSeg; 
     let lat = this.location.getLat(); 
     let long = this.location.getLong(); 
     let latlng = new google.maps.LatLng({lat: lat, lng: long}); 
-    
-    if(this.offsetPoint ) {
-  //      this.prevseg = this.currentSeg;
-        if(this.calcDistance(latlng, this.offsetPoint) > 4)
-        this.targetWaypoint = this.offsetPoint; 
-        this.targetBearing = this.calcBearing(latlng, this.offsetPoint)
-        return this.targetBearing;
-    }
+   
 
 
     this.calcTargetPoint(); 
@@ -148,14 +128,29 @@ makePathVector() {
 
 
 calcPerpPoint() {
+    let lat = this.location.getLat(); 
+    let long = this.location.getLong(); 
+    let latlng = new google.maps.LatLng({lat: lat, lng: long}); 
     this.vec2.normalize(); 
     let a  = this.vec2.multiplyScalar(this.vec1.dot(this.vec2)); 
     let dist = a.length(); 
-//  let ang = this.bearingToAngle(a.horizontalAngleDeg());
     let ang = this.currentSeg.getBearing(); 
-    this.makeOffsetPoint(this.currentSeg.getStart().position, dist+this.offSetDist, ang)
+    let perp = google.maps.geometry.spherical.computeOffset(this.currentSeg.getStart().position, dist, ang); 
+//  let ang = this.bearingToAngle(a.horizontalAngleDeg());
+     this.makeOffsetPoint(this.currentSeg.getStart().position, dist+this.offSetDist, ang);
+
+    // if (!this.offsetPoint || !this.targetPerp) {
+    //     this.makeOffsetPoint(this.currentSeg.getStart().position, dist+this.offSetDist, ang);
+    //     this.prevSeg = this.currentSeg;
+    // } else if ((this.calcDistance(latlng, this.offsetPoint) < this.tolerance) || ((this.calcDistance(latlng, this.targetPerp) < this.tolerance))) {
+    //     this.makeOffsetPoint(this.currentSeg.getStart().position, dist+this.offSetDist, ang);
+    //     this.prevSeg = this.currentSeg;
+    // } else if (this.currentSeg != this.prevSeg) {
+    //     this.makeOffsetPoint(this.currentSeg.getStart().position, dist+this.offSetDist, ang);
+    //     this.prevSeg = this.currentSeg;
+    // }
  //   let ang = a.horizontalAngleDeg(); 
-    return google.maps.geometry.spherical.computeOffset(this.currentSeg.getStart().position, dist, ang);
+    return perp;
 }
 
 
