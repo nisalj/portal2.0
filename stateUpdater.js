@@ -42,8 +42,12 @@ export default class StateUpdater {
     }
 
     updateLocation(lat, long, speed, uncertRadius, fixmode) {
-        this.location.setLat(lat);
-        this.location.setLong(long);
+
+        let latlng = new google.maps.LatLng(lat, long);
+        let loc =    google.maps.geometry.spherical.computeOffset(latlng, 0.2, 0); 
+
+        this.location.setLat(loc.lat());
+        this.location.setLong(loc.lng());
         if(speed)
         this.location.setSpeed(speed);
         if(uncertRadius)

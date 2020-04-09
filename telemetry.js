@@ -4,6 +4,7 @@ import Path from './path.js';
 import StateMediator from './stateMediator.js';
 import RosUpdater from './rosUpdater.js';
 import MissionController from './missionController.js';
+import ServerComms from './serverComms.js'; 
 
 window.user; 
 let robotpath;
@@ -50,7 +51,8 @@ function initMap() {
   };
 
   ros = new ROSLIB.Ros({
-    url : 'wss://localhost:9090',
+    url : 'ws://localhost:9090',
+   //  url : 'ws://0.tcp.ap.ngrok.io:17392',
   });
 
   ros.on('connection', function() {
@@ -70,6 +72,7 @@ function initMap() {
     center: {lat:-33.814451, lng:151.171332},
     zoom: 14,
     fullscreenControl: false,
+    scaleControl: true, 
     gestureHandling: 'greedy',
   }),
     
@@ -123,7 +126,7 @@ function initGraph() {
               },
               y : {
                 drawGrid: false,
-                valueRange: [-20,20]
+                valueRange: [0,360]
               
               },
             },
@@ -131,7 +134,7 @@ function initGraph() {
             labelsDiv: document.getElementById("graph-legend"),
             axisLineColor: "white",
             legend: 'always',
-            labels: ['Time', 'AccX (m/s)','AccY (m/s)', 'AccZ (m/s)', 'rotA (rad/s)', 'rotB (rad/s)', 'rotG (rad/s)'],
+            labels: ['Time', 'Heading (deg)','Target (deg)', 'Error (deg)', 'rotA (rad/s)', 'rotB (rad/s)', 'rotG (rad/s)'],
             labelsSeparateLines: true,
             visibility: [false, false, false, false, false, false],
             dateWindow: [Date.now(), Date.now() + 30000],
@@ -165,7 +168,7 @@ function initGraph() {
       g1.updateOptions ( {
         axes: {
           y: {
-            valueRange: [-20,20],
+            valueRange: [0,360],
           }
         }
       });
@@ -222,7 +225,7 @@ function initGraph() {
 
     //playGraph();
   } else {
-    pauseGraph();
+   // pauseGraph();
     graph.style.display = "none";
     hide.classList.remove("btn-success");
     hide.classList.add("btn-primary");
@@ -234,49 +237,49 @@ function initGraph() {
  });    
 
 
- toggle.addEventListener( "click", () => {
-    if (!started) {
-      playGraph();
+//  toggle.addEventListener( "click", () => {
+//     if (!started) {
+//       playGraph();
     
-      // document.getElementById('play-icon').className = "fa fa-pause"
-      // socket.on('new-acc', (data) => {
-      //   g1.updateOptions({dateWindow: [Date.now() - 6000, Date.now()]}); 
-      //   let arr = new Int16Array(data);
-      //   //console.log('new data');
-      //    // arr[0] = arr[0]/100;
-      //    // arr[1] = arr[1]/100;
-      //    // arr[2] = arr[2]/100;
-      //   //console.log(arr);
-      //  if(!updated) {
-      //   //console.log('update');
-      //   updated = true; 
-      //   if(acc.length == 400) {
-      //     acc.splice(0,150);
-      //     //acc = []; 
-      //     //g1.updateOptions({dateWindow: [Date.now(), Date.now() + 6000]}); 
+//       // document.getElementById('play-icon').className = "fa fa-pause"
+//       // socket.on('new-acc', (data) => {
+//       //   g1.updateOptions({dateWindow: [Date.now() - 6000, Date.now()]}); 
+//       //   let arr = new Int16Array(data);
+//       //   //console.log('new data');
+//       //    // arr[0] = arr[0]/100;
+//       //    // arr[1] = arr[1]/100;
+//       //    // arr[2] = arr[2]/100;
+//       //   //console.log(arr);
+//       //  if(!updated) {
+//       //   //console.log('update');
+//       //   updated = true; 
+//       //   if(acc.length == 400) {
+//       //     acc.splice(0,150);
+//       //     //acc = []; 
+//       //     //g1.updateOptions({dateWindow: [Date.now(), Date.now() + 6000]}); 
 
-      //   }
-      //   let d = new Date(); 
+//       //   }
+//       //   let d = new Date(); 
 
-      //   acc.push([d, arr[0]/100, arr[1]/100, arr[2]/100, arr[3]*Math.PI/180, arr[4]*Math.PI/180, arr[5]*Math.PI/180]);
-      //  // console.log(row);
-      //   g1.updateOptions({'file': acc }  
-      //   //{dateWindow: [0, Date.now()]} 
-      //   ); 
-      //   updated = false; 
-      //  }
+//       //   acc.push([d, arr[0]/100, arr[1]/100, arr[2]/100, arr[3]*Math.PI/180, arr[4]*Math.PI/180, arr[5]*Math.PI/180]);
+//       //  // console.log(row);
+//       //   g1.updateOptions({'file': acc }  
+//       //   //{dateWindow: [0, Date.now()]} 
+//       //   ); 
+//       //   updated = false; 
+//       //  }
        
   
-      //   //console.log("new acc");
+//       //   //console.log("new acc");
   
-      // }); 
-      // started = true; 
-    } else {
-      pauseGraph();
+//       // }); 
+//       // started = true; 
+//     } else {
+//       pauseGraph();
 
-    }
+//     }
 
-  });
+//   });
 
 
 
@@ -525,6 +528,40 @@ function zoomingGraph(minDate, maxDate, yRange) {
 
 }; 
 
+window.updateGraph = function (target, heading, error) {
+ // document.getElementById('play-icon').className = "fa fa-pause"
+ 
+    g1.updateOptions({dateWindow: [Date.now() - 6000, Date.now()]}); 
+    //console.log('new data');
+     // arr[0] = arr[0]/100;
+     // arr[1] = arr[1]/100;
+     // arr[2] = arr[2]/100;
+    //console.log(arr);
+   if(!updated) {
+    //console.log('update');
+    updated = true; 
+    if(acc.length == 600) {
+      acc.splice(0,100);
+      //acc = []; 
+      //g1.updateOptions({dateWindow: [Date.now(), Date.now() + 6000]}); 
+
+    }
+    let d = new Date(); 
+
+    acc.push([d, target, heading, error, 0,0,0]);
+   // console.log(row);
+    g1.updateOptions({'file': acc }  
+    //{dateWindow: [0, Date.now()]} 
+    ); 
+    updated = false; 
+   }
+   
+
+    //console.log("new acc");
+
+  started = true;  
+}
+
 function playGraph() {
      
   document.getElementById('play-icon').className = "fa fa-pause"
@@ -745,10 +782,11 @@ user.start();
 }
 
 function startTeleop() {
+  let comms = new ServerComms();
   let med = new StateMediator(); 
   let rosUpdater = new RosUpdater(med, ros);
-  let missionController = new MissionController(med, robotpath, plan); 
-  user = new Operator(med, ros);
+  let missionController = new MissionController(med, comms, robotpath, plan); 
+  user = new Operator(med, comms, ros);
   missionController.start(); 
   user.start(); 
   rosUpdater.start();
@@ -970,7 +1008,8 @@ window.onload = function() {
   toggleGraph(false);
   toggleStats(false);
 
-  socket = io.connect("https://localhost:5000", {secure:true, rejectUnauthorized: false}); 
+ // socket = io.connect("https://localhost:5000", {secure:true, rejectUnauthorized: false}); 
+  socket = io.connect("http://localhost:5000"); 
   socket.on('connection', () => {
     console.log("connected to server socket"); 
   });
@@ -979,7 +1018,7 @@ window.onload = function() {
   });
   initGraph();
   initMap(); 
-  initChart();
+ // initChart();
   loadDefaultConfig(); 
  
   $('#pid-area').draggable();

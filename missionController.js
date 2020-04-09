@@ -1,8 +1,9 @@
 import MissionParams from './missionParams.js';
 import MissionRenderer from './missionRenderer.js';
+
 export default class MissionController {
 
-    constructor(med, path, plan) {
+    constructor(med, comms, path, plan) {
       this.path = path; 
       this.planPath = plan; 
       this.med = med; 
@@ -14,6 +15,7 @@ export default class MissionController {
       this.angular = 0; 
       this.params = new MissionParams(this.location, this.motion, this.heading,this.planPath); 
       this.render = new MissionRenderer(this.location, this.motion, this.heading, this.path, this.params); 
+      this.serverComms = comms;  
       this.status;
       this.correction;
       this.sidebar = document.getElementById('over-map'); 
@@ -23,25 +25,31 @@ export default class MissionController {
     }
 
     start() {
+      if(this.planPath)
+      $.post('/start'); 
       this.med.registerMissionController(this); 
+      this.render.start(); 
     }
 
   
     notify() {
-      this.med.newTargetBearing(this.params.getTargetBearing()); 
+      this.med.newTargetBearing(this.params.getTargetBearing());
+      this.med.newPerpDist(this.params.getPerpDist());  
     }
 
     receiveLocation(location) {
       this.location = location; 
       this.params.location = location; 
       this.render.location = location; 
+      this.serverComms.location = location; 
       this.onLocationUpdate(); 
     }
 
     receiveHeading(heading) {
       this.heading = heading;
       this.params.heading = heading; 
-      this.render.heading = heading; 
+      this.render.heading = heading;
+      this.serverComms.heading = heading; 
       this.onHeadingUpdate();  
     }
 
@@ -79,7 +87,7 @@ export default class MissionController {
       } 
       if(this.planPath) {
         if (this.params.updateParamsLocation()) {
-          this.notify(); 
+          this.serverComms.params = this.params; 
           this.render.renderPastLine(); 
         } 
         this.notify(); 
@@ -87,6 +95,7 @@ export default class MissionController {
         this.render.renderMarkerOne(this.params.targetCalculator.getTargetPoint());
         this.render.renderCurrentLine(); 
         this.render.renderDistVal(); 
+        this.render.renderTargetVal(); 
         this.render.renderBearVal(); 
       
       }
@@ -98,11 +107,17 @@ export default class MissionController {
     }
 
     onHeadingUpdate() {
-      if(this.planPath)
-      this.params.updateParamsHeading(); 
+      if(this.planPath) {
+        this.params.updateParamsHeading();
+        this.serverComms.params = this.params; 
+      //  this.serverComms.sendHeading(); 
+      }
       this.notify(); 
       this.render.renderHeading(); 
+      this.render.renderBearVal(); 
       this.render.renderCompass(); 
+      this.render.renderGraph(); 
+
       
     }
 

@@ -15,9 +15,11 @@ export default class TargetCalculator {
         this.predictedPoint; 
         this.targetBearing;  
         this.tolerance = 0.25;
-        this.offSetDist = 1.5; 
+        this.offSetDist = 2; 
         this.offsetPoint;
         this.prevSeg;
+        this.perpDistance; 
+        
         //0.25,1.5
         //1,3
 
@@ -58,19 +60,23 @@ onLocUpdate(currentSeg, point) {
     let long = this.location.getLong(); 
     let latlng = new google.maps.LatLng({lat: lat, lng: long}); 
    
+   // this.targetWaypoint = this.currentSeg.getEnd().position;
+  //  this.targetBearing =  this.calcBearing(latlng, point.position);  
 
+   //  return this.targetBearing; 
 
     this.calcTargetPoint(); 
 
     let dist = this.calcDistance(latlng, this.targetPerp); 
+    this.perpDistance = dist; 
 
-    if (dist > this.tolerance) {
-       this.targetWaypoint = this.offsetPoint; 
-       this.targetBearing = this.calcBearing(latlng, this.offsetPoint)
-    } else {
-        this.targetWaypoint = this.currentSeg.getEnd().position;
-        this.targetBearing =  this.calcBearing(latlng, point.position);  
-    }  
+     if ((dist > this.tolerance )&& (this.calcDistance(this.offsetPoint, this.currentSeg.getStart().position) ) < this.currentSeg.getDist() ) {
+        this.targetWaypoint = this.offsetPoint; 
+        this.targetBearing = this.calcBearing(latlng, this.offsetPoint)
+     } else {
+         this.targetWaypoint = point.position;
+         this.targetBearing =  this.calcBearing(latlng, point.position);  
+     }  
     return this.targetBearing; 
 }  
 
@@ -137,7 +143,10 @@ calcPerpPoint() {
     let ang = this.currentSeg.getBearing(); 
     let perp = google.maps.geometry.spherical.computeOffset(this.currentSeg.getStart().position, dist, ang); 
 //  let ang = this.bearingToAngle(a.horizontalAngleDeg());
-     this.makeOffsetPoint(this.currentSeg.getStart().position, dist+this.offSetDist, ang);
+ 
+
+
+this.makeOffsetPoint(this.currentSeg.getStart().position, dist+this.offSetDist, ang);
 
     // if (!this.offsetPoint || !this.targetPerp) {
     //     this.makeOffsetPoint(this.currentSeg.getStart().position, dist+this.offSetDist, ang);

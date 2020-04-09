@@ -1,7 +1,27 @@
 export default class Operator{
-    constructor(med,ros){
+    constructor(med, comms, ros){
     this.ros = ros; 
     this.med = med; 
+    this.perpDist; 
+    this.serverComms = comms; 
+    this.pMagSlider = document.getElementById('p-mag');
+    this.iMagSlider = document.getElementById('i-mag');
+    this.dMagSlider = document.getElementById('d-mag');
+    this.pSpeedSlider = document.getElementById('p-speed'); 
+    this.iSpeedSlider = document.getElementById('i-speed'); 
+    this.dSpeedSlider = document.getElementById('d-speed'); 
+
+  this.pidHeadingParams = new ROSLIB.Topic({
+    ros: this.ros, 
+    name: '/heading_pid/parameter_updates',
+    messageType: 'dynamic_reconfigure/Config'
+  });
+
+  this.pidSpeedParams = new ROSLIB.Topic({
+    ros: this.ros, 
+    name: '/right_wheel_pid/parameter_updates',
+    messageType: 'dynamic_reconfigure/Config'
+  });
 
 
   this.configLeftSpeedClient = new ROSLIB.Service({
@@ -20,6 +40,9 @@ export default class Operator{
     data: 0
   });
   
+  this.perpDistMsg = new ROSLIB.Message({
+    data: 0
+  }); 
   
   this.configHeadingClient = new ROSLIB.Service({
      ros: this.ros, 
@@ -45,6 +68,13 @@ export default class Operator{
       ros: this.ros,
       name: '/ref/yaw',
       messageType: 'std_msgs/Float64'
+    });
+
+    this.perpDistPublisher = new ROSLIB.Topic({
+      ros: this.ros,
+      name: '/distance',
+      messageType: 'std_msgs/Float64'
+
     });
 
     this.enableMsg = new ROSLIB.Message({
@@ -79,12 +109,18 @@ export default class Operator{
       this.pausebutton = document.getElementById("view")
       this.initialTurn = 0;
       this.refInterval; 
+      this.distInterval; 
       this.targetBearing; 
     }
 
  
     receiveFromMed(bearing) {
       this.targetBearing = bearing; 
+    }
+
+    receiveDistFromMed(distance) {
+      this.perpDist = distance;
+
     }
 
     sendRefHeading() {
@@ -96,15 +132,83 @@ export default class Operator{
       this.headingRefPublisher.publish(this.refHeadingMsg);
     } 
 
+
+
+    sendPerpDistance() {
+      if(this.perpDist === undefined)
+      return; 
+
+      this.perpDistMsg.data = this.perpDist;
+      this.perpDistPublisher.publish(this.perpDistMsg); 
+    }
+
     convertToRosHeading(heading) {
-      if ( heading >= 0 && heading <= 180)
-      return -heading
+      if (heading == 0)
+      return heading; 
+      else if ( heading > 0 && heading < 180)
+      return -heading;
       else 
       return 360 - heading; 
 
   }
 
+  updatePIDChart() {
+    let that = this; 
+
+    this.pidSpeedParams.subscribe(function (message) {
+      let pScale = message.doubles[0].value; 
+      let pVal = message.doubles[1].value;
+      let iScale = message.doubles[2].value; 
+      let iVal = message.doubles[3].value;
+      let dScale = message.doubles[4].value; 
+      let dVal = message.doubles[5].value;
+      let Kp = pScale*pVal; 
+      let Ki = iScale*iVal; 
+      let Kd = dScale*dVal; 
+      that.pSpeedSlider.noUiSlider.set(Kp); 
+      that.iSpeedSlider.noUiSlider.set(Ki);
+      that.dSpeedSlider.noUiSlider.set(Kd);
+      that.sendPID("S", "P", Kp); 
+      that.sendPID("S", "I", Ki); 
+      that.sendPID("S", "D", Kd); 
+
+
+      that.pidSpeedParams.unsubscribe();
+
+    });
+
+    this.pidHeadingParams.subscribe(function (message) {
+      let pScale = message.doubles[0].value; 
+      let pVal = message.doubles[1].value;
+      let iScale = message.doubles[2].value; 
+      let iVal = message.doubles[3].value;
+      let dScale = message.doubles[4].value; 
+      let dVal = message.doubles[5].value;
+      let Kp = pScale*pVal; 
+      let Ki = iScale*iVal; 
+      let Kd = dScale*dVal; 
+      that.pMagSlider.noUiSlider.set(Kp); 
+      that.iMagSlider.noUiSlider.set(Ki);
+      that.dMagSlider.noUiSlider.set(Kd); 
+      that.sendPID("H", "P", Kp); 
+      that.sendPID("H", "I", Ki); 
+      that.sendPID("H", "D", Kd); 
+
+      that.pidHeadingParams.unsubscribe(); 
+    });
+
+
+
+
+  }
     
+  sendPID(type, coeff, value) {
+    this.serverComms.sendPID(type, coeff, value); 
+  }
+
+  sendCmdVel() {
+
+  }
 
 
 
@@ -116,17 +220,18 @@ export default class Operator{
     config: {
         doubles: [
            {name: 'Kp_scale', value: 1.0},
-           {name: 'Kd_scale', value: 0.1},
+           {name: 'Kd_scale', value: 1.0},
            {name: 'Ki_scale', value: 1.0},
            {name: coeff, value: value},       
         ]    
     }
    });
 
-
+   let that = this; 
 
      if(type == 'speed') {
       this.configLeftSpeedClient.callService(request, function(result) {
+        that.serverComms.sendPID("S", coeff, value); 
         console.log('Result for service call on '
             + JSON.stringify(result, null, 2));
       });
@@ -138,6 +243,7 @@ export default class Operator{
      } else {
        //console.log(request);
        this.configHeadingClient.callService(request, function(result){
+        that.serverComms.sendPID("H", coeff, value); 
         console.log('Result for service call on '
       + JSON.stringify(result, null, 2));
        });
@@ -156,13 +262,15 @@ export default class Operator{
     startheadingPID() {
       this.enableMsg.data = true; 
       this.toggleHeadingRef.publish(this.enableMsg);
-      this.refInterval = setInterval(this.sendRefHeading.bind(this), 100); 
+      this.refInterval = setInterval(this.sendRefHeading.bind(this), 10); 
+      this.distInterval = setInterval(this.sendPerpDistance.bind(this), 10); 
       console.log('starting');
     }
 
     stopheadingPID() {
       console.log('clear');
       clearInterval(this.refInterval); 
+      clearInterval(this.distInterval); 
       this.enableMsg.data = false; 
       this.toggleHeadingRef.publish(this.enableMsg);
     
@@ -180,7 +288,9 @@ export default class Operator{
     this.cmdVel.advertise();
     this.headingRefPublisher.advertise();
     this.toggleHeadingRef.advertise();
+    this.perpDistPublisher.advertise(); 
     this.med.registerOperator(this); 
+    this.updatePIDChart(); 
 
     this.wayPointButton.addEventListener("click", () => {
       if(!this.waypointStarted) {
@@ -196,7 +306,7 @@ export default class Operator{
       }
     });
 
-   // this.video.style.display = "block";
+    this.video.style.display = "block";
     //$.post('/start', 'mission start');
  
 
@@ -204,10 +314,10 @@ export default class Operator{
   
     
     //setTimeout(this.getMotion.bind(this),400);
-   // this.video.src = "http://115.70.221.82:8888/mjpg/video.mjpg";
+    this.video.src = "http://929298dc.au.ngrok.io";
+  //  this.video.src = "http://172.20.10.2:8081";
    // this.video.src = "http://" + this.robot_IP + ":8080/stream/video.mjpeg";
-   // this.video.src = "http://127.0.0.1:8080/stream_viewer?topic=/webcam/image_raw&type=mjpeg&quality=80"
-    //setInterval(this.sendCommand.bind(this, twist), 100); 
+   // this.video.src = "http://127.02ind(this, twist), 100); 
         
     }
 

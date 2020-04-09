@@ -39,4 +39,10 @@ export default class StateMediator {
         if(this.operator)
         this.operator.receiveFromMed(bearing); 
     }
+
+
+    newPerpDist(distance) {
+        if(this.operator)
+        this.operator.receiveDistFromMed(distance); 
+    }
 }

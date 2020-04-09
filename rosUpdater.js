@@ -58,8 +58,14 @@ getLocation() {
   getHeading() {
     let that = this; 
     that.headingListener.subscribe(function(message) {
-      let heading = that.convertFromRosHeading(message.data).toFixed(0);
-      that.updateHeading(heading)
+      let heading = that.convertFromRosHeading(message.data);
+     // heading += 12; 
+     // if (heading > 360) 
+     // heading = heading - 360; 
+      
+     
+     
+      that.updateHeading(heading.toFixed(0));
      // that.shareHeading(that.heading);
      // that.showHeading(that.heading);
     }

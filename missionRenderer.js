@@ -1,3 +1,4 @@
+
 export default class MissionRenderer {
     constructor(location, motion, heading, path, params) {
         this.path = path; 
@@ -16,6 +17,7 @@ export default class MissionRenderer {
         this.headval = document.getElementById('heading-val');  
         this.distval = document.getElementById('dist-val');
         this.bearval = document.getElementById('bear-val');
+        this.targetval = document.getElementById('target-val');
         this.markerOne = new google.maps.Marker({
           label: "P",
           position: null,
@@ -26,6 +28,7 @@ export default class MissionRenderer {
           position: null,
           map: null,
         });
+        this.graphOn = false; 
 
         
 
@@ -34,6 +37,23 @@ export default class MissionRenderer {
 
     }
 
+
+    start() {
+      let toggle = document.getElementById("toggle-graph");
+      toggle.addEventListener( "click", () => {
+        if (!this.graphOn) {
+          document.getElementById('play-icon').className = "fa fa-pause"
+          this.graphOn = true; 
+      
+        } else {
+          document.getElementById('play-icon').className = "fa fa-play"
+          this.graphOn = false; 
+    
+        }
+    
+      });
+    }
+ 
 
 
 
@@ -138,10 +158,10 @@ renderServerState() {
     let params = this.params; 
     let heading_s = this.heading; 
     let heading = heading_s.getHeading(); 
-   // let correction = params.getCorrection(); 
+    let correction = params.getCorrection(); 
     let target = params.getTargetBearing(); 
 
-    let correction = (target - heading + 180 + 360)%360 - 180; 
+  //  let correction = (target - heading + 180 + 360)%360 - 180; 
 
     if(!correction) {
       this.compass.value = heading;
@@ -203,7 +223,20 @@ renderHeading() {
 
 renderBearVal() {
 let params = this.params;
-this.bearval.innerText = params.getCorrection();
+let cor = params.getCorrection()
+if (Math.abs(cor) > 10)
+this.bearval.style.color = "red";
+else
+this.bearval.style.color = "lime";
+
+this.bearval.innerText = cor;
+
+}
+
+
+renderTargetVal() {
+  let params = this.params;
+  this.targetval.innerText = params.getTargetBearing().toFixed(0);
 }
 
 renderCurrentLine() {
@@ -233,6 +266,25 @@ renderCurrentLine() {
   this.distval.innerText = dist.toFixed(0); 
   }
 
+
+  renderGraph() {
+    if(this.graphOn) {
+
+    let target = parseFloat(this.params.getTargetBearing());
+    let heading = parseFloat(this.heading.getHeading()); 
+    let correction = Math.abs(parseFloat(this.params.getCorrection())); 
+
+    if(!target) {
+      target = 0; 
+      correction = 0;
+    }
+
+  
+    window.updateGraph(heading, target, correction);
+    }
+
+
+  }
 
   renderRobotPath() {
     let latlng = new google.maps.LatLng(this.location.getLat(), this.location.getLong());

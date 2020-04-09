@@ -6,6 +6,7 @@ export default class Segment{
         this.maxSpeed = maxSpeed;
         this.speed = speed; 
         this.bearing = google.maps.geometry.spherical.computeHeading(this.start.position, this.end.position);
+        this.distance =  google.maps.geometry.spherical.computeDistanceBetween(this.start.position, this.end.position);
         this.poly =  new google.maps.Polyline({
             strokeColor: "black",
             strokeOpacity: 1.0,
@@ -43,16 +44,16 @@ export default class Segment{
 
 
     updateBearing() {
-    this.bearing = google.maps.geometry.spherical.computeHeading(this.start.position, this.end.position);
+    let bearing = google.maps.geometry.spherical.computeHeading(this.start.position, this.end.position);
+    if (bearing < 0)
+    this.bearing = 360 + bearing;
+    else 
+    this.bearing = bearing;
 
     }
 
     getBearing() {
-        let bearing = this.bearing; 
-        if (bearing < 0)
-        return 360 + bearing;
-        else 
-        return bearing;  
+        return this.bearing; 
     }
 
     getStart() {
@@ -170,6 +171,10 @@ export default class Segment{
 
     setMaxSpeed(maxSpeed) {
         this.maxSpeed = maxSpeed
+    }
+
+    getDist() {
+        return this.distance;
     }
 
     getMaxSpeed() {

@@ -20,6 +20,8 @@ let firstLatLong = true;
 let firstDetail = true; 
 let firstAcc = true; 
 let firstRot = true; 
+let firstBearing = true; 
+let firstPID = true; 
 let loadedPlan; 
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -63,6 +65,8 @@ if (!fs.existsSync('./plans')) {
 
 
 missionNo = fs.readdirSync('./missions').length - 1; 
+if (missionNo < 0)
+missionNo = 0; 
 planNo = fs.readdirSync('./plans').length - 1; 
 console.log(missionNo, planNo);
 
@@ -78,7 +82,7 @@ const options = {
 
 
 
-const server = https.createServer( options, app);
+const server = https.createServer(options,  app);
 const PORT = process.env.PORT || 5000; 
 
 server.listen(PORT, () => console.log("Server running on port " + PORT)); 
@@ -108,6 +112,7 @@ app.post('/start', function(req,res) {
 
 console.log(req.body);
 missionNo = fs.readdirSync('./missions').length; 
+
 let writeDir = `./missions/mission${missionNo}/`; 
 fs.mkdir(writeDir, { recursive: true }, (err) => {
     if (err) throw err;
@@ -187,6 +192,55 @@ function rotWrite(data) {
         console.log(err);
       //  console.log('done');
     });   
+
+
+
+}
+
+function logPID(data) {
+
+  if (firstPID) {
+   
+    fs.appendFileSync(`./missions/mission${missionNo}/pid.csv`, helper(Object.keys(data)), (err) => {
+        if(err)
+        console.log(err);
+      //  console.log('done');
+    });
+    firstPID = false; 
+}
+
+
+fs.appendFile(`./missions/mission${missionNo}/pid.csv`, helper(Object.values(data)), (err) => {
+    if(err)
+    console.log(err);
+  //  console.log('done');
+});   
+
+
+
+}
+
+
+function logBearing(data) {
+  console.log("logging"); 
+  console.log(missionNo); 
+
+  if (firstBearing) {
+   
+    fs.appendFileSync(`./missions/mission${missionNo}/bearing.csv`, helper(Object.keys(data)), (err) => {
+        if(err)
+        console.log(err);
+      //  console.log('done');
+    });
+    firstBearing = false; 
+}
+
+
+fs.appendFile(`./missions/mission${missionNo}/bearing.csv`, helper(Object.values(data)), (err) => {
+    if(err)
+    console.log(err);
+  //  console.log('done');
+});   
 
 
 
@@ -534,6 +588,32 @@ app.get("/details.csv", (req,res) => {
 
 //app.use(bodyParser.raw({type: 'application/octet-stream', limit : '2mb'}));
 let i = 0;
+
+
+app.post('/pid', (req, res) => {
+  console.log("PID"); 
+  logPID(req.body); 
+  res.send("rp"); 
+})
+
+
+app.post('/bearing', (req, res) => {
+ let buf = req.body; 
+ let heading  = buf.readInt16LE(0); 
+ let target = buf. readInt16LE(2); 
+ let correction =  buf.readInt16LE(4); 
+ let obj = {
+   time: Date.now(), 
+   heading: heading, 
+   target: target,
+   correction: correction, 
+ }
+ logBearing(obj); 
+ res.send("rh"); 
+
+}); 
+
+
 
 app.post('/acc', (req,res) => {
 //    var buffer = Buffer.from( new Uint8Array(req.body) );

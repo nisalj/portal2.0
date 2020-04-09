@@ -17,6 +17,10 @@ export default class MissionParams {
 
     }
 
+    getPerpDist() {
+      return this.targetCalculator.perpDistance; 
+    }
+
     getDistance() {
         return this.distance;
     }
@@ -55,7 +59,7 @@ export default class MissionParams {
             //we reached a waypoint 
             this.updateTargetWayPoint(); 
             this.updateCurrentSeg(); 
-            return;
+          //  return;
         }
    //     this.updateBearing(); 
         this.targetBearing = this.targetCalculator.onLocUpdate(this.currentSeg, this.targetWayPoint); 
@@ -87,7 +91,7 @@ export default class MissionParams {
     console.log("distance to target waypoint", this.distance); 
   
     //if user is within 5m we have reached target
-    if (this.distance <= 5) {
+    if (this.distance <= 2) {
         return 1; 
     } else {
       return 0; 
@@ -112,7 +116,7 @@ updateTargetWayPoint() {
     } else if(this.currentSegNo != this.planPath.segNo()) {
     this.currentSegNo++; 
     this.updateCurrentSeg();
-    this.targetBearing = this.getCurrentSeg().getBearing();       
+   // this.targetBearing = this.getCurrentSeg().getBearing();       
     this.targetWayPoint = this.getCurrentSeg().getStart(); 
     this.atSegStart = true; 
     } else {
